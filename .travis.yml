@@ -3,6 +3,8 @@ node_js:
   - "10.15.3"
 script:
   - npm run build
+before_deploy:
+  - cd functions && npm install && cd ..
 deploy:
   skip_cleanup: true
   provider: firebase
