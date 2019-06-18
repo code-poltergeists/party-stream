@@ -2,3 +2,11 @@ language: node_js
 node_js:
   - "10.15.3"
   - "node"
+script:
+  - npm run build
+before_deploy:
+  - cd dist
+deploy:
+  provider: firebase
+  token:
+    secure: "pYDC/KS/CCAumFkZWThz2qcq37Q85+Y3F4babGw5xb1xtIJt6U35r3IpYzHRKloH6Va+BXFtmxXLLr4HmRIk/fwtMpJq9QVBGWpwowAF2sL4mcdEfI6lBR4SSnkv+AXGqTEoFSuM/szr+TWKQkYKAQMkSmrQ+q+CmhicTOcMQbgGiPU1WFD886faVD1BRSqVNePCvFrL9CFLG8XaTxOWSy7VS5e2rgaUIyTGeD9VquyfVRXokdE2e2n8WmgJDyxslNP9jhkKf6Ves+gzi1Lfqho+8+jjLb95B2XkxdMAWh4c5uRoPh47ExSKuW40xpO5hZFax5p1Koq0GqBYKeeb9fc1ZwJh2UHAvUDOi3KebUDO3UrkSFxlcTzT09CR38yWAuLF2YfukqJHyH45gcVYsY7u/FQM6aUqSMyPsMI1ItXFJ7P2Lpf2nJRUQkbfIPkrt9YBGTM8Cypqdu0ajUawazPBLWVvJO9R1ZX8LRrPTNHy25KUZOCaCEWSu6/ta861rj9VzJKIPbDOor7s9vVyDs8WtwWkCSeZV2hV1ams5izjD81CwCIUmk8tiHHXc9qtVhizchDp1AqCIgdapt+uaxmb+c6DKjsZ6zul17RrP99F7E/9r/sgdsTnxsgTKN3EeQnqhMzJ0KGRLSFPK0WRDcqGFmCqxibtbLsNm7NM2HA="
