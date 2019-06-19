@@ -18,6 +18,6 @@ export default class Dashboard extends Vue {
   background-color: #1A2328;
   color: white;
   width: 100%;
-  height: 85vh;
+  height: 100%;
 }
 </style>

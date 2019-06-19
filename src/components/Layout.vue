@@ -2,13 +2,14 @@
   <div id="layout" class="container-fluid">
     <div class="row no-gutters">
       <div class="col-2">
-        <div id="sidebar"></div>
+        <Logo />
+        <Sidebar/>
       </div>
       <div class="col-10">
-        <div id="topbar">
-          <div id="border"></div>
+        <Topbar />
+        <div id="view">
+          <router-view></router-view>
         </div>
-        <router-view/>
       </div>
     </div>
   </div>
@@ -16,8 +17,17 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import Sidebar from './Sidebar.vue';
+import Topbar from './Topbar.vue';
+import Logo from './Logo.vue';
 
-@Component
+@Component({
+  components: {
+    Sidebar,
+    Topbar,
+    Logo,
+  },
+})
 export default class Layout extends Vue {}
 </script>
 
@@ -28,26 +38,7 @@ export default class Layout extends Vue {}
   height: 100%;
 }
 
-#topbar {
-  background-color: #29333c;
-  height: 15vh;
-  border-bottom-right-radius: 10px;
-  position: relative;
-}
-
-#border {
-  border-bottom: 5px solid rgb(90, 97, 100);
-  position: absolute;
-  bottom: 0;
-  left: -20%;
-  right: 0;
-}
-
-#sidebar {
-  height: 100vh;
-  width: 100%;
-  background-color: #29333c;
-  border-right: 5px solid rgb(90, 97, 100);
-  border-bottom-right-radius: 10px;
+#view {
+  height: 90vh;
 }
 </style>
