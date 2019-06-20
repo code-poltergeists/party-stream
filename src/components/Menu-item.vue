@@ -1,5 +1,5 @@
 <template>
-  <div :class="{'item': true, 'active': active, 'container-fluid': true}">
+  <div :class="{'item': true, 'active': active, 'container-fluid': true}" @click="toggleMenuItem()">
       <div class="row no-gutters">
         <div class="col-item">
           <i :class="[icon, 'icon']"></i>
@@ -16,9 +16,16 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class MenuItem extends Vue {
+  @Prop({ default: 0 }) private index!: number;
   @Prop({ default: '' }) private icon!: string;
   @Prop({ default: '' }) private text!: string;
   @Prop({ default: false }) private active!: boolean;
+  @Prop({ default: '' }) private route!: string;
+
+  private toggleMenuItem() {
+    this.$store.commit('changeMenuItem', this.index);
+    this.$router.push({ name: this.route });
+  }
 }
 </script>
 
@@ -34,6 +41,7 @@ export default class MenuItem extends Vue {
   align-items: center;
   padding-left: 30px;
   border-left: 5px solid transparent;
+  cursor: pointer;
 }
 
 .active {

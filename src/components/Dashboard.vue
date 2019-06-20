@@ -8,13 +8,13 @@
     </div>
     <div class="row no-gutters">
       <div class="col-6 right">
-        <Button icon="fas fa-plus-circle" :text="$t('create-room')"></Button>
+        <Button icon="fas fa-plus-circle" :text="$t('create-room')" type="create-room"></Button>
       </div>
       <div class="col-6 left">
-        <Button icon="fas fa-sign-in-alt" :text="$t('join-room')"></Button>
+        <Button icon="fas fa-sign-in-alt" :text="$t('join-room')" type="join-room"></Button>
       </div>
       <div class="col-12 center">
-        <Button icon="fas fa-user-friends" :text="$t('add-friends')"></Button>
+        <Button icon="fas fa-user-friends" :text="$t('add-friends')" type="add-friends"></Button>
       </div>
     </div>
   </div>

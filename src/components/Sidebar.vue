@@ -1,10 +1,15 @@
 <template>
   <div id="sidebar">
     <div id="menu-items">
-      <MenuItem icon="fas fa-chart-line" :text="$t('dashboard')" :active="true"></MenuItem>
-      <MenuItem icon="fab fa-chromecast" :text="$t('rooms')" :active="false"></MenuItem>
-      <MenuItem icon="fas fa-envelope" :text="$t('inbox')" :active="false"></MenuItem>
-      <MenuItem icon="fas fa-user-friends" :text="$t('friends')" :key="false"></MenuItem>
+      <MenuItem
+        v-for="item in menuItems"
+        :key="item.text"
+        :icon="item.icon"
+        :text="$t(item.text)"
+        :route="item.text"
+        :index="item.index"
+        :active="$store.state.currentMenuItem == item.index"
+      />
     </div>
   </div>
 </template>
@@ -18,12 +23,53 @@ import MenuItem from './Menu-item.vue';
     MenuItem,
   },
 })
-export default class Sidebar extends Vue {}
+export default class Sidebar extends Vue {
+  private menuItems = [
+    {
+      index: 0,
+      icon: 'fas fa-chart-line',
+      text: 'dashboard',
+    },
+    {
+      index: 1,
+      icon: 'fab fa-chromecast',
+      text: 'rooms',
+    },
+    {
+      index: 2,
+      icon: 'fas fa-envelope',
+      text: 'inbox',
+    },
+    {
+      index: 3,
+      icon: 'fas fa-user-friends',
+      text: 'friends',
+    },
+    {
+      index: 4,
+      icon: 'fas fa-cog',
+      text: 'settings',
+    },
+  ];
+}
 </script>
 
 <style scoped lang="scss">
+#sidebar * {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
 #menu-items {
   padding-top: 50px;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
 }
 
 #sidebar {
@@ -32,5 +78,9 @@ export default class Sidebar extends Vue {}
   background-color: #29333c;
   border-right: 5px solid rgb(90, 97, 100);
   border-bottom-right-radius: 10px;
+}
+
+#menu-items div:last-child {
+  margin-top: auto;
 }
 </style>
