@@ -1,15 +1,13 @@
 <template>
-  <div id="layout" class="container-fluid">
-    <div class="row no-gutters">
-      <div class="col-2">
-        <Logo />
-        <Sidebar/>
-      </div>
-      <div class="col-10">
-        <Topbar />
-        <div id="view">
-          <router-view></router-view>
-        </div>
+  <div id="layout">
+    <div id="col-sidebar">
+      <Logo/>
+      <Sidebar/>
+    </div>
+    <div id="col-view">
+      <Topbar/>
+      <div id="view">
+        <router-view></router-view>
       </div>
     </div>
   </div>
@@ -36,6 +34,17 @@ export default class Layout extends Vue {}
   margin: 0;
   padding: 0;
   height: 100%;
+  width: 100vw;
+  display: flex;
+}
+
+#col-sidebar {
+  height: 100vh;
+  flex: 0 0 300px;
+}
+
+#col-view {
+  flex: 1;
 }
 
 #view {
