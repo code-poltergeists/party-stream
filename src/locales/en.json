@@ -7,5 +7,8 @@
   "no-items": "Nothing to see here... yet",
   "create-room": "Create room",
   "join-room": "Join room",
-  "add-friends": "Add friends"
+  "add-friends": "Add friends",
+  "name-and-privacy": "Choose name and privacy",
+  "invite-friends": "Invite friends",
+  "name": "Name"
 }

@@ -1,7 +1,7 @@
 <template>
-  <div class="button" @click="openDialog(type)">
+  <div class="button">
     <i :class="[icon, 'icon']"></i>
-    <div class="text">{{ text }}</div>
+    <div class="text">{{ $t(text) }}</div>
   </div>
 </template>
 
@@ -12,7 +12,6 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class Button extends Vue {
   @Prop({ default: '' }) private icon!: string;
   @Prop({ default: '' }) private text!: string;
-  @Prop({ default: '' }) private type!: string;
 }
 </script>
 
@@ -24,7 +23,7 @@ export default class Button extends Vue {
   text-align: center;
   width: 200px;
   background-color: #267dd7;
-  color: white;
+  color: #E3E3E3;
   cursor: pointer;
 }
 

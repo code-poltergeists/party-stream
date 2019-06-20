@@ -8,13 +8,13 @@
     </div>
     <div class="row no-gutters">
       <div class="col-6 right">
-        <Button icon="fas fa-plus-circle" :text="$t('create-room')" type="create-room"></Button>
+        <Button icon="fas fa-plus-circle" text="create-room" @click.native="openDialog('create-room')"></Button>
       </div>
       <div class="col-6 left">
-        <Button icon="fas fa-sign-in-alt" :text="$t('join-room')" type="join-room"></Button>
+        <Button icon="fas fa-sign-in-alt" text="join-room"></Button>
       </div>
       <div class="col-12 center">
-        <Button icon="fas fa-user-friends" :text="$t('add-friends')" type="add-friends"></Button>
+        <Button icon="fas fa-user-friends" text="add-friends"></Button>
       </div>
     </div>
   </div>
@@ -22,14 +22,35 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Button from './Button.vue';
+import Button from '../items/Button.vue';
 
 @Component({
   components: {
     Button,
   },
 })
-export default class Dashboard extends Vue {}
+export default class Dashboard extends Vue {
+  private openDialog(type: string) {
+    let stepsArray: string[] = [];
+    let buttonIcon: string = '';
+    let buttonText: string = '';
+    switch (type) {
+      case 'create-room':
+        stepsArray = ['name-and-privacy', 'invite-friends'];
+        buttonIcon = 'fas fa-plus-circle';
+        buttonText = 'create-room';
+        break;
+      default:
+        break;
+    }
+    this.$store.commit('setupDialog', {
+      title: this.$t(type),
+      steps: stepsArray,
+      button: { icon: buttonIcon, text: buttonText },
+    });
+    this.$store.commit('toggleDialogVisibility', true);
+  }
+}
 </script>
 
 <style scoped lang="scss">

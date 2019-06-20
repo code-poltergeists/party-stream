@@ -1,0 +1,210 @@
+<template>
+  <div id="dialog">
+    <div id="overlay"></div>
+    <div id="dialog-container" @click.self="hideDialog()">
+      <div id="dialog-element">
+        <div id="dialog-title-container">
+          <div id="dialog-title">
+            {{ $store.state.dialog.info.title }}
+          </div>
+        </div>
+        <div id="dialog-steps-container">
+          <div :class="{'dialog-step-container': true, 'arrow-active': currentIndex == index}" v-for="(step, index) in $store.state.dialog.info.steps" :key="step">
+            <div :class="{'dialog-step': true, 'active': currentIndex == index}">
+              <div class="step-number">
+                {{index + 1}} 
+              </div>
+              <div class="step-title">
+                {{$t(step)}}
+              </div>
+            </div>
+            <div class="arrow"></div>
+          </div>
+        </div>
+        <Button class="dialog-button" :icon="$store.state.dialog.info.button.icon" :text="$store.state.dialog.info.button.text" />
+        <div class="dialog-content">
+          <TextField id="name-textfield" placeholder="name"/>
+          <div id="privacy">
+            <i class="fas fa-globe-europe privacy-item"></i>
+            <ToggleSwitch id="privacy-switch" />
+            <i class="fas fa-lock privacy-item"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+import Button from './Button.vue';
+import TextField from './TextField.vue';
+import ToggleSwitch from './ToggleSwitch.vue';
+
+@Component({
+  components: {
+    Button,
+    TextField,
+    ToggleSwitch,
+  },
+})
+export default class Dialog extends Vue {
+  private currentIndex: number = 0;
+
+  private hideDialog() {
+    this.$store.commit('toggleDialogVisibility', false);
+  }
+}
+</script>
+
+<style scoped lang="scss">
+#overlay {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: black;
+  opacity: 0.75;
+}
+
+#dialog-container {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#dialog * {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+#dialog-element {
+  width: 50vw;
+  height: 50vh;
+  background-color: #1A2328;
+  border-radius: 20px;
+  position: relative;
+}
+
+#dialog-title-container {
+  width: 100%;
+  height: 10vh;
+  background-color: rgb(15, 22, 26);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#dialog-title {
+  color: #E3E3E3;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 25px;
+  font-weight: 600;
+  margin-left: 30px;
+}
+
+.dialog-step {
+  width: 100%;
+  height: 100%;
+  padding-left: 20px;
+}
+
+#dialog-steps-container {
+  width: 100%;
+  height: 7.5vh;
+  background-color:#344046;
+  display: flex;
+  align-items: center;
+  color: #E3E3E3;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dialog-step-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  border-color: transparent transparent transparent #344046;
+}
+
+.dialog-step {
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 3.75vh 0 3.75vh 3.75vh;
+  border-color: inherit;
+  margin-left: auto;
+}
+
+.active {
+  background-color: #247BD5;
+}
+
+.arrow-active {
+  border-color: transparent transparent transparent #247BD5;
+}
+
+.step-number {
+  width: 6vh;
+  height: 6vh;
+  border-radius: 50%;
+  border: 2px solid #E3E3E3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 30px;
+  font-size: 30px;
+}
+
+.step-title {
+  font-size: 20px;
+}
+
+.dialog-button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#name-textfield {
+  margin-top: 60px;
+}
+
+#privacy {
+  margin-top: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.privacy-item {
+  color: #E3E3E3;
+  margin: 0 20px;
+  font-size: 50px;
+}
+</style>

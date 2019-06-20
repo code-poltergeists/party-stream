@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Dashboard from './components/Dashboard.vue';
-import Inbox from './components/Inbox.vue';
-import Rooms from './components/Rooms.vue';
-import Friends from './components/Friends.vue';
-import Settings from './components/Settings.vue';
+import Dashboard from './components/pages/Dashboard.vue';
+import Inbox from './components/pages/Inbox.vue';
+import Rooms from './components/pages/Rooms.vue';
+import Friends from './components/pages/Friends.vue';
+import Settings from './components/pages/Settings.vue';
 
 Vue.use(Router);
 
