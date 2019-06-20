@@ -3,7 +3,7 @@ import App from './App.vue';
 import store from './store';
 import router from './router';
 import i18n from './i18n';
-import VueYoutube from 'vue-youtube';
+const VueYoutube = require('vue-youtube').default;
 
 Vue.use(VueYoutube);
 Vue.config.productionTip = false;
