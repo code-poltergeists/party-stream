@@ -1,8 +1,10 @@
 <template>
   <div>
-    <youtube video-id="BBJa32lCaaY" ref="youtube" />
-    <br>
-    <button v-on:click="logVideo">Press me I dare you</button>
+    <youtube video-id="dQw4w9WgXcQ" 
+             ref="youtube" 
+             @playing="playing"
+             @paused="paused" 
+    />
   </div>
 </template>
 
@@ -13,9 +15,17 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class YtPlayer extends Vue {
   @Prop() private msg!: string;
 
-  public async logVideo() {
+  get player() {
     // @ts-ignore
-    console.log(await this.$refs.youtube.player.getVolume());
+    return this.$refs.youtube.player;
+  }
+
+  public playing() {
+    console.log("hey I started");
+  }
+
+  public paused() {
+    console.log("hey I stopped");
   }
 }
 </script>
