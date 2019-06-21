@@ -10,5 +10,7 @@
   "add-friends": "Add friends",
   "name-and-privacy": "Choose name and privacy",
   "invite-friends": "Invite friends",
-  "name": "Name"
+  "name": "Name",
+  "continue": "Continue",
+  "choose-friends": "Choose friends"
 }

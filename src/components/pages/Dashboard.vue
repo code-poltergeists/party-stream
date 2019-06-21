@@ -31,20 +31,37 @@ import Button from '../items/Button.vue';
 })
 export default class Dashboard extends Vue {
   private openDialog(type: string) {
-    let stepsArray: string[] = [];
+    let stepsArray: { name: string, action: Function }[] = [];
     let buttonIcon: string = '';
     let buttonText: string = '';
+    let title: string = '';
     switch (type) {
       case 'create-room':
-        stepsArray = ['name-and-privacy', 'invite-friends'];
-        buttonIcon = 'fas fa-plus-circle';
-        buttonText = 'create-room';
+        stepsArray = [
+          {
+            name: 'name-and-privacy',
+            action: () => {
+              this.$store.commit('setupDialog', {
+                title: 'choose-friends',
+                button: { icon: 'fas fa-plus-circle', text: 'create-room' },
+                component: 'CreateRoom2',
+              });
+            },
+          }, 
+          {
+            name: 'invite-friends',
+            action: () => {},
+          }
+        ];
+        buttonIcon = 'fas fa-arrow-right';
+        buttonText = 'continue';
+        title = 'name-and-privacy'
         break;
       default:
         break;
     }
     this.$store.commit('setupDialog', {
-      title: this.$t(type),
+      title: title,
       steps: stepsArray,
       button: { icon: buttonIcon, text: buttonText },
       component: 'CreateRoom1',

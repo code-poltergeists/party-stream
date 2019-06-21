@@ -5,23 +5,23 @@
       <div id="dialog-element">
         <div id="dialog-title-container">
           <div id="dialog-title">
-            {{ $store.state.dialog.info.title }}
+            {{ $t($store.state.dialog.info.title) }}
           </div>
         </div>
         <div id="dialog-steps-container">
-          <div :class="{'dialog-step-container': true, 'arrow-active': currentIndex == index}" v-for="(step, index) in $store.state.dialog.info.steps" :key="step">
-            <div :class="{'dialog-step': true, 'active': currentIndex == index}">
+          <div :class="{'dialog-step-container': true, 'arrow-active': currentIndex == index}" v-for="(step, index) in $store.state.dialog.info.steps" :key="step.name">
+            <div :class="{'dialog-step': true, 'active': currentIndex == index, 'arrow-overlap': index != 0}">
               <div class="step-number">
                 {{index + 1}} 
               </div>
               <div class="step-title">
-                {{$t(step)}}
+                {{$t(step.name)}}
               </div>
             </div>
-            <div class="arrow"></div>
+            <div class="arrow" v-if="index != $store.state.dialog.info.steps.length - 1"></div>
           </div>
         </div>
-        <Button class="dialog-button" :icon="$store.state.dialog.info.button.icon" :text="$store.state.dialog.info.button.text" />
+        <Button class="dialog-button" :icon="$store.state.dialog.info.button.icon" :text="$store.state.dialog.info.button.text" @click.native="onClick" />
         <component :is="$store.state.dialog.info.component"></component>
       </div>
     </div>
@@ -32,11 +32,13 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Button from '../Button.vue';
 import CreateRoom1 from './Create-room-1.vue';
+import CreateRoom2 from './Create-room-2.vue';
 
 @Component({
   components: {
     Button,
     CreateRoom1,
+    CreateRoom2,
   },
 })
 export default class Dialog extends Vue {
@@ -44,6 +46,16 @@ export default class Dialog extends Vue {
 
   private hideDialog() {
     this.$store.commit('toggleDialogVisibility', false);
+  }
+
+  private onClick() {
+    const action = this.$store.state.dialog.info.steps[this.currentIndex].action;
+    if (this.currentIndex !== this.$store.state.dialog.info.steps.length - 1) {
+      this.currentIndex += 1;
+      action();
+    } else {
+      this.$store.commit('toggleDialogVisibility', false);
+    }
   }
 }
 </script>
@@ -110,6 +122,13 @@ export default class Dialog extends Vue {
   width: 100%;
   height: 100%;
   padding-left: 20px;
+  z-index: 200;
+}
+
+.arrow-overlap {
+  margin-left: -3.75vh;
+  width: calc(100% + 3.75vh);
+  padding-left: calc(20px + 3.75vh);
 }
 
 #dialog-steps-container {
@@ -144,6 +163,7 @@ export default class Dialog extends Vue {
   border-width: 3.75vh 0 3.75vh 3.75vh;
   border-color: inherit;
   margin-left: auto;
+  z-index: 210;
 }
 
 .active {

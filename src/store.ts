@@ -19,7 +19,9 @@ export default new Vuex.Store({
       state.dialog.isVisible = flag;
     },
     setupDialog(state, map) {
-      state.dialog.info = map;
+      Object.keys(map).forEach(key => {
+        (state.dialog.info as { [_: string]: any })[key] = map[key];
+      });
     },
   },
   actions: {
