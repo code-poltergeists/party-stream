@@ -14,6 +14,7 @@ export default class YtPlayer extends Vue {
   @Prop() private msg!: string;
 
   public logVideo() {
+    // @ts-ignore
     console.log(this.$refs.youtube.player.getVolume());
   }
 }
