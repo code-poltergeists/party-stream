@@ -13,9 +13,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class YtPlayer extends Vue {
   @Prop() private msg!: string;
 
-  public logVideo() {
+  public async logVideo() {
     // @ts-ignore
-    console.log(this.$refs.youtube.player.getVolume());
+    console.log(await this.$refs.youtube.player.getVolume());
   }
 }
 </script>
