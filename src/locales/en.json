@@ -12,5 +12,6 @@
   "invite-friends": "Invite friends",
   "name": "Name",
   "continue": "Continue",
-  "choose-friends": "Choose friends"
+  "choose-friends": "Choose friends",
+  "at-username": "@username"
 }

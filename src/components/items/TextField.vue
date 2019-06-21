@@ -1,6 +1,6 @@
 <template>
   <div class="textfield">
-      <input class="input" :placeholder="$t(placeholder)" type="text" />
+      <input class="input" :placeholder="$t(placeholder)" type="text" v-model="text" @keyup.enter="onEnterPressed" />
   </div>
 </template>
 
@@ -10,6 +10,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component
 export default class TextField extends Vue {
   @Prop({ default: '' }) private placeholder!: string;
+  @Prop({ default: ''}) private toEmit!: string;
+  private text: string = '';
+  private onEnterPressed() {
+    if (this.toEmit !== '') {
+      this.$emit(this.toEmit, this.text);
+    }
+  }
 }
 </script>
 
@@ -23,5 +30,6 @@ export default class TextField extends Vue {
     color: #909090;
     font-weight: 600;
     font-size: 20px;
+    width: 400px;
 }
 </style>

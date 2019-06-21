@@ -9,7 +9,7 @@
           </div>
         </div>
         <div id="dialog-steps-container">
-          <div :class="{'dialog-step-container': true, 'arrow-active': currentIndex == index}" v-for="(step, index) in $store.state.dialog.info.steps" :key="step.name">
+          <div :class="{'dialog-step-container': true, 'arrow-active': currentIndex == index}" v-for="(step, index) in $store.state.dialog.info.steps" :key="step.name" @click="dialogStepClicked(index)">
             <div :class="{'dialog-step': true, 'active': currentIndex == index, 'arrow-overlap': index != 0}">
               <div class="step-number">
                 {{index + 1}} 
@@ -48,14 +48,22 @@ export default class Dialog extends Vue {
     this.$store.commit('toggleDialogVisibility', false);
   }
 
-  private onClick() {
-    const action = this.$store.state.dialog.info.steps[this.currentIndex].action;
-    if (this.currentIndex !== this.$store.state.dialog.info.steps.length - 1) {
-      this.currentIndex += 1;
+  private changeStep(index: number) {
+    const action = this.$store.state.dialog.info.steps[index - 1].action;
+    if (index !== this.$store.state.dialog.info.steps.length) {
+      this.currentIndex = index;
       action();
     } else {
       this.$store.commit('toggleDialogVisibility', false);
     }
+  }
+
+  private onClick() {
+    this.changeStep(this.currentIndex + 1);
+  }
+
+  private dialogStepClicked(index: number) {
+    this.changeStep(index);
   }
 }
 </script>
@@ -118,19 +126,6 @@ export default class Dialog extends Vue {
   margin-left: 30px;
 }
 
-.dialog-step {
-  width: 100%;
-  height: 100%;
-  padding-left: 20px;
-  z-index: 200;
-}
-
-.arrow-overlap {
-  margin-left: -3.75vh;
-  width: calc(100% + 3.75vh);
-  padding-left: calc(20px + 3.75vh);
-}
-
 #dialog-steps-container {
   width: 100%;
   height: 7.5vh;
@@ -149,11 +144,22 @@ export default class Dialog extends Vue {
   height: 100%;
   width: 100%;
   border-color: transparent transparent transparent #344046;
+  cursor: pointer;
 }
 
 .dialog-step {
   display: flex;
   align-items: center;
+  width: 100%;
+  height: 100%;
+  padding-left: 20px;
+  z-index: 200;
+}
+
+.arrow-overlap {
+  margin-left: -3.75vh;
+  width: calc(100% + 3.75vh);
+  padding-left: calc(20px + 3.75vh);
 }
 
 .arrow {

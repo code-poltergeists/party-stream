@@ -1,16 +1,18 @@
 <template>
   <div id="dialog-content">
-    <TextField id="name-textfield" placeholder="name"/>
+    <ChooseFriends />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import TextField from '../TextField.vue';
+import ChooseFriends from '../Choose-friends.vue';
 
 @Component({
   components: {
     TextField,
+    ChooseFriends,
   },
 })
 export default class CreateRoom2 extends Vue {}
