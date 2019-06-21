@@ -8,7 +8,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Layout from './components/structure/Layout.vue';
-import Dialog from './components/items/Dialog.vue';
+import Dialog from './components/items/dialog/Dialog.vue';
 
 @Component({
   components: {

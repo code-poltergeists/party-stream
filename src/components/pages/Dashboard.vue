@@ -47,6 +47,7 @@ export default class Dashboard extends Vue {
       title: this.$t(type),
       steps: stepsArray,
       button: { icon: buttonIcon, text: buttonText },
+      component: 'CreateRoom1',
     });
     this.$store.commit('toggleDialogVisibility', true);
   }

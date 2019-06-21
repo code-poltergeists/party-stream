@@ -22,14 +22,7 @@
           </div>
         </div>
         <Button class="dialog-button" :icon="$store.state.dialog.info.button.icon" :text="$store.state.dialog.info.button.text" />
-        <div class="dialog-content">
-          <TextField id="name-textfield" placeholder="name"/>
-          <div id="privacy">
-            <i class="fas fa-globe-europe privacy-item"></i>
-            <ToggleSwitch id="privacy-switch" />
-            <i class="fas fa-lock privacy-item"></i>
-          </div>
-        </div>
+        <component :is="$store.state.dialog.info.component"></component>
       </div>
     </div>
   </div>
@@ -37,15 +30,13 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import Button from './Button.vue';
-import TextField from './TextField.vue';
-import ToggleSwitch from './ToggleSwitch.vue';
+import Button from '../Button.vue';
+import CreateRoom1 from './Create-room-1.vue';
 
 @Component({
   components: {
     Button,
-    TextField,
-    ToggleSwitch,
+    CreateRoom1,
   },
 })
 export default class Dialog extends Vue {
@@ -183,28 +174,5 @@ export default class Dialog extends Vue {
   position: absolute;
   right: 0;
   bottom: 0;
-}
-
-.dialog-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#name-textfield {
-  margin-top: 60px;
-}
-
-#privacy {
-  margin-top: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.privacy-item {
-  color: #E3E3E3;
-  margin: 0 20px;
-  font-size: 50px;
 }
 </style>
