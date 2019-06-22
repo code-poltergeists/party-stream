@@ -13,5 +13,11 @@
   "name": "Name",
   "continue": "Continue",
   "choose-friends": "Choose friends",
-  "at-username": "@username"
+  "at-username": "@username",
+  "add": "Add",
+  "join": "Join",
+  "join-public-room": "Join public room",
+  "join-private-room": "Join private room",
+  "enter-room-name": "Enter room name",
+  "enter-room-id": "Enter room id"
 }

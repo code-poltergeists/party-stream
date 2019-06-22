@@ -10,8 +10,8 @@
         </div>
         <div id="dialog-steps-container">
           <div :class="{'dialog-step-container': true, 'arrow-active': currentIndex == index}" v-for="(step, index) in $store.state.dialog.info.steps" :key="step.name" @click="dialogStepClicked(index)">
-            <div :class="{'dialog-step': true, 'active': currentIndex == index, 'arrow-overlap': index != 0}">
-              <div class="step-number">
+            <div :class="{'dialog-step': true, 'active': currentIndex == index, 'arrow-overlap': index != 0, 'single-step': $store.state.dialog.info.steps.length == 1}">
+              <div class="step-number" v-if="$store.state.dialog.info.steps.length > 1">
                 {{index + 1}} 
               </div>
               <div class="step-title">
@@ -33,12 +33,18 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import Button from '../Button.vue';
 import CreateRoom1 from './Create-room-1.vue';
 import CreateRoom2 from './Create-room-2.vue';
+import InviteFriends from './Invite-friends.vue';
+import ChooseFriends from '../Choose-friends.vue';
+import JoinRoom from './Join-room.vue';
 
 @Component({
   components: {
     Button,
     CreateRoom1,
     CreateRoom2,
+    ChooseFriends,
+    InviteFriends,
+    JoinRoom,
   },
 })
 export default class Dialog extends Vue {
@@ -49,10 +55,9 @@ export default class Dialog extends Vue {
   }
 
   private changeStep(index: number) {
-    const action = this.$store.state.dialog.info.steps[index - 1].action;
     if (index !== this.$store.state.dialog.info.steps.length) {
       this.currentIndex = index;
-      action();
+      this.$store.state.dialog.info.steps[index].action();
     } else {
       this.$store.commit('toggleDialogVisibility', false);
     }
@@ -154,6 +159,10 @@ export default class Dialog extends Vue {
   height: 100%;
   padding-left: 20px;
   z-index: 200;
+}
+
+.single-step {
+  justify-content: center;
 }
 
 .arrow-overlap {

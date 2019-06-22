@@ -1,6 +1,6 @@
 <template>
   <label class="switch">
-    <input type="checkbox">
+    <input type="checkbox" @change="toggle">
     <span class="slider round"></span>
   </label>
 </template>
@@ -9,7 +9,14 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
-export default class ToggleSwitch extends Vue {}
+export default class ToggleSwitch extends Vue {
+  private mode: number = 0;
+
+  private toggle() {
+    this.mode = this.mode === 0 ? 1 : 0;
+    this.$emit('onToggle', this.mode);
+  }
+}
 </script>
 
 <style scoped lang="scss">
