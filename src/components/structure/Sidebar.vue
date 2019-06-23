@@ -47,6 +47,11 @@ export default class Sidebar extends Vue {
     },
     {
       index: 4,
+      icon: 'fas fa-user-friends',
+      text: 'ytplayer',
+    },
+    {
+      index: 5,
       icon: 'fas fa-cog',
       text: 'settings',
     },
