@@ -5,6 +5,8 @@ import Inbox from './components/pages/Inbox.vue';
 import Rooms from './components/pages/Rooms.vue';
 import Friends from './components/pages/Friends.vue';
 import Settings from './components/pages/Settings.vue';
+import Auth from './components/pages/Auth.vue';
+import Layout from './components/structure/Layout.vue';
 
 Vue.use(Router);
 
@@ -14,28 +16,43 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'dashboard',
-      component: Dashboard,
+      redirect: '/dashboard'
     },
     {
-      path: '/inbox',
-      name: 'inbox',
-      component: Inbox,
+      path: '/dashboard',
+      component: Layout,
+      children: [
+        {
+          path: '/',
+          name: 'dashboard',
+          component: Dashboard,
+        },
+        {
+          path: 'inbox',
+          name: 'inbox',
+          component: Inbox,
+        },
+        {
+          path: 'rooms',
+          name: 'rooms',
+          component: Rooms,
+        },
+        {
+          path: 'friends',
+          name: 'friends',
+          component: Friends,
+        },
+        {
+          path: 'settings',
+          name: 'settings',
+          component: Settings,
+        },
+      ]
     },
     {
-      path: '/rooms',
-      name: 'rooms',
-      component: Rooms,
-    },
-    {
-      path: '/friends',
-      name: 'friends',
-      component: Friends,
-    },
-    {
-      path: '/settings',
-      name: 'settings',
-      component: Settings,
-    },
+      path: '/auth',
+      name: 'auth',
+      component: Auth
+    }
   ],
 });

@@ -1,18 +1,18 @@
-import { db, auth } from '../db';
 import User from '@/models/User';
 import { BehaviorSubject } from 'rxjs';
+import firebase from 'firebase';
 
 export default class AuthService {
   static instance: AuthService;
 
-  private static isAuthenticated$ = new BehaviorSubject<boolean>(false);
+  private isAuthenticated$ = new BehaviorSubject<boolean | null>(null);
 
-  private static subscription: firebase.Unsubscribe;
+  private subscription: firebase.Unsubscribe | null = null;
 
   constructor() {
-    if (!AuthService.subscription) {
-      AuthService.subscription = auth.onAuthStateChanged(user => {
-        AuthService.isAuthenticated$.next(user === null);
+    if (!this.subscription) {
+      this.subscription = firebase.auth().onAuthStateChanged(user => {
+        this.isAuthenticated$.next(user !== null && user !== undefined);
       });
     }
     if (AuthService.instance) {
@@ -23,8 +23,8 @@ export default class AuthService {
     }
   }
 
-  static async signUp(email: string, password: string, username: string, name: string, photoUrl: string): Promise<User> {
-    return auth.createUserWithEmailAndPassword(email, password).then(_ => {
+  async signUp(email: string, password: string, username: string, name: string, photoUrl: string): Promise<User> {
+    return firebase.auth().createUserWithEmailAndPassword(email, password).then(_ => {
       let user = new User();
       user.name = name;
       user.photoUrl = photoUrl;
@@ -33,15 +33,15 @@ export default class AuthService {
     });
   }
 
-  static async signIn(email: string, password: string): Promise<any> {
-    return auth.signInWithEmailAndPassword(email, password);
+  async signIn(email: string, password: string): Promise<any> {
+    return firebase.auth().signInWithEmailAndPassword(email, password);
   }
 
-  static async currentUser(): Promise<User | null> {
-    if (!auth.currentUser) {
+  async currentUser(): Promise<User | null> {
+    if (!firebase.auth().currentUser) {
       return null;
     }
-    return db.collection('users').doc(auth.currentUser.uid).get().then(doc => {
+    return firebase.firestore().collection('users').doc(firebase.auth().currentUser!.uid).get().then(doc => {
       const data = doc.data()!;
       let user = new User();
       user.name = data.name;
@@ -51,7 +51,22 @@ export default class AuthService {
     });
   }
 
-  static get isAuthenticated(): boolean {
-    return AuthService.isAuthenticated$.value;
+  get isAuthenticated(): boolean | null {
+    return this.isAuthenticated$.value;
+  }
+
+  async logOut(): Promise<any> {
+    return firebase.auth().signOut();
+  }
+
+  async sendLogInLink(email: string): Promise<void> {
+    return firebase.auth().sendSignInLinkToEmail(email, {
+      url: 'https://party-stream-1321f.web.app',
+      handleCodeInApp: true,
+    });
+  }
+
+  async finishLinkLogIn(email: string, link: string): Promise<any> {
+    return firebase.auth().signInWithEmailLink(email, link);
   }
 }
