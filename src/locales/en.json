@@ -19,5 +19,9 @@
   "join-public-room": "Join public room",
   "join-private-room": "Join private room",
   "enter-room-name": "Enter room name",
-  "enter-room-id": "Enter room id"
+  "enter-room-id": "Enter room id",
+  "landing-text": "Making <br /> video streaming <br/> great again",
+  "login": "Log in",
+  "signup": "Sign up",
+  "passwordless": "Enable passwordless sign in"
 }
