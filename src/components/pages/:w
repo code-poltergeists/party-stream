@@ -8,47 +8,8 @@
   </div> -->
   <div id="layout">
     <div id="left">
-      <svg height="500" width="600">
-        <defs>
-          <linearGradient
-            id="gradient" 
-            x1="0%" 
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
-            <stop offset="0%" stop-color="#7F18B6" />
-            <stop offset="12.5%" stop-color="#533E87" stop-opacity="0.8" />
-            <stop offset="32.5%" stop-color="#315B5B" stop-opacity="0.64" />
-            <stop offset="40%" stop-color="#1A4921" stop-opacity="0.75" />
-            <stop offset="50%" stop-color="#1A2328" stop-opacity="0.8" />
-            <stop offset="60%" stop-color="#1A4921" stop-opacity="0.75" />
-            <stop offset="67.5%" stop-color="#315B5B" stop-opacity="0.64" />
-            <stop offset="87.5%" stop-color="#533E87" stop-opacity="0.8" />
-            <stop offset="100%" stop-color="#7F18B6" />
-          </linearGradient>
-        </defs>
-        <path
-          d="
-             M 0 250
-             Q 20 125 40 250 
-             Q 60 400 80 250
-             Q 100 -175 120 250
-             Q 140 650 160 250
-             Q 180 -100 200 250
-             Q 220 525 240 250
-             Q 260 -250 280 250
-             Q 300 400 320 250
-             Q 340 150 360 250
-             Q 380 750 400 250
-             Q 420 0 440 250
-             Q 460 450 480 250
-             Q 500 -175 520 250
-             Q 540 550 560 250
-             Q 580 50 600 250
-          "
-          fill="url(#gradient)"
-        />
+      <svg height="1000" width="1000">
+        <path d="M 100 500 q 150 -300 300 0 q 150 300 300 0" stroke="blue" stroke-width="5" fill="green" />
       </svg>
     </div>
     <div id="right">
@@ -66,18 +27,7 @@
           <input type="checkbox" @change="isPasswordEnabled = !isPasswordEnabled">
             <div>
               <svg viewBox="0 0 44 44">
-                <path 
-                  d="
-                     M 14 24 
-                     L 21 31 
-                     L 39.7428882 11.5937758 
-                     C 35.2809627 6.53125861 30.0333333 4 24 4 
-                     C 12.95 4 4 12.95 4 24 
-                     C 4 35.05 12.95, 44 24 44 
-                     C 35.05 44 44 35.05 44 24 
-                     C 44 19.3 42.5809627 15.1645919 39.7428882 11.5937758
-                   " 
-                   transform="translate(-2.000000, -2.000000)"></path>
+                <path d="M14,24 L21,31 L39.7428882,11.5937758 C35.2809627,6.53125861 30.0333333,4 24,4 C12.95,4 4,12.95 4,24 C4,35.05 12.95,44 24,44 C35.05,44 44,35.05 44,24 C44,19.3 42.5809627,15.1645919 39.7428882,11.5937758" transform="translate(-2.000000, -2.000000)"></path>
               </svg>
           </div>
         </label>
@@ -149,9 +99,6 @@ $color-dark: #656565;
   width: 50%;
   height: 100vh;
   color: $color;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 #right {
