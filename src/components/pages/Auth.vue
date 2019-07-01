@@ -1,11 +1,4 @@
 <template>
-<!-- <div>
-  <button @click="signin">Signin</button>
-  <button @click="signup">Signup</button>
-  <button @click="check">Check</button>
-  <button @click="logout">Logout</button>
-  <button @click="signinfancy">Signin fancy</button>
-  </div> -->
   <div id="layout">
     <div id="left">
       <svg height="500" width="600">
@@ -54,7 +47,13 @@
     <div id="right">
       <p id="landing-text" v-html="$t('landing-text')"></p>
       <div id="buttons">
-        <div id="login" :class="{'active': currentTab === 'login'}" @click="currentTab = 'login'">{{ $t('login').toUpperCase() }}</div>
+        <div 
+          id="login" 
+          :class="{'active': currentTab === 'login'}"
+          @click="currentTab = 'login'"
+        >
+          {{ $t('login').toUpperCase() }}
+        </div>
         <i class="fas fa-circle" id="circle"></i>
         <div id="signup" :class="{'active': currentTab === 'signup'}" @click="currentTab = 'signup'">{{ $t('signup').toUpperCase() }}</div>
       </div>
@@ -87,6 +86,20 @@
       </div>  
       <div class="textfield-container" id="password-container" v-if="isPasswordEnabled">
         <input class="textfield" id="password-input" placeholder="Password">
+      </div>
+      <div id="log-in-button">
+        {{ $t('login').toUpperCase() }}
+      </div>
+      <div id="alternative-log-in">
+        {{ $t('alternative-log-in') }}
+      </div>
+      <div id="alternative-log-in-buttons">
+        <div id="facebook" class="alternative-log-in-button">
+          <i class="fab fa-facebook-square"></i>
+        </div>
+        <div id="google" class="alternative-log-in-button">
+          <i class="fab fa-google"></i>
+        </div>
       </div>
     </div>
   </div>
@@ -168,6 +181,9 @@ $color-dark: #656565;
   font-weight: 700;
   font-size: 50px;
   color: $color;
+  text-align: right;
+  margin-bottom: 50px;
+  width: 60%;
 }
 
 #buttons {
@@ -381,4 +397,59 @@ button:focus {
   }
 }
 
+#log-in-button {
+  color: #1A2328;
+  cursor: pointer;
+  font-family: 'Montserrat';
+  font-size: 25px;
+  font-weight: 600;
+  background-color: $color-dark;
+  width: 60%;
+  padding: 10px;
+  border-radius: 1000px;
+  text-align: center;
+}
+
+#password-container {
+  margin-bottom: 20px;
+}
+
+#log-in-button:hover {
+  background-color: $color;
+}
+
+#alternative-log-in {
+  font-family: 'Montserrat';
+  font-weight: 600;
+  color: $color;
+  font-size: 20px;
+  margin: 20px 0;
+}
+
+#alternative-log-in-buttons {
+  display: flex;
+  width: 60%;
+  justify-content: space-between;
+}
+
+.alternative-log-in-button {
+  width: 50%;
+  border-radius: 1000px;
+  cursor: pointer;
+  text-align: center;
+  padding: 10px;
+  font-size: 30px;
+}
+
+#facebook {
+  background-color: #334F8D;
+  color: white;
+  margin-right: 10px;
+}
+
+#google {
+  background-color: white;
+  color: black;
+  margin-left: 10px;
+}
 </style>
