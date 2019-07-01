@@ -47,20 +47,18 @@
     <div id="right">
       <p id="landing-text" v-html="$t('landing-text')"></p>
       <div id="buttons">
-        <div 
-          id="login" 
-          :class="{'active': currentTab === 'login'}"
-          @click="currentTab = 'login'"
-        >
+        <div id="login" :class="{'active': currentTab === 'login'}" @click="currentTab = 'login'">
           {{ $t('login').toUpperCase() }}
         </div>
         <i class="fas fa-circle" id="circle"></i>
-        <div id="signup" :class="{'active': currentTab === 'signup'}" @click="currentTab = 'signup'">{{ $t('signup').toUpperCase() }}</div>
+        <div id="signup" :class="{'active': currentTab === 'signup'}" @click="currentTab = 'signup'">
+          {{ $t('signup').toUpperCase() }}
+        </div>
       </div>
-      <div class="textfield-container" id="user-container">
-        <input class="textfield" id="user-input" placeholder="@username, email, phone #">
+      <div class="textfield-container" v-if="currentTab === 'login'">
+        <input v-model="user" class="textfield" :placeholder="$t('auth-methods')">
       </div>
-      <div id="checkbox-container">
+      <div id="checkbox-container" v-if="currentTab === 'login'">
         <label id="toggleButton">
           <input type="checkbox" @change="isPasswordEnabled = !isPasswordEnabled">
             <div>
@@ -76,28 +74,41 @@
                      C 35.05 44 44 35.05 44 24 
                      C 44 19.3 42.5809627 15.1645919 39.7428882 11.5937758
                    " 
-                   transform="translate(-2.000000, -2.000000)"></path>
+                  transform="translate(-2.000000, -2.000000)"
+                ></path>
               </svg>
           </div>
         </label>
         <div id="checkbox-description" :class="{'active': !isPasswordEnabled}">
           {{ $t('passwordless') }}
         </div>
-      </div>  
-      <div class="textfield-container" id="password-container" v-if="isPasswordEnabled">
-        <input class="textfield" id="password-input" placeholder="Password">
       </div>
-      <div id="log-in-button">
-        {{ $t('login').toUpperCase() }}
+      <div id="photo-container" v-if="currentTab === 'signup'">
+        <i class="fas fa-camera"></i>
       </div>
-      <div id="alternative-log-in">
-        {{ $t('alternative-log-in') }}
+      <div class="textfield-container" v-if="currentTab === 'signup'">
+        <input v-model="username" class="textfield" :placeholder="$t('username')">
       </div>
-      <div id="alternative-log-in-buttons">
-        <div id="facebook" class="alternative-log-in-button">
+      <div class="textfield-container" v-if="currentTab === 'signup'">
+        <input v-model="email" class="textfield" :placeholder="$t('email')">
+      </div>
+      <div class="textfield-container" v-if="currentTab === 'signup'">
+        <input v-model="phone" class="textfield" :placeholder="$t('phone-number-optional')">
+      </div>
+      <div class="textfield-container" v-if="isPasswordEnabled">
+        <input v-model="password" class="textfield" :placeholder="$t('password')">
+      </div>
+      <div id="auth-button" @click="auth">
+        {{ $t(currentTab).toUpperCase() }}
+      </div>
+      <div id="alternative-auth">
+        {{ $t('alternative-' + currentTab) }}
+      </div>
+      <div id="alternative-auth-buttons">
+        <div id="facebook" class="alternative-auth-button">
           <i class="fab fa-facebook-square"></i>
         </div>
-        <div id="google" class="alternative-log-in-button">
+        <div id="google" class="alternative-auth-button">
           <i class="fab fa-google"></i>
         </div>
       </div>
@@ -115,6 +126,16 @@ export default class Auth extends Vue {
   private currentTab = 'login';
   private isPasswordEnabled = true;
   
+  private user = '';
+  private password = '';
+  private username = '';
+  private email = '';
+  private phone = '';
+ 
+  private auth() {
+
+  }
+
   private signup() {
     const email = prompt("email")!;
     const pass = prompt("pass")!;
@@ -189,6 +210,7 @@ $color-dark: #656565;
 #buttons {
   display: flex;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 #buttons div {
@@ -230,10 +252,7 @@ $color-dark: #656565;
 
 .textfield-container {
   width: 60%;
-}
-
-#user-container {
-  margin-top: 20px;
+  margin: 10px 0;
 }
 
 #checkbox {
@@ -259,7 +278,7 @@ button:focus {
 }
 
 #toggleButton {
-  margin: 15px;
+  margin: 10px 15px;
   cursor: pointer;
   display: block;
   transform-origin: 50% 50%;
@@ -398,7 +417,26 @@ button:focus {
   }
 }
 
-#log-in-button {
+#photo-container {
+  color: $color-dark;
+  font-size: 30px;
+  border: 2px solid $color-dark;
+  width: 75px;
+  height: 75px;
+  border-radius: 37.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+#photo-container:hover {
+  color: $color;
+  border-color: $color;
+}
+
+#auth-button {
   color: #1A2328;
   cursor: pointer;
   font-family: 'Montserrat';
@@ -409,17 +447,14 @@ button:focus {
   padding: 10px;
   border-radius: 1000px;
   text-align: center;
+  margin-top: 20px;
 }
 
-#password-container {
-  margin-bottom: 20px;
-}
-
-#log-in-button:hover {
+#auth-button:hover {
   background-color: $color;
 }
 
-#alternative-log-in {
+#alternative-auth {
   font-family: 'Montserrat';
   font-weight: 600;
   color: $color;
@@ -427,13 +462,13 @@ button:focus {
   margin: 20px 0;
 }
 
-#alternative-log-in-buttons {
+#alternative-auth-buttons {
   display: flex;
   width: 60%;
   justify-content: space-between;
 }
 
-.alternative-log-in-button {
+.alternative-auth-button {
   width: 50%;
   border-radius: 1000px;
   cursor: pointer;
