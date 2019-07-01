@@ -221,6 +221,7 @@ $color-dark: #656565;
   caret-color: $color;
   font-family: 'Montserrat';
   font-weight: 600;
+  color: $color;
 }
 
 .textfield:focus {
