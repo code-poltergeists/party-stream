@@ -10,10 +10,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import io from 'socket.io-client';
 
 @Component
 export default class YtPlayer extends Vue {
   @Prop() private msg!: string;
+	private socket:any =  io('localhost:3000');
 
   get player() {
     // @ts-ignore
@@ -21,12 +23,16 @@ export default class YtPlayer extends Vue {
   }
 
   public playing() {
-    console.log("hey I started");
+		this.socket.emit('PLAYING', {
+			status: 1,
+		})
   }
 
   public paused() {
-    console.log("hey I stopped");
-  }
+  	this.socket.emit('PAUSED',{
+			status: 1,
+		})
+	}
 }
 </script>
 
