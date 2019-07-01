@@ -12,7 +12,13 @@ http.listen(3000, function(){
 });
 
 io.on('connection', function(socket){
-	console.log('a user connected');
+	console.log('User: ' + socket.id + ' has connected');
+	socket.on('PLAYING', function(data){
+		console.log('Player just started');
+	});
+	socket.on('PAUSED', function(data) {
+		console.log('Player just paused');
+	});
 });
 
 exports.app = functions.https.onRequest(app);
