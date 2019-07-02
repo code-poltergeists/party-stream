@@ -44,7 +44,7 @@
         />
       </svg>
     </div>
-    <div id="right">
+    <div id="right" :class="{'disabled': isLoading}">
       <p id="landing-text" v-html="$t('landing-text')"></p>
       <div id="buttons">
         <div id="login" :class="{'active': currentTab === 'login'}" @click="currentTab = 'login'">
@@ -99,7 +99,10 @@
         <input v-model="password" class="textfield" :placeholder="$t('password')">
       </div>
       <div id="auth-button" @click="auth">
-        {{ $t(currentTab).toUpperCase() }}
+        <LoadingSpinner v-if="isLoading" id="spinner" />
+        <div v-else id="button-text">
+          {{ $t(currentTab).toUpperCase() }}
+        </div>
       </div>
       <div id="alternative-auth">
         {{ $t('alternative-' + currentTab) }}
@@ -119,8 +122,13 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import AuthService from '../../services/auth-service';
+import LoadingSpinner from '../items/LoadingSpinner.vue';
 
-@Component
+@Component({
+  components: {
+    LoadingSpinner,
+  },
+})
 export default class Auth extends Vue {
   private authService = new AuthService();
   private currentTab = 'login';
@@ -132,8 +140,13 @@ export default class Auth extends Vue {
   private email = '';
   private phone = '';
  
-  private auth() {
+  private isLoading = false;
 
+  private auth() {
+    this.isLoading = true;
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 2000);
   }
 
   private signup() {
@@ -195,6 +208,11 @@ $color-dark: #656565;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+.disabled {
+  pointer-events: none;
+  user-select: none;
 }
 
 #landing-text {
@@ -415,6 +433,10 @@ button:focus {
     opacity: 0;
     transform: scale(.3) translate(-50%, -50%) rotate(-45deg);
   }
+} 
+
+#spinner {
+  height: 100%;
 }
 
 #photo-container {
@@ -446,7 +468,9 @@ button:focus {
   width: 60%;
   padding: 10px;
   border-radius: 1000px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-top: 20px;
 }
 

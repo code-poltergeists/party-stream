@@ -1,6 +1,6 @@
 <template>
-  <div class="spinner">
-    <div class="bars">
+  <div id="spinner">
+    <div id="bars">
       <div class="bar"></div>
       <div class="bar"></div>
       <div class="bar"></div>
@@ -11,6 +11,9 @@
       <div class="bar"></div>
       <div class="bar"></div>
       <div class="bar"></div>
+    </div>
+    <div class="text">
+      {{ $t('loading') }}
     </div>
   </div>
 </template>
@@ -25,17 +28,20 @@ export default class LoadingSpinner extends Vue {}
 <style scoped lang="scss">
 $color: #45B885;
 
-.bars {
+#spinner {
+  display: flex;
+}
+
+#bars {
   height: 30px;
   width: 40px;
-  position: absolute;
+  display: flex;
+  align-items: flex-end;
 }
 
 .bar {
   background: $color;
-  bottom: 1px;
   height: 3px;
-  position: absolute;
   width: 3px;
   animation: sound 0ms -800ms linear infinite alternate;
 }
@@ -52,43 +58,33 @@ $color: #45B885;
 }
 
 .bar:nth-child(1) {
-  left: 1px;
   animation-duration: 474ms;
 }
 .bar:nth-child(2) {
-  left: 5px;
   animation-duration: 433ms;
 }
 .bar:nth-child(3) {
-  left: 9px;
   animation-duration: 407ms;
 }
 .bar:nth-child(4) {
-  left: 13px;
   animation-duration: 458ms;
 }
 .bar:nth-child(5) {
-  left: 17px;
   animation-duration: 400ms;
 }
 .bar:nth-child(6) {
-  left: 21px;
   animation-duration: 427ms;
 }
 .bar:nth-child(7) {
-  left: 25px;
   animation-duration: 441ms;
 }
 .bar:nth-child(8) {
-  left: 29px;
   animation-duration: 419ms;
 }
 .bar:nth-child(9) {
-  left: 33px;
   animation-duration: 487ms;
 }
 .bar:nth-child(10) {
-  left: 37px;
   animation-duration: 442ms;
 }
 </style>

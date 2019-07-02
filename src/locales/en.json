@@ -31,5 +31,6 @@
   "alternative-signup": "or sign up with:",
   "email": "Email",
   "phone-number-optional": "Phone number (optional)",
-  "auth-methods": "@username/email/phone #"
+  "auth-methods": "@username/email/phone #",
+  "loading": "Loading..."
 }
