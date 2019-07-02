@@ -24,5 +24,12 @@
   "login": "Log in",
   "signup": "Sign up",
   "passwordless": "Enable passwordless sign in",
-  "alternative-log-in": "or, log in using:"
+  "alternative-log-in": "or, log in using:",
+  "password": "Password",
+  "username": "@username",
+  "alternative-login": "or log in with:",
+  "alternative-signup": "or sign up with:",
+  "email": "Email",
+  "phone-number-optional": "Phone number (optional)",
+  "auth-methods": "@username/email/phone #"
 }
