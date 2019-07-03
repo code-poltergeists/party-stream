@@ -11,13 +11,35 @@ import AuthService from './services/auth-service';
 
 Vue.use(Router);
 
+function handleAuth(next: Function, routeIfTrue: string | null, routeIfFalse: string | null) {
+  const authService = new AuthService();
+  authService.isAuthenticated$.subscribe(value => {
+    if (value === true) {
+      routeIfTrue !== null ? next(routeIfTrue) : next();
+    } else if (value === false) {
+      routeIfFalse !== null ? next(routeIfFalse) : next();
+    } else {
+      // should it do something when null?
+    }
+  });
+}
+
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/',
+      beforeEnter: (to, from, next) => {
+        handleAuth(next, '/dashboard', '/auth');
+      }
+    },
+    {
       path: '/dashboard',
       component: Layout,
+      beforeEnter: (to, from, next) => {
+        handleAuth(next, null, '/auth');
+      },
       children: [
         {
           path: '/',
@@ -49,26 +71,18 @@ const router = new Router({
     {
       path: '/auth',
       name: 'auth',
-      component: Auth
+      component: Auth,
+      beforeEnter: (to, from, next) => {
+        handleAuth(next, '/dashboard', null);
+      },
+    },
+    {
+      path: '*',
+      beforeEnter: (to, from, next) => {
+        handleAuth(next, '/dashboard', '/auth');
+      }
     }
   ],
-});
-
-router.beforeEach((to, from, next) => {
-  const authService = new AuthService();
-  authService.isAuthenticated$.subscribe(value => {
-    if (value === true) {
-      if (from.fullPath !== '/dashboard') {
-        next('/dashboard');
-      }
-    } else if (value === false) {
-      if (from.fullPath !== '/auth') {
-        next('/auth');
-      }
-    } else {
-      // should it do something when null?
-    }
-  });
 });
 
 export default router;
