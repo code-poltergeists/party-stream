@@ -7,17 +7,14 @@ import Friends from './components/pages/Friends.vue';
 import Settings from './components/pages/Settings.vue';
 import Auth from './components/pages/Auth.vue';
 import Layout from './components/structure/Layout.vue';
+import AuthService from './services/auth-service';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    {
-      path: '/',
-      redirect: '/dashboard'
-    },
     {
       path: '/dashboard',
       component: Layout,
@@ -56,3 +53,22 @@ export default new Router({
     }
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  const authService = new AuthService();
+  authService.isAuthenticated$.subscribe(value => {
+    if (value === true) {
+      if (from.fullPath !== '/dashboard') {
+        next('/dashboard');
+      }
+    } else if (value === false) {
+      if (from.fullPath !== '/auth') {
+        next('/auth');
+      }
+    } else {
+      // should it do something when null?
+    }
+  });
+});
+
+export default router;

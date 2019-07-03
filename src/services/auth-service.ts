@@ -5,7 +5,7 @@ import firebase from 'firebase';
 export default class AuthService {
   static instance: AuthService;
 
-  private isAuthenticated$ = new BehaviorSubject<boolean | null>(null);
+  public isAuthenticated$ = new BehaviorSubject<boolean | null>(null);
 
   private subscription: firebase.Unsubscribe | null = null;
 

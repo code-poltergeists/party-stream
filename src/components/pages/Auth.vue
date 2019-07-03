@@ -96,7 +96,7 @@
         <input v-model="phone" class="textfield" :placeholder="$t('phone-number-optional')">
       </div>
       <div class="textfield-container" v-if="isPasswordEnabled">
-        <input v-model="password" class="textfield" :placeholder="$t('password')">
+        <input type="password" v-model="password" class="textfield" :placeholder="$t('password')">
       </div>
       <div id="auth-button" @click="auth">
         <LoadingSpinner v-if="isLoading" id="spinner" />
@@ -144,9 +144,24 @@ export default class Auth extends Vue {
 
   private auth() {
     this.isLoading = true;
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 2000);
+    if (this.currentTab === 'login') {
+      if (this.isPasswordEnabled) {
+		    if(this.isEmail(this.user)) {
+        	this.authService.signIn(this.user, this.password).then(() => {
+					  alert("Logged in");
+						this.isLoading = false;
+       	  }).catch(e => {
+            alert("Error: " + e.toString());
+            this.isLoading = false;
+          });
+			  }
+      }
+    }
+  }
+
+  private isEmail(email: string) {
+  	const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase()); 
   }
 
   private signup() {
