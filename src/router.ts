@@ -5,6 +5,7 @@ import Inbox from './components/pages/Inbox.vue';
 import Rooms from './components/pages/Rooms.vue';
 import Friends from './components/pages/Friends.vue';
 import Settings from './components/pages/Settings.vue';
+import YtPlayer from './components/YtPlayer.vue';
 
 Vue.use(Router);
 
@@ -36,6 +37,11 @@ export default new Router({
       path: '/settings',
       name: 'settings',
       component: Settings,
+    },
+    {
+      path: '/ytplayer',
+      name: 'ytplayer',
+      component: YtPlayer,
     },
   ],
 });
