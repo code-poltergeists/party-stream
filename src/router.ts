@@ -24,7 +24,7 @@ function handleAuth(next: Function, routeIfTrue: string | null, routeIfFalse: st
   });
 }
 
-const router = new Router({
+export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -84,5 +84,3 @@ const router = new Router({
     }
   ],
 });
-
-export default router;
