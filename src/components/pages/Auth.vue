@@ -3,13 +3,7 @@
     <div id="left">
       <svg height="500" width="600">
         <defs>
-          <linearGradient
-            id="gradient" 
-            x1="0%" 
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
+          <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" stop-color="#7F18B6" />
             <stop offset="12.5%" stop-color="#533E87" stop-opacity="0.8" />
             <stop offset="32.5%" stop-color="#315B5B" stop-opacity="0.64" />
@@ -44,27 +38,31 @@
         />
       </svg>
     </div>
-    <div id="right" :class="{'disabled': isLoading}">
+    <div id="right">
       <p id="landing-text" v-html="$t('landing-text')"></p>
       <div id="buttons">
-        <div id="login" :class="{'active': currentTab === 'login'}" @click="currentTab = 'login'">
-          {{ $t('login').toUpperCase() }}
-        </div>
+        <div
+          id="login"
+          :class="{'active': currentTab === 'login'}"
+          @click="currentTab = 'login'"
+        >{{ $t('login').toUpperCase() }}</div>
         <i class="fas fa-circle" id="circle"></i>
-        <div id="signup" :class="{'active': currentTab === 'signup'}" @click="currentTab = 'signup'">
-          {{ $t('signup').toUpperCase() }}
-        </div>
+        <div
+          id="signup"
+          :class="{'active': currentTab === 'signup'}"
+          @click="currentTab = 'signup'"
+        >{{ $t('signup').toUpperCase() }}</div>
       </div>
       <div class="textfield-container" v-if="currentTab === 'login'">
-        <input v-model="user" class="textfield" :placeholder="$t('auth-methods')">
+        <input v-model="user" class="textfield" :placeholder="placeholder" />
       </div>
       <div id="checkbox-container" v-if="currentTab === 'login'">
         <label id="toggleButton">
-          <input type="checkbox" @change="isPasswordEnabled = !isPasswordEnabled">
-            <div>
-              <svg viewBox="0 0 44 44">
-                <path 
-                  d="
+          <input type="checkbox" @change="isPasswordEnabled = !isPasswordEnabled" />
+          <div>
+            <svg viewBox="0 0 44 44">
+              <path
+                d="
                      M 14 24 
                      L 21 31 
                      L 39.7428882 11.5937758 
@@ -73,40 +71,40 @@
                      C 4 35.05 12.95, 44 24 44 
                      C 35.05 44 44 35.05 44 24 
                      C 44 19.3 42.5809627 15.1645919 39.7428882 11.5937758
-                   " 
-                  transform="translate(-2.000000, -2.000000)"
-                ></path>
-              </svg>
+                   "
+                transform="translate(-2.000000, -2.000000)"
+              />
+            </svg>
           </div>
         </label>
-        <div id="checkbox-description" :class="{'active': !isPasswordEnabled}">
-          {{ $t('passwordless') }}
-        </div>
+        <div
+          id="checkbox-description"
+          :class="{'active': !isPasswordEnabled}"
+        >{{ $t('passwordless') }}</div>
       </div>
       <div id="photo-container" v-if="currentTab === 'signup'">
         <i class="fas fa-camera"></i>
       </div>
       <div class="textfield-container" v-if="currentTab === 'signup'">
-        <input v-model="username" class="textfield" :placeholder="$t('username')">
+        <input v-model="username" class="textfield" :placeholder="$t('username')" />
       </div>
       <div class="textfield-container" v-if="currentTab === 'signup'">
-        <input v-model="email" class="textfield" :placeholder="$t('email')">
+        <input v-model="email" class="textfield" :placeholder="$t('email')" />
       </div>
       <div class="textfield-container" v-if="currentTab === 'signup'">
-        <input v-model="phone" class="textfield" :placeholder="$t('phone-number-optional')">
+        <input v-model="phone" class="textfield" :placeholder="$t('phone-number-optional')" />
       </div>
       <div class="textfield-container" v-if="isPasswordEnabled">
-        <input type="password" v-model="password" class="textfield" :placeholder="$t('password')">
+        <input type="password" v-model="password" class="textfield" :placeholder="$t('password')" />
       </div>
-      <div id="auth-button" @click="auth">
+      <div id="auth-button" @click="auth" :class="{'disabled': isLoading}">
         <LoadingSpinner v-if="isLoading" id="spinner" />
-        <div v-else id="button-text">
-          {{ $t(currentTab).toUpperCase() }}
-        </div>
+        <div v-else id="button-text">{{ $t(currentTab).toUpperCase() }}</div>
       </div>
-      <div id="alternative-auth">
-        {{ $t('alternative-' + currentTab) }}
+      <div id="recaptcha-center" :class="{'hidden': confirmationResult !== null}">
+        <div id="recaptcha-container"></div>
       </div>
+      <div id="alternative-auth">{{ $t('alternative-' + currentTab) }}</div>
       <div id="alternative-auth-buttons">
         <div id="facebook" class="alternative-auth-button">
           <i class="fab fa-facebook-square"></i>
@@ -120,54 +118,130 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import AuthService from '../../services/auth-service';
-import LoadingSpinner from '../items/LoadingSpinner.vue';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import AuthService from "../../services/auth-service";
+import LoadingSpinner from "../items/LoadingSpinner.vue";
+import * as firebase from "firebase";
 
 @Component({
   components: {
-    LoadingSpinner,
-  },
+    LoadingSpinner
+  }
 })
 export default class Auth extends Vue {
   private authService = new AuthService();
-  private currentTab = 'login';
+  private currentTab = "login";
   private isPasswordEnabled = true;
-  
-  private user = '';
-  private password = '';
-  private username = '';
-  private email = '';
-  private phone = '';
- 
+
+  private user = "";
+  private password = "";
+  private username = "";
+  private email = "";
+  private phone = "";
+
   private isLoading = false;
+
+  private placeholder = "";
+
+  private confirmationResult: any | null = null;
+
+  created() {
+    if (this.authService.isLoginLink(window.location.href)) {
+      const email = window.localStorage.getItem("emailForSignIn");
+      if (email) {
+        this.authService
+          .finishLinkLogIn(email, window.location.href)
+          .then(_ => {
+            window.location.reload();
+          })
+          .catch(e => console.log(e));
+      }
+    }
+  }
+
+  mounted() {
+    (window as any).recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+      "recaptcha-container"
+    );
+    this.placeholder = this.$t("auth-methods") as string;
+  }
 
   private auth() {
     this.isLoading = true;
-    if (this.currentTab === 'login') {
+    if (this.currentTab === "login") {
       if (this.isPasswordEnabled) {
-		    if(this.isEmail(this.user)) {
-        	this.authService.signIn(this.user, this.password).then(() => {
-					  alert("Logged in");
-						this.isLoading = false;
-       	  }).catch(e => {
-            alert("Error: " + e.toString());
-            this.isLoading = false;
-          });
-			  }
+        if (this.isEmail(this.user)) {
+          this.authService
+            .signIn(this.user, this.password)
+            .then(() => {
+              this.isLoading = false;
+              window.location.reload();
+            })
+            .catch(e => {
+              this.isLoading = false;
+            });
+        }
+      } else {
+        if (this.confirmationResult) {
+          if (this.isCode(this.user)) {
+            this.isLoading = true;
+            this.confirmationResult
+              .confirm(this.user)
+              .then((_: any) => {
+                this.isLoading = false;
+                window.location.reload();
+              })
+              .catch((e: any) => console.log(e));
+          }
+        } else {
+          if (this.isEmail(this.user)) {
+            this.authService
+              .sendLogInLink(this.user)
+              .then(_ => {
+                console.log("done");
+                window.localStorage.setItem("emailForSignIn", this.user);
+                this.isLoading = false;
+              })
+              .catch(e => console.log(e));
+          } else if (this.isPhoneNumber(this.user)) {
+            this.authService
+              .signInWithPhoneNumber(this.user, (window as any)
+                .recaptchaVerifier as any)
+              .then(result => {
+                this.isLoading = false;
+                this.placeholder = this.$t("verification-code") as string;
+                this.user = '';
+                this.confirmationResult = result;
+              })
+              .catch(e => console.log(e));
+          }
+        }
       }
     }
   }
 
   private isEmail(email: string) {
-  	const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase()); 
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+  private isPhoneNumber(phoneNumber: string) {
+    const re = /^[+]?(\d{1,2})?[\s.-]?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+    return re.test(String(phoneNumber).toLowerCase());
+  }
+
+  private isCode(code: string) {
+    const re = /^\d+$/;
+    return re.test(String(code).toLowerCase()) && code.length === 6;
   }
 
   private signup() {
     const email = prompt("email")!;
     const pass = prompt("pass")!;
-    this.authService.signUp(email, pass, '', '', '').then(_ => console.log("done")).catch(e => console.log(e));
+    this.authService
+      .signUp(email, pass, "", "", "")
+      .then(_ => console.log("done"))
+      .catch(e => console.log(e));
   }
 
   private check() {
@@ -175,30 +249,40 @@ export default class Auth extends Vue {
   }
 
   private logout() {
-    this.authService.logOut().then(_ => console.log("done?????")).catch(e => console.log(e));
+    this.authService
+      .logOut()
+      .then(_ => console.log("done?????"))
+      .catch(e => console.log(e));
   }
 
   private signin() {
     const email = prompt("email")!;
     const pass = prompt("pass")!;
-    this.authService.signIn(email, pass).then(_ => console.log("done")).catch(e => console.log(e));
-  }
-
-  private signinfancy() {
-    const email = prompt("email")!;
-    this.authService.sendLogInLink(email).then(_ => {
-      console.log("done");
-      window.localStorage.setItem('emailForSignIn', email);
-      const link = prompt("link")!;
-      this.authService.finishLinkLogIn(window.localStorage.getItem("emailForSignIn")!, link).then(_ => console.log("doneeee")).catch(e => console.log(e));
-    }).catch(e => console.log(e));
+    this.authService
+      .signIn(email, pass)
+      .then(_ => console.log("done"))
+      .catch(e => console.log(e));
   }
 }
 </script>
 
 <style scoped lang="scss">
-$color: #E3E3E3;
+$color: #e3e3e3;
 $color-dark: #656565;
+
+#recaptcha-center {
+  text-align: center;
+  width: 60%;
+  margin-top: 20px;
+}
+
+#recaptcha-container {
+  display: inline-block;
+}
+
+.hidden {
+  display: none;
+}
 
 #layout {
   display: flex;
@@ -231,7 +315,7 @@ $color-dark: #656565;
 }
 
 #landing-text {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 700;
   font-size: 50px;
   color: $color;
@@ -247,7 +331,7 @@ $color-dark: #656565;
 }
 
 #buttons div {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 700;
   font-size: 25px;
   color: #656565;
@@ -264,7 +348,7 @@ $color-dark: #656565;
 }
 
 .active {
-  color: $color !important; 
+  color: $color !important;
 }
 
 .textfield {
@@ -274,7 +358,7 @@ $color-dark: #656565;
   padding: 15px;
   border-radius: 1000px;
   caret-color: $color;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 600;
   color: $color;
 }
@@ -293,11 +377,11 @@ $color-dark: #656565;
 }
 
 #checkbox-description {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 600;
   color: $color-dark;
 }
- 
+
 input:focus,
 select:focus,
 textarea:focus,
@@ -316,7 +400,7 @@ button:focus {
   display: block;
   transform-origin: 50% 50%;
   transform-style: preserve-3d;
-  transition: transform .14s ease;
+  transition: transform 0.14s ease;
   &:active {
     transform: rotateX(30deg);
   }
@@ -345,11 +429,11 @@ button:focus {
         z-index: 1;
         stroke-dashoffset: 162.6 - 38;
         stroke-dasharray: 0 162.6 133 (162.6 - 133);
-        transition: all .4s ease 0s;
+        transition: all 0.4s ease 0s;
       }
       &:before,
       &:after {
-        content: '';
+        content: "";
         width: 3px;
         height: 16px;
         background: $color-dark;
@@ -360,13 +444,13 @@ button:focus {
       }
       &:before {
         opacity: 0;
-        transform: scale(.3) translate(-50%, -50%) rotate(45deg);
-        animation: bounceInBefore .3s linear forwards .3s;
+        transform: scale(0.3) translate(-50%, -50%) rotate(45deg);
+        animation: bounceInBefore 0.3s linear forwards 0.3s;
       }
       &:after {
         opacity: 0;
-        transform: scale(.3) translate(-50%, -50%) rotate(-45deg);
-        animation: bounceInAfter .3s linear forwards .3s;
+        transform: scale(0.3) translate(-50%, -50%) rotate(-45deg);
+        animation: bounceInAfter 0.3s linear forwards 0.3s;
       }
     }
     &:checked + div {
@@ -374,17 +458,17 @@ button:focus {
         stroke: $color;
         stroke-dashoffset: 162.6;
         stroke-dasharray: 0 162.6 28 (162.6 - 28);
-        transition: all .4s ease .2s;
+        transition: all 0.4s ease 0.2s;
       }
       &:before {
         opacity: 0;
-        transform: scale(.3) translate(-50%, -50%) rotate(45deg);
-        animation: bounceInBeforeDont .3s linear forwards 0s;
+        transform: scale(0.3) translate(-50%, -50%) rotate(45deg);
+        animation: bounceInBeforeDont 0.3s linear forwards 0s;
       }
       &:after {
         opacity: 0;
-        transform: scale(.3) translate(-50%, -50%) rotate(-45deg);
-        animation: bounceInAfterDont .3s linear forwards 0s;
+        transform: scale(0.3) translate(-50%, -50%) rotate(-45deg);
+        animation: bounceInAfterDont 0.3s linear forwards 0s;
       }
     }
   }
@@ -393,17 +477,17 @@ button:focus {
 @keyframes bounceInBefore {
   0% {
     opacity: 0;
-    transform: scale(.3) translate(-50%, -50%) rotate(45deg);
+    transform: scale(0.3) translate(-50%, -50%) rotate(45deg);
   }
-  50%{
+  50% {
     opacity: 0.9;
     transform: scale(1.1) translate(-50%, -50%) rotate(45deg);
   }
-  80%{
+  80% {
     opacity: 1;
-    transform: scale(.89) translate(-50%, -50%) rotate(45deg);
+    transform: scale(0.89) translate(-50%, -50%) rotate(45deg);
   }
-  100%{
+  100% {
     opacity: 1;
     transform: scale(1) translate(-50%, -50%) rotate(45deg);
   }
@@ -412,17 +496,17 @@ button:focus {
 @keyframes bounceInAfter {
   0% {
     opacity: 0;
-    transform: scale(.3) translate(-50%, -50%) rotate(-45deg);
+    transform: scale(0.3) translate(-50%, -50%) rotate(-45deg);
   }
-  50%{
+  50% {
     opacity: 0.9;
     transform: scale(1.1) translate(-50%, -50%) rotate(-45deg);
   }
-  80%{
+  80% {
     opacity: 1;
-    transform: scale(.89) translate(-50%, -50%) rotate(-45deg);
+    transform: scale(0.89) translate(-50%, -50%) rotate(-45deg);
   }
-  100%{
+  100% {
     opacity: 1;
     transform: scale(1) translate(-50%, -50%) rotate(-45deg);
   }
@@ -433,9 +517,9 @@ button:focus {
     opacity: 1;
     transform: scale(1) translate(-50%, -50%) rotate(45deg);
   }
-  100%{
+  100% {
     opacity: 0;
-    transform: scale(.3) translate(-50%, -50%) rotate(45deg);
+    transform: scale(0.3) translate(-50%, -50%) rotate(45deg);
   }
 }
 
@@ -444,11 +528,11 @@ button:focus {
     opacity: 1;
     transform: scale(1) translate(-50%, -50%) rotate(-45deg);
   }
-  100%{
+  100% {
     opacity: 0;
-    transform: scale(.3) translate(-50%, -50%) rotate(-45deg);
+    transform: scale(0.3) translate(-50%, -50%) rotate(-45deg);
   }
-} 
+}
 
 #spinner {
   height: 100%;
@@ -474,9 +558,9 @@ button:focus {
 }
 
 #auth-button {
-  color: #1A2328;
+  color: #1a2328;
   cursor: pointer;
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-size: 25px;
   font-weight: 600;
   background-color: $color-dark;
@@ -494,7 +578,7 @@ button:focus {
 }
 
 #alternative-auth {
-  font-family: 'Montserrat';
+  font-family: "Montserrat";
   font-weight: 600;
   color: $color;
   font-size: 20px;
@@ -517,7 +601,7 @@ button:focus {
 }
 
 #facebook {
-  background-color: #334F8D;
+  background-color: #334f8d;
   color: white;
   margin-right: 10px;
 }

@@ -32,5 +32,6 @@
   "email": "Email",
   "phone-number-optional": "Phone number (optional)",
   "auth-methods": "@username/email/phone #",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "verification-code": "Verification code"
 }

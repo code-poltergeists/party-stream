@@ -55,18 +55,26 @@ export default class AuthService {
     return this.isAuthenticated$.value;
   }
 
+  isLoginLink(link: string) {
+    return firebase.auth().isSignInWithEmailLink(link);
+  }
+
   async logOut(): Promise<any> {
     return firebase.auth().signOut();
   }
 
   async sendLogInLink(email: string): Promise<void> {
     return firebase.auth().sendSignInLinkToEmail(email, {
-      url: 'https://party-stream-1321f.web.app',
+      url: 'https://party-stream-1321f.firebaseapp.com',
       handleCodeInApp: true,
     });
   }
 
   async finishLinkLogIn(email: string, link: string): Promise<any> {
     return firebase.auth().signInWithEmailLink(email, link);
+  }
+
+  async signInWithPhoneNumber(phoneNumber: string, appVerifier: any) {
+    return firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier);
   }
 }
