@@ -121,7 +121,8 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import AuthService from "../../services/auth-service";
 import LoadingSpinner from "../items/LoadingSpinner.vue";
-import * as firebase from "firebase";
+import * as firebase from "firebase/app";
+import "firebase/auth";
 
 @Component({
   components: {
@@ -210,7 +211,7 @@ export default class Auth extends Vue {
               .then(result => {
                 this.isLoading = false;
                 this.placeholder = this.$t("verification-code") as string;
-                this.user = '';
+                this.user = "";
                 this.confirmationResult = result;
               })
               .catch(e => console.log(e));

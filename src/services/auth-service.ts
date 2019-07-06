@@ -1,6 +1,8 @@
 import User from '@/models/User';
 import { BehaviorSubject } from 'rxjs';
-import firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/firestore';
 
 export default class AuthService {
   static instance: AuthService;
@@ -65,7 +67,7 @@ export default class AuthService {
 
   async sendLogInLink(email: string): Promise<void> {
     return firebase.auth().sendSignInLinkToEmail(email, {
-      url: 'https://party-stream-1321f.firebaseapp.com',
+      url: 'https://party-stream-1321f.firebaseapp.com/auth',
       handleCodeInApp: true,
     });
   }

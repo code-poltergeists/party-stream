@@ -5,7 +5,7 @@ import router from './router';
 import i18n from './i18n';
 import Rx from 'rxjs/Rx';
 import VueRx from 'vue-rx';
-import firebase from 'firebase';
+import * as firebase from 'firebase/app';
 import { firestorePlugin } from 'vuefire';
 
 Vue.use(VueRx, Rx);
