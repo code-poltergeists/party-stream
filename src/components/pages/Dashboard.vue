@@ -8,90 +8,103 @@
     </div>
     <div class="row no-gutters">
       <div class="col-6 right">
-        <Button icon="fas fa-plus-circle" text="create-room" @click.native="openDialog('create-room')"></Button>
+        <Button
+          icon="fas fa-plus-circle"
+          text="create-room"
+          @click.native="openDialog('create-room')"
+        ></Button>
       </div>
       <div class="col-6 left">
         <Button icon="fas fa-sign-in-alt" text="join-room" @click.native="openDialog('join-room')"></Button>
       </div>
       <div class="col-12 center">
-        <Button icon="fas fa-user-friends" text="add-friends" @click.native="openDialog('invite-friends')"></Button>
+        <Button
+          icon="fas fa-user-friends"
+          text="add-friends"
+          @click.native="openDialog('invite-friends')"
+        ></Button>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import Button from '../items/Button.vue';
-import RoomService from '@/services/room-service';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import Button from "../items/Button.vue";
+import RoomService from "@/services/room-service";
 
 @Component({
   components: {
-    Button,
-  },
+    Button
+  }
 })
 export default class Dashboard extends Vue {
   mounted() {
-    new RoomService().getRoomsForCurrentUser().then(v => console.log(v));
+    new RoomService().isPlayingListener(
+      "fXO5vernUJa2qZg3Qlc6",
+      (isPlaying: boolean) => {
+        console.log(isPlaying);
+      }
+    );
   }
 
   private openDialog(type: string) {
-    let stepsArray: { name: string, action: Function }[] = [];
-    let buttonIcon: string = '';
-    let buttonText: string = '';
-    let title: string = '';
-    let component: string = '';
+    let stepsArray: { name: string; action: Function }[] = [];
+    let buttonIcon: string = "";
+    let buttonText: string = "";
+    let title: string = "";
+    let component: string = "";
     switch (type) {
-      case 'create-room':
+      case "create-room":
         stepsArray = [
           {
-            name: 'name-and-privacy',
+            name: "name-and-privacy",
             action: () => {
-              this.$store.commit('setupDialog', {
-                title: 'name-and-privacy',
-                button: { icon: 'fas fa-arrow-right', text: 'continue' },
-                component: 'CreateRoom1',
+              this.$store.commit("setupDialog", {
+                title: "name-and-privacy",
+                button: { icon: "fas fa-arrow-right", text: "continue" },
+                component: "CreateRoom1",
                 steps: stepsArray
               });
-            },
-          }, 
+            }
+          },
           {
-            name: 'invite-friends',
+            name: "invite-friends",
             action: () => {
-              this.$store.commit('setupDialog', {
-                title: 'invite-friends',
-                button: { icon: 'fas fa-plus-circle', text: 'create-room' },
-                component: 'CreateRoom2',
-                steps: stepsArray
-              });
-            },
-          }
-        ];
-        break;
-      case 'join-room':
-        stepsArray = [
-          {
-            name: 'join-room',
-            action: () => {
-              this.$store.commit('setupDialog', {
-                title: 'join-room',
-                button: { icon: 'fa fa-check', text: 'join' },
-                component: 'JoinRoom',
+              this.$store.commit("setupDialog", {
+                title: "invite-friends",
+                button: { icon: "fas fa-plus-circle", text: "create-room" },
+                component: "CreateRoom2",
                 steps: stepsArray
               });
             }
           }
         ];
         break;
-      case 'invite-friends':
+      case "join-room":
         stepsArray = [
           {
-            name: 'invite-friends',
+            name: "join-room",
             action: () => {
-              this.$store.commit('setupDialog', {
-                title: 'invite-friends',
-                button: { icon: 'fa fa-plus', text: 'add' },
-                component: 'InviteFriends',
+              this.$store.commit("setupDialog", {
+                title: "join-room",
+                button: { icon: "fa fa-check", text: "join" },
+                component: "JoinRoom",
+                steps: stepsArray
+              });
+            }
+          }
+        ];
+        break;
+      case "invite-friends":
+        stepsArray = [
+          {
+            name: "invite-friends",
+            action: () => {
+              this.$store.commit("setupDialog", {
+                title: "invite-friends",
+                button: { icon: "fa fa-plus", text: "add" },
+                component: "InviteFriends",
                 steps: stepsArray
               });
             }
@@ -102,7 +115,7 @@ export default class Dashboard extends Vue {
         break;
     }
     stepsArray[0].action();
-    this.$store.commit('toggleDialogVisibility', true);
+    this.$store.commit("toggleDialogVisibility", true);
   }
 }
 </script>
@@ -133,18 +146,18 @@ export default class Dashboard extends Vue {
 }
 
 .center {
-  display: flex; 
+  display: flex;
   justify-content: center;
 }
 
 .right {
-  display: flex; 
+  display: flex;
   justify-content: flex-end;
   padding-right: 30px;
 }
 
 .left {
-  display: flex; 
+  display: flex;
   justify-content: flex-start;
   padding-left: 30px;
 }

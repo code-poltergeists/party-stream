@@ -16,7 +16,7 @@ export default class RoomService {
     return RoomService.instance;
   }
 
-  async getRoomsForCurrentUser(): Promise<Array<Room> | null> {
+  async getRoomsForCurrentUser(): Promise<Array<Room>> {
     return new Promise<Array<Room>>(async (resolve, reject) => {
       const userSnapshot = await firebase
         .firestore()
@@ -62,5 +62,15 @@ export default class RoomService {
       }
       resolve(rooms);
     });
+  }
+
+  async isPlayingListener(roomId: string, callback: Function) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .onSnapshot(doc => {
+        callback(doc.data()!.isPlaying);
+      });
   }
 }
