@@ -78,13 +78,12 @@ export default new Router({
       },
     },
     {
-<<<<<<< HEAD
       path: '*',
       beforeEnter: (to, from, next) => {
         handleAuth(next, '/dashboard', '/auth');
       }
-    }
-=======
+    },
+    {
       path: '/settings',
       name: 'settings',
       component: Settings,
@@ -94,6 +93,5 @@ export default new Router({
       name: 'ytplayer',
       component: YtPlayer,
     },
->>>>>>> master
   ],
 });
