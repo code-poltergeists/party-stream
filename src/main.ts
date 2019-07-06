@@ -10,6 +10,9 @@ import { firestorePlugin } from 'vuefire';
 
 Vue.use(VueRx, Rx);
 Vue.use(firestorePlugin);
+const VueYoutube = require('vue-youtube').default;
+
+Vue.use(VueYoutube);
 Vue.config.productionTip = false;
 
 firebase.initializeApp({
@@ -25,6 +28,6 @@ firebase.initializeApp({
 new Vue({
   store,
   router,
-  i18n,
+	i18n,
   render: (h) => h(App),
 }).$mount('#app');
