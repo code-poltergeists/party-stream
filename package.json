@@ -9,7 +9,6 @@
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'"
   },
   "dependencies": {
-    "@types/socket.io-client": "^1.4.32",
     "core-js": "^2.6.5",
     "firebase": "^6.2.2",
     "rxjs": "^6.5.2",
