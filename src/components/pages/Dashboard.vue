@@ -23,6 +23,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import Button from '../items/Button.vue';
+import RoomService from '@/services/room-service';
 
 @Component({
   components: {
@@ -30,6 +31,10 @@ import Button from '../items/Button.vue';
   },
 })
 export default class Dashboard extends Vue {
+  mounted() {
+    new RoomService().getRoomsForCurrentUser().then(v => console.log(v));
+  }
+
   private openDialog(type: string) {
     let stepsArray: { name: string, action: Function }[] = [];
     let buttonIcon: string = '';
