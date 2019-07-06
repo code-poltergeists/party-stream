@@ -1,8 +1,8 @@
-import User from '@/models/User';
-import { BehaviorSubject } from 'rxjs';
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
+import User from "@/models/User";
+import { BehaviorSubject } from "rxjs";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
 
 export default class AuthService {
   static instance: AuthService;
@@ -23,14 +23,23 @@ export default class AuthService {
     return AuthService.instance;
   }
 
-  async signUp(email: string, password: string, username: string, name: string, photoUrl: string): Promise<User> {
-    return firebase.auth().createUserWithEmailAndPassword(email, password).then(_ => {
-      let user = new User();
-      user.name = name;
-      user.photoUrl = photoUrl;
-      user.username = username;
-      return user;
-    });
+  async signUp(
+    email: string,
+    password: string,
+    username: string,
+    name: string,
+    photoUrl: string
+  ): Promise<User> {
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(_ => {
+        let user = new User();
+        user.name = name;
+        user.photoUrl = photoUrl;
+        user.username = username;
+        return user;
+      });
   }
 
   async signIn(email: string, password: string): Promise<any> {
@@ -41,14 +50,19 @@ export default class AuthService {
     if (!firebase.auth().currentUser) {
       return null;
     }
-    return firebase.firestore().collection('users').doc(firebase.auth().currentUser!.uid).get().then(doc => {
-      const data = doc.data()!;
-      let user = new User();
-      user.name = data.name;
-      user.photoUrl = data.photoUrl;
-      user.username = data.username;
-      return user;
-    });
+    return firebase
+      .firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser!.uid)
+      .get()
+      .then(doc => {
+        const data = doc.data()!;
+        let user = new User();
+        user.name = data.name;
+        user.photoUrl = data.photoUrl;
+        user.username = data.username;
+        return user;
+      });
   }
 
   get currentUserId(): string {
@@ -69,8 +83,8 @@ export default class AuthService {
 
   async sendLogInLink(email: string): Promise<void> {
     return firebase.auth().sendSignInLinkToEmail(email, {
-      url: 'https://party-stream-1321f.firebaseapp.com/auth',
-      handleCodeInApp: true,
+      url: "https://party-stream-1321f.firebaseapp.com/auth",
+      handleCodeInApp: true
     });
   }
 
