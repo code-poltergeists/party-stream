@@ -10,12 +10,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import io from 'socket.io-client';
 
 @Component
 export default class YtPlayer extends Vue {
   @Prop() private msg!: string;
-  private socket:any =  io('localhost:3000');
   private isPlaying: number = 0;
   private isPaused: number = 0;
 
@@ -34,25 +32,15 @@ export default class YtPlayer extends Vue {
   }
 
   public playing() {
-		this.socket.emit('PLAYING', {
-			status: this.isPlaying,
-		})
+		
   }
 
   public paused() {
-  	this.socket.emit('PAUSED',{
-			status: this.isPaused,
-		})
+  	
   }
   
   mounted() {
-    this.socket.on('PLAYING', (data: any) => {
-      this.playVideo();
-    })
     
-    this.socket.on('PAUSED', (data: any) => {
-      this.pauseVideo();
-    })
   }
 }
 </script>
