@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Layout :class="{blur: $store.state.dialog.isVisible}" />
+    <router-view></router-view>
     <Dialog v-if="$store.state.dialog.isVisible" />
   </div>
 </template>

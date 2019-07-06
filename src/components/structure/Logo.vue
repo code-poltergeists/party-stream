@@ -1,5 +1,5 @@
 <template>
-  <div id="logo-container">
+  <div id="logo-container" @click="signout()">
     <div id="logo">
       <i class="fas fa-stream"></i>
       Party-stream
@@ -9,9 +9,17 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
 
 @Component
-export default class Logo extends Vue {}
+export default class Logo extends Vue {
+  signout() {
+    firebase.auth().signOut().then(_ => {
+      window.location.reload();
+    })
+  }
+}
 </script>
 
 <style scoped lang="scss">
