@@ -10,6 +10,9 @@ export default new Vuex.Store({
       isVisible: false,
       info: {},
     },
+    auth: {
+      restrict: false
+    }
   },
   mutations: {
     changeMenuItem(state, n) {
@@ -23,6 +26,9 @@ export default new Vuex.Store({
         (state.dialog.info as { [_: string]: any })[key] = map[key];
       });
     },
+    restrictRouterForwarding(state, flag) {
+      state.auth.restrict = flag;
+    }
   },
   actions: {
     
