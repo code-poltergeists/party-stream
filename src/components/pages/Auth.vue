@@ -124,7 +124,7 @@
         <div id="facebook" class="alternative-auth-button" @click="facebookAuth">
           <i class="fab fa-facebook-square"></i>
         </div>
-        <div id="google" class="alternative-auth-button">
+        <div id="google" class="alternative-auth-button" @click="googleAuth">
           <i class="fab fa-google"></i>
         </div>
       </div>
@@ -168,6 +168,20 @@ export default class Auth extends Vue {
     this.authService
       .facebookAuth()
       .then(result => {
+        this.currentTab = "complete-signup";
+        const user = result.user!;
+        this.email = user.email!;
+        this.photoString = user.photoURL;
+        this.userId = user.uid;
+      })
+      .catch(e => console.log(e));
+  }
+
+  googleAuth() {
+    this.authService
+      .googleAuth()
+      .then(result => {
+        console.log(result);
         this.currentTab = "complete-signup";
         const user = result.user!;
         this.email = user.email!;

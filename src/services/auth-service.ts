@@ -145,4 +145,12 @@ export default class AuthService {
     store.commit("restrictRouterForwarding", true);
     return firebase.auth().signInWithPopup(provider);
   }
+
+  async googleAuth() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    store.commit("restrictRouterForwarding", true);
+    return firebase.auth().signInWithPopup(provider);
+  }
 }
