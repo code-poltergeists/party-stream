@@ -3,6 +3,7 @@ import "firebase/firestore";
 import AuthService from "./auth-service";
 import Room from "@/models/Room";
 import Video from "@/models/Video";
+import 'firebase/firestore';
 
 export default class RoomService {
   static instance: RoomService;
@@ -40,7 +41,13 @@ export default class RoomService {
           console.log("oh no no room: " + roomId);
         }
         const roomData = roomSnapshot.data()!;
-        let room = new Room();
+        let room = new Room(
+          roomData.id,
+          roomData.roomName,
+          roomData.creationDate,
+          roomData.members,
+          roomData.videos
+        );
         room.id = roomSnapshot.id;
         room.members = roomData.members;
         let videos: Array<Video> = [];
@@ -62,6 +69,18 @@ export default class RoomService {
       }
       resolve(rooms);
     });
+  }
+
+  async createRoom(
+    roomName: string
+  ) {
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .add({
+        roomName: roomName,
+        creationDate: firebase.firestore.FieldValue.serverTimestamp()
+      })
   }
 
   async isPlayingListener(roomId: string, callback: Function) {
