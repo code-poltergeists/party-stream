@@ -40,7 +40,7 @@
     </div>
     <div id="right">
       <p id="landing-text" v-html="$t('landing-text')"></p>
-      <div id="buttons">
+      <div id="buttons" v-if="currentTab !== 'complete-signup'">
         <div
           id="login"
           :class="{'active': currentTab === 'login'}"
@@ -82,19 +82,31 @@
           :class="{'active': !isPasswordEnabled}"
         >{{ $t('passwordless') }}</div>
       </div>
-      <div id="photo-container" v-if="currentTab === 'signup'">
-        <i class="fas fa-camera"></i>
+      <div
+        id="photo-container"
+        v-if="currentTab === 'signup'"
+        @click="startUpload"
+        ref="photoContainer"
+      >
+        <i class="fas fa-camera" v-if="photoString === null"></i>
       </div>
-      <div class="textfield-container" v-if="currentTab === 'signup'">
+      <input type="file" style="display: none" ref="photoInput" @change="uploadPhoto" />
+      <div
+        class="textfield-container"
+        v-if="currentTab === 'signup' || currentTab === 'complete-signup'"
+      >
         <input v-model="username" class="textfield" :placeholder="$t('username')" />
       </div>
       <div class="textfield-container" v-if="currentTab === 'signup'">
         <input v-model="email" class="textfield" :placeholder="$t('email')" />
       </div>
-      <div class="textfield-container" v-if="currentTab === 'signup'">
+      <div
+        class="textfield-container"
+        v-if="currentTab === 'signup' || currentTab === 'complete-signup'"
+      >
         <input v-model="phone" class="textfield" :placeholder="$t('phone-number-optional')" />
       </div>
-      <div class="textfield-container" v-if="isPasswordEnabled">
+      <div class="textfield-container" v-if="isPasswordEnabled && currentTab !== 'complete-signup'">
         <input type="password" v-model="password" class="textfield" :placeholder="$t('password')" />
       </div>
       <div id="auth-button" @click="auth" :class="{'disabled': isLoading}">
@@ -104,12 +116,15 @@
       <div id="recaptcha-center" :class="{'hidden': confirmationResult !== null}">
         <div id="recaptcha-container"></div>
       </div>
-      <div id="alternative-auth">{{ $t('alternative-' + currentTab) }}</div>
-      <div id="alternative-auth-buttons">
-        <div id="facebook" class="alternative-auth-button">
+      <div
+        id="alternative-auth"
+        v-if="currentTab !== 'complete-signup'"
+      >{{ $t('alternative-' + currentTab) }}</div>
+      <div id="alternative-auth-buttons" v-if="currentTab !== 'complete-signup'">
+        <div id="facebook" class="alternative-auth-button" @click="facebookAuth">
           <i class="fab fa-facebook-square"></i>
         </div>
-        <div id="google" class="alternative-auth-button">
+        <div id="google" class="alternative-auth-button" @click="googleAuth">
           <i class="fab fa-google"></i>
         </div>
       </div>
@@ -139,12 +154,61 @@ export default class Auth extends Vue {
   private username = "";
   private email = "";
   private phone = "";
+  private userId = "";
 
   private isLoading = false;
 
   private placeholder = "";
 
   private confirmationResult: any | null = null;
+
+  private photoString: string | null = null;
+
+  facebookAuth() {
+    this.authService
+      .facebookAuth()
+      .then(result => {
+        this.currentTab = "complete-signup";
+        const user = result.user!;
+        this.email = user.email!;
+        this.photoString = user.photoURL;
+        this.userId = user.uid;
+      })
+      .catch(e => console.log(e));
+  }
+
+  googleAuth() {
+    this.authService
+      .googleAuth()
+      .then(result => {
+        console.log(result);
+        this.currentTab = "complete-signup";
+        const user = result.user!;
+        this.email = user.email!;
+        this.photoString = user.photoURL;
+        this.userId = user.uid;
+      })
+      .catch(e => console.log(e));
+  }
+
+  startUpload() {
+    (this.$refs.photoInput as any).click();
+  }
+
+  uploadPhoto() {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      (this.$refs.photoContainer as any).style.backgroundImage =
+        "url('" + reader.result + "')";
+      this.photoString = reader.result as string;
+    };
+    const file = (this.$refs.photoInput as any).files[0];
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      console.log("oh no no photo");
+    }
+  }
 
   created() {
     if (this.authService.isLoginLink(window.location.href)) {
@@ -218,6 +282,24 @@ export default class Auth extends Vue {
           }
         }
       }
+    } else if (this.currentTab === "signup") {
+      this.authService
+        .signUp(
+          this.email,
+          this.password,
+          this.username,
+          this.phone,
+          this.photoString!
+        )
+        .then(_ => console.log("done"))
+        .catch(e => console.log(e));
+    } else if (this.currentTab === "complete-signup") {
+      this.authService
+        .finishSignUp(this.email, this.username, this.phone, this.photoString!, this.userId)
+        .then(_ => {
+          this.$store.commit("restrictRouterForwarding", false);
+          this.authService.isAuthenticated$.next(true);
+        });
     }
   }
 
@@ -551,6 +633,9 @@ button:focus {
   justify-content: center;
   cursor: pointer;
   margin-bottom: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100%;
 }
 
 #photo-container:hover {

@@ -1,8 +1,10 @@
-import User from '@/models/User';
-import { BehaviorSubject } from 'rxjs';
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
+import User from "@/models/User";
+import { BehaviorSubject } from "rxjs";
+import * as firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+import "firebase/storage";
+import store from "../store";
 
 export default class AuthService {
   static instance: AuthService;
@@ -25,14 +27,66 @@ export default class AuthService {
     }
   }
 
-  async signUp(email: string, password: string, username: string, name: string, photoUrl: string): Promise<User> {
-    return firebase.auth().createUserWithEmailAndPassword(email, password).then(_ => {
-      let user = new User();
-      user.name = name;
-      user.photoUrl = photoUrl;
-      user.username = username;
-      return user;
-    });
+  async signUp(
+    email: string,
+    password: string,
+    username: string,
+    phone: string,
+    photoString: string
+  ): Promise<any> {
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then(user => {
+        this.finishSignUp(email, username, phone, photoString, user.user!.uid);
+      });
+  }
+
+  async finishSignUp(
+    email: string,
+    username: string,
+    phone: string,
+    photoString: string,
+    userId: string
+  ) {
+    if (photoString.startsWith("base")) {
+      return firebase
+        .storage()
+        .ref()
+        .child("profilePictures/" + userId + ".png")
+        .putString(photoString, "data_url")
+        .then(task => {
+          return task.ref.getDownloadURL().then(downloadURL => {
+            var map: any = {
+              email: email,
+              username: username,
+              photoUrl: downloadURL
+            };
+            if (phone !== "") {
+              map["phone"] = phone;
+            }
+            return firebase
+              .firestore()
+              .collection("users")
+              .doc(userId)
+              .set(map);
+          });
+        });
+    } else {
+      var map: any = {
+        email: email,
+        username: username,
+        photoUrl: photoString
+      };
+      if (phone !== "") {
+        map["phone"] = phone;
+      }
+      return firebase
+        .firestore()
+        .collection("users")
+        .doc(userId)
+        .set(map);
+    }
   }
 
   async signIn(email: string, password: string): Promise<any> {
@@ -43,14 +97,19 @@ export default class AuthService {
     if (!firebase.auth().currentUser) {
       return null;
     }
-    return firebase.firestore().collection('users').doc(firebase.auth().currentUser!.uid).get().then(doc => {
-      const data = doc.data()!;
-      let user = new User();
-      user.name = data.name;
-      user.photoUrl = data.photoUrl;
-      user.username = data.username;
-      return user;
-    });
+    return firebase
+      .firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser!.uid)
+      .get()
+      .then(doc => {
+        const data = doc.data()!;
+        let user = new User();
+        user.name = data.name;
+        user.photoUrl = data.photoUrl;
+        user.username = data.username;
+        return user;
+      });
   }
 
   get isAuthenticated(): boolean | null {
@@ -67,8 +126,8 @@ export default class AuthService {
 
   async sendLogInLink(email: string): Promise<void> {
     return firebase.auth().sendSignInLinkToEmail(email, {
-      url: 'https://party-stream-1321f.firebaseapp.com/auth',
-      handleCodeInApp: true,
+      url: "https://party-stream-1321f.firebaseapp.com/auth",
+      handleCodeInApp: true
     });
   }
 
@@ -78,5 +137,20 @@ export default class AuthService {
 
   async signInWithPhoneNumber(phoneNumber: string, appVerifier: any) {
     return firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier);
+  }
+
+  async facebookAuth() {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    provider.addScope("email");
+    store.commit("restrictRouterForwarding", true);
+    return firebase.auth().signInWithPopup(provider);
+  }
+
+  async googleAuth() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('profile');
+    provider.addScope('email');
+    store.commit("restrictRouterForwarding", true);
+    return firebase.auth().signInWithPopup(provider);
   }
 }
