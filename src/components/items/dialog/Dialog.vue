@@ -21,7 +21,7 @@
             <div class="arrow" v-if="index != $store.state.dialog.info.steps.length - 1"></div>
           </div>
         </div>
-        <Button class="dialog-button" :icon="$store.state.dialog.info.button.icon" :text="$store.state.dialog.info.button.text" @click.native="onClick" />
+        <Button class="dialog-button" :icon="$store.state.dialog.info.button.icon" :text="$store.state.dialog.info.button.text" @click.native="onClick"/>
         <component :is="$store.state.dialog.info.component"></component>
       </div>
     </div>
@@ -65,6 +65,9 @@ export default class Dialog extends Vue {
 
   private onClick() {
     this.changeStep(this.currentIndex + 1);
+    if(this.currentIndex == 1){
+      // TODO
+    }
   }
 
   private dialogStepClicked(index: number) {

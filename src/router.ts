@@ -8,7 +8,7 @@ import Settings from './components/pages/Settings.vue';
 import Auth from './components/pages/Auth.vue';
 import Layout from './components/structure/Layout.vue';
 import AuthService from './services/auth-service';
-import YtPlayer from './components/items/YtPlayer.vue';
+import Room from './components/pages/Room.vue';
 
 Vue.use(Router);
 
@@ -66,6 +66,11 @@ export default new Router({
           path: 'settings',
           name: 'settings',
           component: Settings,
+        },
+        {
+          path: '/room/:id',
+          name: 'room',
+          component: Room,
         },
       ]
     },
