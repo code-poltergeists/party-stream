@@ -1,6 +1,6 @@
 <template>
   <div>
-    <youtube video-id="dQw4w9WgXcQ" 
+    <youtube :video-id=video_id
              ref="youtube" 
              @playing="playing"
              @paused="paused" 
@@ -13,7 +13,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component
 export default class YtPlayer extends Vue {
-  @Prop() private msg!: string;
+  @Prop() private video_id!: string;
   private isPlaying: number = 0;
   private isPaused: number = 0;
 

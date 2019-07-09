@@ -242,9 +242,7 @@ export default class Auth extends Vue {
               this.isLoading = false;
               window.location.reload();
             })
-            .catch(e => {
-              this.isLoading = false;
-            });
+            .catch(e => console.log(e));
         }
       } else {
         if (this.confirmationResult) {
