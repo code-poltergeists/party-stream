@@ -49,7 +49,7 @@ export default class Dashboard extends Vue {
   }
 
   private openDialog(type: string) {
-    let stepsArray: { name: string; action: Function }[] = [];
+    let stepsArray: { name: string | null; action: Function }[] = [];
     let buttonIcon: string = "";
     let buttonText: string = "";
     let title: string = "";
@@ -58,7 +58,7 @@ export default class Dashboard extends Vue {
       case "create-room":
         stepsArray = [
           {
-            name: "name-and-privacy",
+            name: null,
             action: () => {
               this.$store.commit("setupDialog", {
                 title: "name-and-privacy",
@@ -69,16 +69,20 @@ export default class Dashboard extends Vue {
             }
           },
           {
-            name: "invite-friends",
+            name: "name-and-privacy",
             action: () => {
               this.$store.commit("setupDialog", {
                 title: "invite-friends",
-                button: { icon: "fas fa-plus-circle", text: "create-room"},
+                button: { icon: "fas fa-plus-circle", text: "create-room" },
                 component: "CreateRoom2",
                 steps: stepsArray
               });
-              //new RoomService().createRoom(this.$store.state.room.name, this.$store.state.room.privacy)
-              console.log(this.$store.state.room)
+            }
+          },
+          {
+            name: "invite-friends",
+            action: () => {
+              this.$store.commit("toggleDialogVisibility", false);
             }
           }
         ];
@@ -86,7 +90,7 @@ export default class Dashboard extends Vue {
       case "join-room":
         stepsArray = [
           {
-            name: "join-room",
+            name: null,
             action: () => {
               this.$store.commit("setupDialog", {
                 title: "join-room",
@@ -95,13 +99,19 @@ export default class Dashboard extends Vue {
                 steps: stepsArray
               });
             }
+          },
+          {
+            name: "join-room",
+            action: () => {
+              this.$store.commit("toggleDialogVisibility", false);
+            }
           }
         ];
         break;
       case "invite-friends":
         stepsArray = [
           {
-            name: "invite-friends",
+            name: null,
             action: () => {
               this.$store.commit("setupDialog", {
                 title: "invite-friends",
@@ -109,6 +119,12 @@ export default class Dashboard extends Vue {
                 component: "InviteFriends",
                 steps: stepsArray
               });
+            }
+          },
+          {
+            name: "invite-friends",
+            action: () => {
+              this.$store.commit("toggleDialogVisibility", false);
             }
           }
         ];

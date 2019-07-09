@@ -4,24 +4,33 @@
     <div id="dialog-container" @click.self="hideDialog()">
       <div id="dialog-element">
         <div id="dialog-title-container">
-          <div id="dialog-title">
-            {{ $t($store.state.dialog.info.title) }}
-          </div>
+          <div id="dialog-title">{{ $t($store.state.dialog.info.title) }}</div>
         </div>
         <div id="dialog-steps-container">
-          <div :class="{'dialog-step-container': true, 'arrow-active': currentIndex == index}" v-for="(step, index) in $store.state.dialog.info.steps" :key="step.name" @click="dialogStepClicked(index)">
-            <div :class="{'dialog-step': true, 'active': currentIndex == index, 'arrow-overlap': index != 0, 'single-step': $store.state.dialog.info.steps.length == 1}">
-              <div class="step-number" v-if="$store.state.dialog.info.steps.length > 1">
-                {{index + 1}} 
-              </div>
-              <div class="step-title">
-                {{$t(step.name)}}
-              </div>
+          <div
+            :class="{'dialog-step-container': true, 'arrow-active': currentIndex == index}"
+            v-for="(step, index) in $store.state.dialog.info.steps.filter(e => e.name !== null)"
+            :key="step.name"
+            @click="dialogStepClicked(index)"
+          >
+            <div
+              :class="{'dialog-step': true, 'active': currentIndex == index, 'arrow-overlap': index != 0, 'single-step': $store.state.dialog.info.steps.length == 1}"
+            >
+              <div
+                class="step-number"
+                v-if="$store.state.dialog.info.steps.length > 1"
+              >{{index + 1}}</div>
+              <div class="step-title">{{$t(step.name)}}</div>
             </div>
             <div class="arrow" v-if="index != $store.state.dialog.info.steps.length - 1"></div>
           </div>
         </div>
-        <Button class="dialog-button" :icon="$store.state.dialog.info.button.icon" :text="$store.state.dialog.info.button.text" @click.native="onClick"/>
+        <Button
+          class="dialog-button"
+          :icon="$store.state.dialog.info.button.icon"
+          :text="$store.state.dialog.info.button.text"
+          @click.native="onClick"
+        />
         <component :is="$store.state.dialog.info.component"></component>
       </div>
     </div>
@@ -29,13 +38,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import Button from '../Button.vue';
-import CreateRoom1 from './Create-room-1.vue';
-import CreateRoom2 from './Create-room-2.vue';
-import InviteFriends from './Invite-friends.vue';
-import ChooseFriends from '../Choose-friends.vue';
-import JoinRoom from './Join-room.vue';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import Button from "../Button.vue";
+import CreateRoom1 from "./Create-room-1.vue";
+import CreateRoom2 from "./Create-room-2.vue";
+import InviteFriends from "./Invite-friends.vue";
+import ChooseFriends from "../Choose-friends.vue";
+import JoinRoom from "./Join-room.vue";
 
 @Component({
   components: {
@@ -44,34 +53,24 @@ import JoinRoom from './Join-room.vue';
     CreateRoom2,
     ChooseFriends,
     InviteFriends,
-    JoinRoom,
-  },
+    JoinRoom
+  }
 })
 export default class Dialog extends Vue {
   private currentIndex: number = 0;
 
   private hideDialog() {
-    this.$store.commit('toggleDialogVisibility', false);
-  }
-
-  private changeStep(index: number) {
-    if (index !== this.$store.state.dialog.info.steps.length) {
-      this.currentIndex = index;
-      this.$store.state.dialog.info.steps[index].action();
-    } else {
-      this.$store.commit('toggleDialogVisibility', false);
-    }
+    this.$store.commit("toggleDialogVisibility", false);
   }
 
   private onClick() {
-    this.changeStep(this.currentIndex + 1);
-    if(this.currentIndex == 1){
-      // TODO
-    }
+    this.$store.state.dialog.info.steps[this.currentIndex + 1].action();
+    this.currentIndex += 1;
   }
 
   private dialogStepClicked(index: number) {
-    this.changeStep(index);
+    this.$store.state.dialog.info.steps[index].action();
+    this.currentIndex = index;
   }
 }
 </script>
@@ -110,7 +109,7 @@ export default class Dialog extends Vue {
 #dialog-element {
   width: 50vw;
   height: 50vh;
-  background-color: #1A2328;
+  background-color: #1a2328;
   border-radius: 20px;
   position: relative;
 }
@@ -127,8 +126,8 @@ export default class Dialog extends Vue {
 }
 
 #dialog-title {
-  color: #E3E3E3;
-  font-family: 'Montserrat', sans-serif;
+  color: #e3e3e3;
+  font-family: "Montserrat", sans-serif;
   font-size: 25px;
   font-weight: 600;
   margin-left: 30px;
@@ -137,11 +136,11 @@ export default class Dialog extends Vue {
 #dialog-steps-container {
   width: 100%;
   height: 7.5vh;
-  background-color:#344046;
+  background-color: #344046;
   display: flex;
   align-items: center;
-  color: #E3E3E3;
-  font-family: 'Montserrat', sans-serif;
+  color: #e3e3e3;
+  font-family: "Montserrat", sans-serif;
   font-size: 16px;
   font-weight: 600;
 }
@@ -185,18 +184,18 @@ export default class Dialog extends Vue {
 }
 
 .active {
-  background-color: #247BD5;
+  background-color: #247bd5;
 }
 
 .arrow-active {
-  border-color: transparent transparent transparent #247BD5;
+  border-color: transparent transparent transparent #247bd5;
 }
 
 .step-number {
   width: 6vh;
   height: 6vh;
   border-radius: 50%;
-  border: 2px solid #E3E3E3;
+  border: 2px solid #e3e3e3;
   display: flex;
   align-items: center;
   justify-content: center;
