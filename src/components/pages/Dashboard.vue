@@ -73,10 +73,12 @@ export default class Dashboard extends Vue {
             action: () => {
               this.$store.commit("setupDialog", {
                 title: "invite-friends",
-                button: { icon: "fas fa-plus-circle", text: "create-room" },
+                button: { icon: "fas fa-plus-circle", text: "create-room"},
                 component: "CreateRoom2",
                 steps: stepsArray
               });
+              //new RoomService().createRoom(this.$store.state.room.name, this.$store.state.room.privacy)
+              console.log(this.$store.state.room)
             }
           }
         ];

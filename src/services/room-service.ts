@@ -45,6 +45,7 @@ export default class RoomService {
           roomData.id,
           roomData.roomName,
           roomData.creationDate,
+          roomData.privacy,
           roomData.members,
           roomData.videos
         );
@@ -72,13 +73,15 @@ export default class RoomService {
   }
 
   async createRoom(
-    roomName: string
+    roomName: string,
+    privacy: number,
   ) {
     return firebase
       .firestore()
       .collection("rooms")
       .add({
         roomName: roomName,
+        privacy: privacy,
         creationDate: firebase.firestore.FieldValue.serverTimestamp()
       })
   }

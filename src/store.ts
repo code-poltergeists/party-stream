@@ -10,6 +10,10 @@ export default new Vuex.Store({
       isVisible: false,
       info: {},
     },
+    room: {
+      name: '',
+      privacy: 0,
+    },
   },
   mutations: {
     changeMenuItem(state, n) {
@@ -22,6 +26,12 @@ export default new Vuex.Store({
       Object.keys(map).forEach(key => {
         (state.dialog.info as { [_: string]: any })[key] = map[key];
       });
+    },
+    roomNameUpdate(state, name) {
+      state.room.name = name;
+    },
+    roomPrivacyUpDate(state, value) {
+      state.room.privacy = value;
     },
   },
   actions: {

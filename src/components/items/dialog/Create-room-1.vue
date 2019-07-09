@@ -1,9 +1,9 @@
 <template>
   <div id="dialog-content">
-    <TextField id="name-textfield" placeholder="name"/>
+    <TextField id="name-textfield" placeholder="name" toEmit="update-name" @update-name="updateName" ref="textField"/>
     <div id="privacy">
       <i class="fas fa-globe-europe privacy-item"></i>
-      <ToggleSwitch id="privacy-switch"/>
+      <ToggleSwitch id="privacy-switch" onToggle="update-privacy" @update-privacy="updatePrivacy" />
       <i class="fas fa-lock privacy-item"></i>
     </div>
   </div>
@@ -20,7 +20,17 @@ import ToggleSwitch from '../ToggleSwitch.vue';
     ToggleSwitch,
   },
 })
-export default class CreateRoom1 extends Vue {}
+export default class CreateRoom1 extends Vue {
+  public roomName: string = '';
+
+  public updateName(value: string) {
+    this.$store.commit("roomNameUpdate", value)
+  }
+
+  public updatePrivacy(value: number) {
+    this.$store.commit("roomPrivacyUpdate", 1);
+  }
+}
 </script>
 
 <style scoped lang="scss">
