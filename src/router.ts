@@ -8,7 +8,7 @@ import Settings from "./components/pages/Settings.vue";
 import Auth from "./components/pages/Auth.vue";
 import Layout from "./components/structure/Layout.vue";
 import AuthService from "./services/auth-service";
-import YtPlayer from "./components/items/YtPlayer.vue";
+import Player from "./components/items/Player.vue";
 import store from "./store";
 
 Vue.use(Router);
@@ -85,6 +85,11 @@ export default new Router({
       beforeEnter: (to, from, next) => {
         handleAuth(next, "/dashboard", null);
       }
+    },
+    {
+      path: "/player",
+      name: "player",
+      component: Player
     },
     {
       path: "*",
