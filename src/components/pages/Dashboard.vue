@@ -83,6 +83,7 @@ export default class Dashboard extends Vue {
             name: "invite-friends",
             action: () => {
               this.$store.commit("toggleDialogVisibility", false);
+              new RoomService().createRoom(this.$store.state.room.name, this.$store.state.room.privacy);
             }
           }
         ];
