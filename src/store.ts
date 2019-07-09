@@ -14,6 +14,9 @@ export default new Vuex.Store({
       name: '',
       privacy: 0,
     },
+    auth: {
+      restrict: false
+    }
   },
   mutations: {
     changeMenuItem(state, n) {
@@ -33,6 +36,9 @@ export default new Vuex.Store({
     roomPrivacyUpDate(state, value) {
       state.room.privacy = value;
     },
+    restrictRouterForwarding(state, flag) {
+      state.auth.restrict = flag;
+    }
   },
   actions: {
     
