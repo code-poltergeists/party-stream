@@ -34,5 +34,7 @@
   "phone-number-optional": "Phone number (optional)",
   "auth-methods": "@username/email/phone #",
   "loading": "Loading...",
-  "verification-code": "Verification code"
+  "verification-code": "Verification code",
+  "of": "of",
+  "added-by": "Added to queue by: "
 }
