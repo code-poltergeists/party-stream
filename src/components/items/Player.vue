@@ -1,5 +1,5 @@
 <template>
-  <div id="player">
+  <div id="player" ref="player">
     <youtube
       video-id="dQw4w9WgXcQ"
       id="youtube"
@@ -38,20 +38,59 @@
           <div id="added-by">
             <div>{{ $t('added-by') }}</div>
             <i class="fas fa-user-circle"></i>
-            <div>Name</div>
+            <div>{{ $t('name') }}</div>
           </div>
           <div id="controls">
-            <div @click="play">Continue Playing</div>
+            <div @click="play">{{ $t(firstTimePlaying ? 'start-playing' : 'continue-playing') }}</div>
           </div>
         </div>
       </div>
       <div id="no-clicks-on-iframe-because-somehow-pointer-events-none-is-not-working"></div>
-      <div id="bar" v-if="shouldShow && isPlaying">
-        <i
-          id="playpause"
-          @click="playpause"
-          :class="{'fas': true, 'fa-pause': isPlaying, 'fa-play': !isPlaying}"
-        ></i>
+      <div id="bar-container">
+        <div id="progress-slider-container">
+          <input
+            id="progress-slider"
+            class="slider"
+            ref="progressSlider"
+            type="range"
+            value="100"
+            min="0"
+            max="100"
+            @input="applyFill($event, 'progressSlider', true)"
+          />
+        </div>
+        <div id="bar" v-if="true">
+          <i
+            id="playpause"
+            @click="playpause"
+            :class="{'fas': true, 'fa-pause': isPlaying, 'fa-play': !isPlaying}"
+          ></i>
+          <div
+            id="time"
+          >{{ this.formatTime(this.elapsedTime) }} - {{ this.formatTime(this.totalTime) }}</div>
+          <i
+            id="mute"
+            @click="mute"
+            :class="{'fas': true, 'fa-volume-mute': isMuted, 'fa-volume-up': !isMuted}"
+          ></i>
+          <div id="volume-slider-container">
+            <input
+              id="volume-slider"
+              class="slider"
+              ref="volumeSlider"
+              type="range"
+              value="100"
+              min="0"
+              max="100"
+              @input="applyFill($event, 'volumeSlider', true)"
+            />
+          </div>
+          <i
+            id="fullscreen"
+            @click="fullscreen"
+            :class="{'fas': true, 'fa-expand': !isFullscreen, 'fa-compress': isFullscreen}"
+          ></i>
+        </div>
       </div>
     </div>
   </div>
@@ -60,10 +99,13 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios from "axios";
+import FullScreenHelper from '../../helpers/full-screen';
 
 @Component
 export default class Player extends Vue {
   isPlaying = false;
+  isMuted = false;
+  isFullscreen = false;
   shouldShow = false;
 
   timer: any;
@@ -73,6 +115,10 @@ export default class Player extends Vue {
 
   elapsedTime: number | null = null;
   totalTime: number | null = null;
+
+  currentVolume = 100;
+
+  firstTimePlaying = true;
 
   mounted() {
     axios
@@ -91,7 +137,21 @@ export default class Player extends Vue {
       this.elapsedTime = 0;
       this.totalTime = duration;
       this.setupProgress();
+      (this.$refs.progressSlider as any).max = duration;
     });
+    window.setInterval(() => {
+      if (this.isPlaying) {
+        (this.player as any).getCurrentTime().then((time: number) => {
+          this.elapsedTime = Math.floor(time);
+          this.applyFill(time, "progressSlider", false);
+        });
+      }
+    }, 1000);
+    this.applyFill(100, "volumeSlider", true);
+    this.applyFill(0, "progressSlider", false);
+    FullScreenHelper.onFullscreenChange(() => {
+      this.isFullscreen = !this.isFullscreen;
+    })
   }
 
   formatTime(time: number | null) {
@@ -120,10 +180,7 @@ export default class Player extends Vue {
     this.isPlaying = false;
     window.setTimeout(() => {
       this.player.pauseVideo();
-      (this.player as any).getCurrentTime().then((time: number) => {
-        this.elapsedTime = Math.floor(time);
-        this.setupProgress();
-      });
+      this.setupProgress();
     }, 200);
   }
 
@@ -131,11 +188,23 @@ export default class Player extends Vue {
     this.player.playVideo();
     window.setTimeout(() => {
       this.isPlaying = true;
+      this.firstTimePlaying = false;
     }, 200);
   }
 
   playpause() {
     this.isPlaying ? this.pause() : this.play();
+  }
+
+  mute() {
+    if (this.isMuted) {
+      (this.player as any).unMute();
+      this.applyFill(this.currentVolume, "volumeSlider", true);
+    } else {
+      (this.player as any).mute();
+      this.applyFill(0, "volumeSlider", false);
+    }
+    this.isMuted = !this.isMuted;
   }
 
   onMouseOver() {
@@ -176,6 +245,48 @@ export default class Player extends Vue {
       angle += 7;
     }, 30);
   }
+
+  applyFill(event: any, sliderName: string, saveValue: boolean) {
+    const slider = this.$refs[sliderName] as any;
+    let percentage = 0;
+    if (event.target) {
+      percentage =
+        (100 * (slider.value - slider.min)) / (slider.max - slider.min);
+      if (sliderName === "volumeSlider") {
+        (this.player as any).setVolume(event.target.value);
+        if (saveValue) {
+          this.currentVolume = event.target.value;
+        }
+      } else if (sliderName === "progressSlider") {
+        if (saveValue) {
+          (this.player as any).seekTo(event.target.value);
+        }
+      }
+    } else {
+      percentage = (100 * (event - slider.min)) / (slider.max - slider.min);
+      slider.value = event;
+      if (sliderName === "volumeSlider") {
+        (this.player as any).setVolume(event);
+        if (saveValue) {
+          this.currentVolume = event;
+        }
+      } else if (sliderName === "progressSlider") {
+        if (saveValue) {
+          (this.player as any).seekTo(event);
+        }
+      }
+    }
+    slider.style.background = `linear-gradient(90deg, rgba(26, 188, 156, 0) 0%, #1abc9c ${percentage}%, #d7dcdf ${percentage +
+      0.1}%, rgba(255, 255, 255, 0) 100%)`;
+  }
+
+  fullscreen() {
+    if (!this.isFullscreen) {
+      FullScreenHelper.enable(this.$refs.player as any);
+    } else {
+      FullScreenHelper.disable();
+    }
+  }
 }
 </script>
 
@@ -207,26 +318,37 @@ export default class Player extends Vue {
   position: relative;
 }
 
-#bar {
+#bar-container {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 50px;
+  height: 55px;
   z-index: 9999;
+}
+
+#progress-slider-container {
+  width: 100%;
+  height: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#bar {
+  height: 50px;
   background: linear-gradient(
     rgba(54, 168, 109, 0) 0%,
     rgba(54, 168, 109, 0.25) 100%
   );
   display: flex;
   align-items: center;
-  z-index: 9999;
 }
 
 #playpause {
   color: white;
   font-size: 30px;
-  margin-left: 10px;
+  margin-left: 20px;
   cursor: pointer;
 }
 
@@ -336,5 +458,95 @@ export default class Player extends Vue {
   font-size: 35px;
   cursor: pointer;
   margin-top: 50px;
+}
+
+#time {
+  color: white;
+  font-family: "Montserrat";
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+#mute {
+  color: white;
+  font-size: 30px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+#volume-slider-container {
+  width: 150px;
+  height: 5px;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slider {
+  width: 100%;
+  height: 100%;
+  -webkit-appearance: none;
+  border-radius: 1000px;
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 15px;
+    height: 15px;
+    background: radial-gradient(
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    cursor: pointer;
+
+    &:hover {
+      background: #ffffff;
+    }
+  }
+
+  &:active::-webkit-slider-thumb {
+    background: #ffffff;
+  }
+
+  &::-moz-slider-thumb {
+    width: 15px;
+    height: 15px;
+    border: 0;
+    background: radial-gradient(
+      rgba(255, 255, 255, 1) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.15s ease-in-out;
+    &:hover {
+      background: #ffffff;
+    }
+  }
+
+  &:active::-moz-slider-thumb {
+    background: #ffffff;
+  }
+}
+
+#fullscreen {
+  color: white;
+  font-size: 30px;
+  margin-left: auto;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+// Firefox Overrides
+::-moz-range-track {
+  background: #d7dcdf;
+  border: 0;
+}
+
+input::-moz-focus-inner,
+input::-moz-focus-outer {
+  border: 0;
 }
 </style>

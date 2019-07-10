@@ -36,5 +36,7 @@
   "loading": "Loading...",
   "verification-code": "Verification code",
   "of": "of",
-  "added-by": "Added to queue by: "
+  "added-by": "Added to queue by: ",
+  "continue-playing": "Continue playing",
+  "start-playing": "Start playing"
 }
