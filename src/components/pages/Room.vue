@@ -1,5 +1,5 @@
 <template>
-  <ytPlayer video_id="dQw4w9WgXcQ"></ytPlayer>
+  <h1>Hi, and welcome to room {{ $route.params.id }}</h1>
 </template>
 
 <script lang="ts">

@@ -82,9 +82,11 @@ export default class RoomService {
       .add({
         roomName: roomName,
         privacy: privacy,
-        creationDate: firebase.firestore.FieldValue.serverTimestamp()
+        creationDate: firebase.firestore.FieldValue.serverTimestamp(),
+        members: [],
+        videos: []
       })
-  }
+  } 
 
   async isPlayingListener(roomId: string, callback: Function) {
     firebase

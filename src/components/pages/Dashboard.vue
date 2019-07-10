@@ -32,6 +32,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "../items/Button.vue";
 import RoomService from "@/services/room-service";
+import router from "@/router";
 
 @Component({
   components: {
@@ -83,7 +84,11 @@ export default class Dashboard extends Vue {
             name: "invite-friends",
             action: () => {
               this.$store.commit("toggleDialogVisibility", false);
-              new RoomService().createRoom(this.$store.state.room.name, this.$store.state.room.privacy);
+              new RoomService()
+                .createRoom(this.$store.state.room.name, this.$store.state.room.privacy)
+                .then(doc =>{
+                  router.push({name: 'room', params: {id: doc.id}})
+                })
             }
           }
         ];
