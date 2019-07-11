@@ -154,10 +154,22 @@ export default class Player extends Vue {
     FullScreenHelper.onFullscreenChange(() => {
       this.isFullscreen = !this.isFullscreen;
     })
+
     this.RoomService.isPlayingListener(
       'fXO5vernUJa2qZg3Qlc6',
       (isPlaying: boolean) => {
         isPlaying ? this.play() : this.pause();
+      }
+    )
+
+    this.RoomService.isMutedListener(
+      'fXO5vernUJa2qZg3Qlc6',
+      (isMuted: boolean) => {
+        if(isMuted){
+          this.mute();
+        } else {
+          this.mute();
+        }
       }
     )
   }
@@ -186,7 +198,7 @@ export default class Player extends Vue {
 
   pause() {
     this.isPlaying = false;
-    this.RoomService.updatePlaying(
+    this.RoomService.isPlayingUpdater(
       'fXO5vernUJa2qZg3Qlc6',
       false
     )
@@ -198,7 +210,7 @@ export default class Player extends Vue {
 
   play() {
     this.player.playVideo();
-    this.RoomService.updatePlaying(
+    this.RoomService.isPlayingUpdater(
       'fXO5vernUJa2qZg3Qlc6',
       true
     )
@@ -216,9 +228,17 @@ export default class Player extends Vue {
     if (this.isMuted) {
       (this.player as any).unMute();
       this.applyFill(this.currentVolume, "volumeSlider", true);
+      this.RoomService.isMutedUpdater(
+        'fXO5vernUJa2qZg3Qlc6',
+        true
+      )
     } else {
       (this.player as any).mute();
       this.applyFill(0, "volumeSlider", false);
+      this.RoomService.isMutedUpdater(
+        'fXO5vernUJa2qZg3Qlc6',
+        false
+      )
     }
     this.isMuted = !this.isMuted;
   }

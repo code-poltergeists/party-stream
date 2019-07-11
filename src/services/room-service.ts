@@ -4,6 +4,7 @@ import AuthService from "./auth-service";
 import Room from "@/models/Room";
 import Video from "@/models/Video";
 import 'firebase/firestore';
+import { callbackify } from 'util';
 
 export default class RoomService {
   static instance: RoomService;
@@ -98,13 +99,33 @@ export default class RoomService {
       });
   }
 
-  async updatePlaying(roomId: string, value: boolean) {
+  async isPlayingUpdater(roomId: string, value: boolean) {
     firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .update({
         "isPlaying": value
+      });
+  }
+
+  async isMutedListener(roomId: string, callback: Function) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .onSnapshot(doc => {
+        callback(doc.data()!.isMuted);
+      })
+  }
+
+  async isMutedUpdater(roomId: string, value: boolean) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        "isMuted": value
       });
   }
 }
