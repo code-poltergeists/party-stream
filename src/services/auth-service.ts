@@ -19,12 +19,10 @@ export default class AuthService {
         this.isAuthenticated$.next(user !== null && user !== undefined);
       });
     }
-    if (AuthService.instance) {
-      return AuthService.instance;
-    } else {
+    if (!AuthService.instance) {
       AuthService.instance = this;
-      return this;
     }
+    return AuthService.instance;
   }
 
   async signUp(
@@ -110,6 +108,10 @@ export default class AuthService {
         user.username = data.username;
         return user;
       });
+  }
+
+  get currentUserId(): string {
+    return firebase.auth().currentUser!.uid;
   }
 
   get isAuthenticated(): boolean | null {
