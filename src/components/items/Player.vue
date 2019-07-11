@@ -100,9 +100,11 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios from "axios";
 import FullScreenHelper from '../../helpers/full-screen';
+import RoomService from "@/services/room-service";
 
 @Component
 export default class Player extends Vue {
+  RoomService = new RoomService();
   isPlaying = false;
   isMuted = false;
   isFullscreen = false;
@@ -152,6 +154,12 @@ export default class Player extends Vue {
     FullScreenHelper.onFullscreenChange(() => {
       this.isFullscreen = !this.isFullscreen;
     })
+    this.RoomService.isPlayingListener(
+      'fXO5vernUJa2qZg3Qlc6',
+      (isPlaying: boolean) => {
+        isPlaying ? this.play() : this.pause();
+      }
+    )
   }
 
   formatTime(time: number | null) {
@@ -178,6 +186,10 @@ export default class Player extends Vue {
 
   pause() {
     this.isPlaying = false;
+    this.RoomService.updatePlaying(
+      'fXO5vernUJa2qZg3Qlc6',
+      false
+    )
     window.setTimeout(() => {
       this.player.pauseVideo();
       this.setupProgress();
@@ -186,6 +198,10 @@ export default class Player extends Vue {
 
   play() {
     this.player.playVideo();
+    this.RoomService.updatePlaying(
+      'fXO5vernUJa2qZg3Qlc6',
+      true
+    )
     window.setTimeout(() => {
       this.isPlaying = true;
       this.firstTimePlaying = false;

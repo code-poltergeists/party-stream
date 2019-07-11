@@ -97,4 +97,14 @@ export default class RoomService {
         callback(doc.data()!.isPlaying);
       });
   }
+
+  async updatePlaying(roomId: string, value: boolean) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        "isPlaying": value
+      });
+  }
 }
