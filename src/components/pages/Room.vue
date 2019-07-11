@@ -17,5 +17,7 @@ export default class Room extends Vue{
 </script>
 
 <style scoped lang="scss">
-
+h1 {
+  color: white;
+}
 </style>
