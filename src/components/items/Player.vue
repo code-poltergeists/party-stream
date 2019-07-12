@@ -70,7 +70,7 @@
           >{{ this.formatTime(this.elapsedTime) }} - {{ this.formatTime(this.totalTime) }}</div>
           <i
             id="mute"
-            @click="mute"
+            @click="chooseMute"
             :class="{'fas': true, 'fa-volume-mute': isMuted, 'fa-volume-up': !isMuted}"
           ></i>
           <div id="volume-slider-container">
@@ -166,9 +166,21 @@ export default class Player extends Vue {
       'fXO5vernUJa2qZg3Qlc6',
       (isMuted: boolean) => {
         if(isMuted){
-          this.mute();
+          (this.player as any).unMute();
+            this.applyFill(this.currentVolume, "volumeSlider", true);
+            this.RoomService.isMutedUpdater(
+              'fXO5vernUJa2qZg3Qlc6',
+              true
+            )
+          this.isMuted = !this.isMuted;
         } else {
-          this.mute();
+          (this.player as any).mute();
+            this.applyFill(0, "volumeSlider", false);
+            this.RoomService.isMutedUpdater(
+              'fXO5vernUJa2qZg3Qlc6',
+              false
+            )
+          this.isMuted = !this.isMuted;
         }
       }
     )
@@ -224,22 +236,27 @@ export default class Player extends Vue {
     this.isPlaying ? this.pause() : this.play();
   }
 
+  chooseMute() {
+    this.isMuted ? this.unMute() : this.mute();
+  }
+
   mute() {
-    if (this.isMuted) {
-      (this.player as any).unMute();
-      this.applyFill(this.currentVolume, "volumeSlider", true);
-      this.RoomService.isMutedUpdater(
-        'fXO5vernUJa2qZg3Qlc6',
-        true
-      )
-    } else {
       (this.player as any).mute();
       this.applyFill(0, "volumeSlider", false);
       this.RoomService.isMutedUpdater(
         'fXO5vernUJa2qZg3Qlc6',
         false
       )
-    }
+    this.isMuted = !this.isMuted;
+  }
+
+  unMute() {
+    (this.player as any).unMute();
+      this.applyFill(this.currentVolume, "volumeSlider", true);
+      this.RoomService.isMutedUpdater(
+        'fXO5vernUJa2qZg3Qlc6',
+        true
+      )
     this.isMuted = !this.isMuted;
   }
 
