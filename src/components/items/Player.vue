@@ -99,7 +99,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios from "axios";
-import FullScreenHelper from '../../helpers/full-screen';
+import FullScreenHelper from "../../helpers/full-screen";
 import RoomService from "@/services/room-service";
 
 @Component
@@ -153,37 +153,21 @@ export default class Player extends Vue {
     this.applyFill(0, "progressSlider", false);
     FullScreenHelper.onFullscreenChange(() => {
       this.isFullscreen = !this.isFullscreen;
-    })
+    });
 
     this.RoomService.isPlayingListener(
-      'fXO5vernUJa2qZg3Qlc6',
+      "fXO5vernUJa2qZg3Qlc6",
       (isPlaying: boolean) => {
         isPlaying ? this.play() : this.pause();
       }
-    )
+    );
 
     this.RoomService.isMutedListener(
-      'fXO5vernUJa2qZg3Qlc6',
+      "fXO5vernUJa2qZg3Qlc6",
       (isMuted: boolean) => {
-        if(isMuted){
-          (this.player as any).unMute();
-            this.applyFill(this.currentVolume, "volumeSlider", true);
-            this.RoomService.isMutedUpdater(
-              'fXO5vernUJa2qZg3Qlc6',
-              true
-            )
-          this.isMuted = !this.isMuted;
-        } else {
-          (this.player as any).mute();
-            this.applyFill(0, "volumeSlider", false);
-            this.RoomService.isMutedUpdater(
-              'fXO5vernUJa2qZg3Qlc6',
-              false
-            )
-          this.isMuted = !this.isMuted;
-        }
+        isMuted ? this.mute() : this.unMute();
       }
-    )
+    );
   }
 
   formatTime(time: number | null) {
@@ -210,10 +194,7 @@ export default class Player extends Vue {
 
   pause() {
     this.isPlaying = false;
-    this.RoomService.isPlayingUpdater(
-      'fXO5vernUJa2qZg3Qlc6',
-      false
-    )
+    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", false);
     window.setTimeout(() => {
       this.player.pauseVideo();
       this.setupProgress();
@@ -222,10 +203,7 @@ export default class Player extends Vue {
 
   play() {
     this.player.playVideo();
-    this.RoomService.isPlayingUpdater(
-      'fXO5vernUJa2qZg3Qlc6',
-      true
-    )
+    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", true);
     window.setTimeout(() => {
       this.isPlaying = true;
       this.firstTimePlaying = false;
@@ -241,23 +219,17 @@ export default class Player extends Vue {
   }
 
   mute() {
-      (this.player as any).mute();
-      this.applyFill(0, "volumeSlider", false);
-      this.RoomService.isMutedUpdater(
-        'fXO5vernUJa2qZg3Qlc6',
-        false
-      )
-    this.isMuted = !this.isMuted;
+    (this.player as any).mute();
+    this.applyFill(0, "volumeSlider", false);
+    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", true);
+    this.isMuted = true;
   }
 
   unMute() {
     (this.player as any).unMute();
-      this.applyFill(this.currentVolume, "volumeSlider", true);
-      this.RoomService.isMutedUpdater(
-        'fXO5vernUJa2qZg3Qlc6',
-        true
-      )
-    this.isMuted = !this.isMuted;
+    this.applyFill(this.currentVolume, "volumeSlider", true);
+    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", false);
+    this.isMuted = false;
   }
 
   onMouseOver() {
