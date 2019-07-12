@@ -46,5 +46,9 @@ export default class VideoService {
 
   getVideoThumbnail(id: string) {
     return `https://img.youtube.com/vi/${id}/sddefault.jpg`;
-  };
+  }
+
+  getVideoId(link: string) {
+    return link.replace("https://www.youtube.com/watch?v=", "");
+  }
 }

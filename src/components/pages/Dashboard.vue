@@ -31,9 +31,6 @@
         </div>
       </div>
     </div>
-    <div id="rooms" v-if="hasElements === true">
-      <DashboardRoom v-for="room in rooms" :key="room.id" :room="room" />
-    </div>
   </div>
 </template>
 
@@ -42,28 +39,16 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "../items/Button.vue";
 import RoomService from "@/services/room-service";
 import router from "@/router";
-import Room from "@/models/Room";
-import DashboardRoom from '../items/DashboardRoom.vue';
 
 @Component({
   components: {
-    Button,
-    DashboardRoom
+    Button
   }
 })
 export default class Dashboard extends Vue {
   roomService = new RoomService();
 
-  hasElements: boolean | null = null;
-
-  rooms: Array<Room> = [];
-
-  mounted() {
-    this.roomService.getRoomsForCurrentUser().then(rooms => {
-      this.hasElements = rooms.length > 0;
-      this.rooms = rooms;
-    });
-  }
+  hasElements: boolean | null = false;
 
   private openDialog(type: string) {
     let stepsArray: { name: string | null; action: Function }[] = [];

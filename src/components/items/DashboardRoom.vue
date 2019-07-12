@@ -1,28 +1,24 @@
 <template>
   <div id="room">
-    <div id="video-title">{{ videoTitle }}</div>
-    <div id="progress-and-text-container">
-      <svg id="progress-container" width="400px" height="120px">
-        <g>
-          <circle id="progress" ref="progress" cx="200" cy="60" r="50px" fill="none" stroke="none" />
-        </g>
-      </svg>
-      <div id="percent" ref="percent">
-        <div>{{ formatTime(elapsedTime) }}</div>
-        <div>{{ $t('of') }}</div>
-        <div>{{ formatTime(totalTime) }}</div>
+    <div id="room-name">{{ room.roomName }}</div>
+    <div class="spacer"></div>
+    <div id="thumbnail" :style="{backgroundImage: `url(${videoThumbnail})`}">
+      <div id="thumbnail-overlay">
+        <i class="far fa-play-circle"></i>
       </div>
     </div>
-    <div id="provider">
-      <i class="fab fa-youtube"></i>
-      <div>YouTube</div>
+    <div class="spacer"></div>
+    <div id="info">
+      <div id="info-container">
+        <i class="fab fa-youtube"></i>
+        <div id="info-text">
+          <div id="video-title">{{ videoTitle }}</div>
+          <div id="time-and-people">
+            <div id="time">{{ formatTime(elapsedTime) }} - {{ formatTime(totalTime) }}</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="added-by">
-      <div>{{ $t('added-by') }}</div>
-      <i class="fas fa-user-circle"></i>
-      <div>{{ $t('name') }}</div>
-    </div>
-    <div id="controls">{{ $t('start-playing') }}</div>
   </div>
 </template>
 
@@ -37,6 +33,12 @@ export default class DashboardRoom extends Vue {
   @Prop() private room!: Room;
 
   videoTitle = "";
+
+  get videoThumbnail() {
+    return this.videoService.getVideoThumbnail(
+      this.videoService.getVideoId(this.room.videos[0].link)
+    );
+  }
 
   videoService = new VideoService();
 
@@ -93,118 +95,72 @@ export default class DashboardRoom extends Vue {
 
 <style scoped lang="scss">
 #room {
-  background-color: #1a2328;
-  border: 5px solid #36a86d;
+  background-color: #29333c;
   border-radius: 50px;
-  width: 400px;
-  height: 300px;
+  width: 500px;
+  height: 350px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 5px;
 }
 
-#video-title {
+#room-name {
   color: white;
   font-family: "Montserrat";
   font-weight: 600;
-  font-size: 20px;
+  font-size: 30px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
   width: 100%;
   text-align: center;
+  margin: 10px 0;
 }
 
-#progress-and-text-container {
-  position: relative;
+.spacer {
+  width: 100%;
+  height: 2px;
+  background-color: #e3e3e3;
 }
 
-#progress-container {
-  display: block;
-  margin: 0 auto;
+#thumbnail {
+  width: 100%;
+  flex-grow: 2;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
-#progress {
-  fill: none;
-  stroke-width: 7;
-  stroke-linecap: round;
-  transform-origin: center;
-  transform: rotate(-90deg);
-}
-
-#percent {
-  font-family: "Montserrat";
-  font-weight: 600;
-  color: white;
-  font-size: 15px;
-  position: absolute;
-  top: 0;
-  left: 0;
+#thumbnail-overlay {
+  background-color: rgba(26, 35, 40, 0.5);
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  flex-direction: column;
+
+  & > i {
+    color: #e3e3e3;
+    font-size: 100px;
+  }
 }
 
-#percent div {
-  flex: 0;
-  margin: 0;
-}
-
-#provider {
-  color: white;
-  font-size: 20px;
+#info-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-}
+  color: #e3e3e3;
+  width: 100%;
+  margin: 10px 0;
 
-#provider div:last-child {
-  margin-left: 20px;
-  font-family: "Montserrat";
-  font-weight: 600;
-}
+  & > div {
+    font-family: "Montserrat";
+    margin-left: 20px;
+    font-weight: 600;
+  }
 
-#added-by {
-  color: white;
-  font-family: "Montserrat";
-  font-weight: 600;
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  margin-top: 20px;
-}
-
-#added-by *:nth-child(2) {
-  margin-left: 20px;
-  font-size: 30px;
-}
-
-#added-by *:nth-child(3) {
-  margin-left: 10px;
-}
-
-#controls {
-  color: #36a86d;
-  font-family: "Montserrat";
-  font-weight: 600;
-  font-size: 20px;
-  cursor: pointer;
-  margin-top: 20px;
-}
-
-#time {
-  color: white;
-  font-family: "Montserrat";
-  font-weight: 600;
-  margin-left: 10px;
+  & > i {
+    font-size: 25px;
+  }
 }
 </style>
