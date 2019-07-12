@@ -3,7 +3,7 @@ import "firebase/firestore";
 import AuthService from "./auth-service";
 import Room from "@/models/Room";
 import Video from "@/models/Video";
-import 'firebase/firestore';
+import "firebase/firestore";
 
 export default class RoomService {
   static instance: RoomService;
@@ -19,28 +19,14 @@ export default class RoomService {
 
   async getRoomsForCurrentUser(): Promise<Array<Room>> {
     return new Promise<Array<Room>>(async (resolve, reject) => {
-      const userSnapshot = await firebase
+      const roomsSnapshot = await firebase
         .firestore()
-        .collection("users")
-        .doc(this.authService.currentUserId)
+        .collection("rooms")
+        .where("members", "array-contains", this.authService.currentUserId)
         .get();
-      if (!userSnapshot.exists || !userSnapshot.data()) {
-        reject();
-        console.log("oh no no user: " + this.authService.currentUserId);
-      }
-      const userData = userSnapshot.data()!;
-      var rooms: Array<Room> = [];
-      for (const roomId of userData.rooms) {
-        const roomSnapshot = await firebase
-          .firestore()
-          .collection("rooms")
-          .doc(roomId)
-          .get();
-        if (!roomSnapshot.exists || !roomSnapshot.data()) {
-          reject();
-          console.log("oh no no room: " + roomId);
-        }
-        const roomData = roomSnapshot.data()!;
+      let rooms: Array<Room> = [];
+      for (let roomDoc of roomsSnapshot.docs) {
+        const roomData = roomDoc.data();
         let room = new Room(
           roomData.id,
           roomData.roomName,
@@ -49,13 +35,13 @@ export default class RoomService {
           roomData.members,
           roomData.videos
         );
-        room.id = roomSnapshot.id;
+        room.id = roomDoc.id;
         room.members = roomData.members;
         let videos: Array<Video> = [];
         const videosSnapshot = await firebase
           .firestore()
           .collection("rooms")
-          .doc(roomId)
+          .doc(roomDoc.id)
           .collection("videos")
           .get();
         videosSnapshot.docs.forEach(videoDoc => {
@@ -72,10 +58,7 @@ export default class RoomService {
     });
   }
 
-  async createRoom(
-    roomName: string,
-    privacy: number,
-  ) {
+  async createRoom(roomName: string, privacy: number) {
     return firebase
       .firestore()
       .collection("rooms")
@@ -85,8 +68,8 @@ export default class RoomService {
         creationDate: firebase.firestore.FieldValue.serverTimestamp(),
         members: [],
         videos: []
-      })
-  } 
+      });
+  }
 
   async isPlayingListener(roomId: string, callback: Function) {
     firebase

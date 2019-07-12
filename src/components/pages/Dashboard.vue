@@ -1,29 +1,38 @@
 <template>
-  <div id="dashboard" class="container-fluid">
-    <div class="row no-gutters">
-      <div class="col" id="col-text">
-        <i class="fas fa-sad-tear" id="sad"></i>
-        <div id="text">{{ $t('no-items') }}</div>
+  <div id="dashboard">
+    <div id="no-items" v-if="hasElements === false" class="container-fluid">
+      <div class="row no-gutters">
+        <div class="col" id="col-text">
+          <i class="fas fa-sad-tear" id="sad"></i>
+          <div id="text">{{ $t('no-items') }}</div>
+        </div>
+      </div>
+      <div class="row no-gutters">
+        <div class="col-6 right">
+          <Button
+            icon="fas fa-plus-circle"
+            text="create-room"
+            @click.native="openDialog('create-room')"
+          ></Button>
+        </div>
+        <div class="col-6 left">
+          <Button
+            icon="fas fa-sign-in-alt"
+            text="join-room"
+            @click.native="openDialog('join-room')"
+          ></Button>
+        </div>
+        <div class="col-12 center">
+          <Button
+            icon="fas fa-user-friends"
+            text="add-friends"
+            @click.native="openDialog('invite-friends')"
+          ></Button>
+        </div>
       </div>
     </div>
-    <div class="row no-gutters">
-      <div class="col-6 right">
-        <Button
-          icon="fas fa-plus-circle"
-          text="create-room"
-          @click.native="openDialog('create-room')"
-        ></Button>
-      </div>
-      <div class="col-6 left">
-        <Button icon="fas fa-sign-in-alt" text="join-room" @click.native="openDialog('join-room')"></Button>
-      </div>
-      <div class="col-12 center">
-        <Button
-          icon="fas fa-user-friends"
-          text="add-friends"
-          @click.native="openDialog('invite-friends')"
-        ></Button>
-      </div>
+    <div id="rooms" v-if="hasElements === true">
+      <DashboardRoom v-for="room in rooms" :key="room.id" :room="room" />
     </div>
   </div>
 </template>
@@ -33,20 +42,27 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "../items/Button.vue";
 import RoomService from "@/services/room-service";
 import router from "@/router";
+import Room from "@/models/Room";
+import DashboardRoom from '../items/DashboardRoom.vue';
 
 @Component({
   components: {
-    Button
+    Button,
+    DashboardRoom
   }
 })
 export default class Dashboard extends Vue {
+  roomService = new RoomService();
+
+  hasElements: boolean | null = null;
+
+  rooms: Array<Room> = [];
+
   mounted() {
-    new RoomService().isPlayingListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (isPlaying: boolean) => {
-        console.log(isPlaying);
-      }
-    );
+    this.roomService.getRoomsForCurrentUser().then(rooms => {
+      this.hasElements = rooms.length > 0;
+      this.rooms = rooms;
+    });
   }
 
   private openDialog(type: string) {
@@ -85,10 +101,13 @@ export default class Dashboard extends Vue {
             action: () => {
               this.$store.commit("toggleDialogVisibility", false);
               new RoomService()
-                .createRoom(this.$store.state.room.name, this.$store.state.room.privacy)
-                .then(doc =>{
-                  router.push({name: 'room', params: {id: doc.id}})
-                })
+                .createRoom(
+                  this.$store.state.room.name,
+                  this.$store.state.room.privacy
+                )
+                .then(doc => {
+                  router.push({ name: "room", params: { id: doc.id } });
+                });
             }
           }
         ];
