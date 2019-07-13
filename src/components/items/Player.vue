@@ -158,7 +158,7 @@ export default class Player extends Vue {
     this.RoomService.isPlayingListener(
       "fXO5vernUJa2qZg3Qlc6",
       (isPlaying: boolean) => {
-        isPlaying ? this.play(0) : this.pause(0);
+        isPlaying ? this.play() : this.pause();
       }
     );
 
@@ -192,24 +192,19 @@ export default class Player extends Vue {
     return (this.$refs.youtube as any).player;
   }
 
-  pause(doWeServer: number) {
+  pause() {
     this.isPlaying = false;
-    if(doWeServer){
-      console.log("yes we do server");
-      this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", false);
-    }
+    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", false);
+
     window.setTimeout(() => {
       this.player.pauseVideo();
       this.setupProgress();
     }, 200);
   }
 
-  play(doWeServer: number) {
+  play() {
     this.player.playVideo();
-    if(doWeServer){
-      console.log("yes we do server");
-      this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", true);
-    }
+    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", true);
     window.setTimeout(() => {
       this.isPlaying = true;
       this.firstTimePlaying = false;
@@ -217,7 +212,7 @@ export default class Player extends Vue {
   }
 
   playpause() {
-    this.isPlaying ? this.pause(1) : this.play(1);
+    this.isPlaying ? this.pause() : this.play();
   }
 
   chooseMute() {
