@@ -22,7 +22,7 @@ export default class RoomService {
       const roomsSnapshot = await firebase
         .firestore()
         .collection("rooms")
-        .where("members", "array-contains", this.authService.currentUserId)
+        .where("privacy", "==", 0)
         .get();
       let rooms: Array<Room> = [];
       for (let roomDoc of roomsSnapshot.docs) {
