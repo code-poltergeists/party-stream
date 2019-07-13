@@ -158,7 +158,7 @@ export default class Player extends Vue {
     this.RoomService.isPlayingListener(
       "fXO5vernUJa2qZg3Qlc6",
       (isPlaying: boolean) => {
-        isPlaying ? this.play() : this.pause();
+        isPlaying ? this.play(0) : this.pause(0);
       }
     );
 
@@ -192,18 +192,24 @@ export default class Player extends Vue {
     return (this.$refs.youtube as any).player;
   }
 
-  pause() {
+  pause(doWeServer: number) {
     this.isPlaying = false;
-    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", false);
+    if(doWeServer){
+      console.log("yes we do server");
+      this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", false);
+    }
     window.setTimeout(() => {
       this.player.pauseVideo();
       this.setupProgress();
     }, 200);
   }
 
-  play() {
+  play(doWeServer: number) {
     this.player.playVideo();
-    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", true);
+    if(doWeServer){
+      console.log("yes we do server");
+      this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", true);
+    }
     window.setTimeout(() => {
       this.isPlaying = true;
       this.firstTimePlaying = false;
@@ -211,7 +217,7 @@ export default class Player extends Vue {
   }
 
   playpause() {
-    this.isPlaying ? this.pause() : this.play();
+    this.isPlaying ? this.pause(1) : this.play(1);
   }
 
   chooseMute() {
@@ -284,6 +290,7 @@ export default class Player extends Vue {
         }
       } else if (sliderName === "progressSlider") {
         if (saveValue) {
+          console.log(saveValue);
           (this.player as any).seekTo(event.target.value);
         }
       }
