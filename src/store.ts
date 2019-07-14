@@ -16,6 +16,9 @@ export default new Vuex.Store({
     },
     auth: {
       restrict: false
+    },
+    chooseFriends: {
+      users: []
     }
   },
   mutations: {
@@ -38,6 +41,9 @@ export default new Vuex.Store({
     },
     restrictRouterForwarding(state, flag) {
       state.auth.restrict = flag;
+    },
+    updateChosenFriends(state, array) {
+      state.chooseFriends.users = array;
     }
   },
   actions: {

@@ -80,4 +80,14 @@ export default class RoomService {
         callback(doc.data()!.isPlaying);
       });
   }
+
+  async addPeopleToRoom(roomId: string, users: Array<String>) {
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        users: firebase.firestore.FieldValue.arrayUnion(...users)
+      });
+  }
 }

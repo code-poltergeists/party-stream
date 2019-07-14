@@ -14,7 +14,7 @@
             @click="dialogStepClicked(index)"
           >
             <div
-              :class="{'dialog-step': true, 'active': currentIndex == index, 'arrow-overlap': index != 0, 'single-step': $store.state.dialog.info.steps.length == 1}"
+              :class="{'dialog-step': true, 'active': currentIndex == index, 'arrow-overlap': index != 0, 'single-step': $store.state.dialog.info.steps.length == 2}"
             >
               <div
                 class="step-number"
@@ -22,7 +22,7 @@
               >{{index + 1}}</div>
               <div class="step-title">{{$t(step.name)}}</div>
             </div>
-            <div class="arrow" v-if="index != $store.state.dialog.info.steps.length - 1"></div>
+            <div class="arrow" v-if="index != $store.state.dialog.info.steps.length - 2"></div>
           </div>
         </div>
         <Button

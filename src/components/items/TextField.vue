@@ -15,6 +15,7 @@ export default class TextField extends Vue {
   private onEnterPressed() {
     if (this.toEmit !== '') {
       this.$emit(this.toEmit, this.text);
+      this.text = '';
     }
   }
 }
