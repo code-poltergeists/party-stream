@@ -177,7 +177,6 @@ export default class Player extends Vue {
             5 – video cued
          */
         this.shouldUpdateSliders = state === 1;
-        console.log(state);
       });
     }, 100);
     FullScreenHelper.onFullscreenChange(() => {
