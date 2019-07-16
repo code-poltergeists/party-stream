@@ -113,7 +113,11 @@ export default class Dashboard extends Vue {
           {
             name: "join-room",
             action: () => {
-              this.$store.commit("toggleDialogVisibility", false);
+              this.roomService
+                .joinRoom(this.$store.state.room.code)
+                .then(() => {
+                  this.$store.commit("toggleDialogVisibility", false);
+                });
             }
           }
         ];

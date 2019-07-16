@@ -67,8 +67,31 @@ export default class RoomService {
         privacy: privacy,
         creationDate: firebase.firestore.FieldValue.serverTimestamp(),
         members: [],
-        videos: []
+        // videos: [], - e colectie, nu field
+        inviteCode: (+new Date() * Math.random()).toString(36).substring(0, 6)
       });
+  }
+
+  async joinRoom(code: string) {
+    return new Promise((resolve, reject) => {
+      firebase
+        .firestore()
+        .collection("rooms")
+        .where("inviteCode", "==", code)
+        .get()
+        .then(snapshot => {
+          if (snapshot.docs.length === 0) {
+            reject();
+          } else {
+            console.log(snapshot.docs[0].data())
+            this.addPeopleToRoom(snapshot.docs[0].id, [
+              this.authService.currentUserId
+            ]).then(() => {
+              resolve();
+            });
+          }
+        });
+    });
   }
 
   async isPlayingListener(roomId: string, callback: Function) {
@@ -87,7 +110,7 @@ export default class RoomService {
       .collection("rooms")
       .doc(roomId)
       .update({
-        users: firebase.firestore.FieldValue.arrayUnion(...users)
+        members: firebase.firestore.FieldValue.arrayUnion(...users)
       });
   }
 }

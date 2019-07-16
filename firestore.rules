@@ -4,8 +4,8 @@ service cloud.firestore {
       return request.auth.uid != null;
     }
     match /rooms/{roomId} {
-      allow read, write: if isAuthenticated() && resource.data.privacy == 0;
-      allow write: if isAuthenticated() && resource.data.privacy == 1;
+      allow read, write: if isAuthenticated();
+      allow write: if isAuthenticated();
       match /videos/{videoId} {
         allow read, write: if isAuthenticated();
       }

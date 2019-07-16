@@ -13,6 +13,7 @@ export default new Vuex.Store({
     room: {
       name: '',
       privacy: 0,
+      code: ''
     },
     auth: {
       restrict: false
@@ -38,6 +39,9 @@ export default new Vuex.Store({
     },
     roomPrivacyUpDate(state, value) {
       state.room.privacy = value;
+    },
+    roomCodeUpdate(state, value) {
+      state.room.code = value;
     },
     restrictRouterForwarding(state, flag) {
       state.auth.restrict = flag;

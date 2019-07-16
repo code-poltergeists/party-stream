@@ -2,41 +2,50 @@
   <div id="dialog-content">
     <div id="privacy">
       <i class="fas fa-globe-europe privacy-item"></i>
-      <ToggleSwitch id="privacy-switch" @onToggle="changePrivacy"/>
+      <ToggleSwitch id="privacy-switch" @onToggle="changePrivacy" />
       <i class="fas fa-lock privacy-item"></i>
     </div>
-    <TextField :placeholder="placeholder" id="name-textfield"/>
+    <TextField
+      :placeholder="placeholder"
+      id="name-textfield"
+      toEmitOnChange="update-code"
+      @update-code="updateCode"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import TextField from '../TextField.vue';
-import ToggleSwitch from '../ToggleSwitch.vue';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import TextField from "../TextField.vue";
+import ToggleSwitch from "../ToggleSwitch.vue";
 
 @Component({
   components: {
     TextField,
-    ToggleSwitch,
-  },
+    ToggleSwitch
+  }
 })
 export default class JoinRoom extends Vue {
-  private placeholder: string = 'enter-room-name';
+  private placeholder: string = "enter-invite-code";
+
+  updateCode(value: string) {
+    this.$store.commit("roomCodeUpdate", value);
+  }
 
   private changePrivacy(value: number) {
     // let title: string = '';
-    switch (value) {
-      case 0:
-        // title = 'join-public-room';
-        this.placeholder = 'enter-room-name';
-        break;
-      case 1:
-        // title = 'join-private-room';
-        this.placeholder = 'enter-room-id';
-        break;
-      default:
-        break;
-    }
+    // switch (value) {
+    //   case 0:
+    //     // title = 'join-public-room';
+    //     this.placeholder = 'enter-room-name';
+    //     break;
+    //   case 1:
+    //     // title = 'join-private-room';
+    //     this.placeholder = 'enter-room-id';
+    //     break;
+    //   default:
+    //     break;
+    // }
     // const steps = this.$store.state.dialog.info.steps;
     // steps[0].namexș = title;
     // this.$store.commit('setupDialog', {
@@ -62,7 +71,7 @@ export default class JoinRoom extends Vue {
 }
 
 .privacy-item {
-  color: #E3E3E3;
+  color: #e3e3e3;
   margin: 0 20px;
   font-size: 50px;
 }
@@ -70,5 +79,4 @@ export default class JoinRoom extends Vue {
 #name-textfield {
   margin-top: 60px;
 }
-
 </style>
