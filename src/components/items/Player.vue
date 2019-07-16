@@ -175,6 +175,12 @@ export default class Player extends Vue {
         (this.player as any).seekTo(time);
       }
     );
+    this.RoomService.volumeListener(
+      "fXO5vernUJa2qZg3Qlc6",
+      (volume: number) => {
+        (this.player as any).setVolume(volume);
+      }
+    );
   }
 
   formatTime(time: number | null) {
@@ -288,6 +294,7 @@ export default class Player extends Vue {
       if (sliderName === "volumeSlider") {
         (this.player as any).setVolume(event.target.value);
         if (saveValue) {
+          this.RoomService.updateVolume("fXO5vernUJa2qZg3Qlc6", event.target.value);
           this.currentVolume = event.target.value;
         }
       } else if (sliderName === "progressSlider") {

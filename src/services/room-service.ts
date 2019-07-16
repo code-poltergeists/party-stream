@@ -148,4 +148,24 @@ export default class RoomService {
         callback(doc.data()!.time);
       });
   }
+
+  async updateVolume(roomId: string, value: number) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        "volume": value
+      })
+  }
+
+  async volumeListener(roomId: string, callback: Function) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .onSnapshot(doc => {
+        callback(doc.data()!.volume);
+      });
+  }
 }
