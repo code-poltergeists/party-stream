@@ -128,4 +128,24 @@ export default class RoomService {
         "isMuted": value
       });
   }
+
+  async updateTime(roomId: string, value: number) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        "time": value
+      })
+  }
+
+  async timeListener(roomId: string, callback: Function) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .onSnapshot(doc => {
+        callback(doc.data()!.time);
+      });
+  }
 }

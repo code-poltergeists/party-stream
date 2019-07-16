@@ -168,6 +168,14 @@ export default class Player extends Vue {
         isMuted ? this.mute() : this.unMute();
       }
     );
+
+    this.RoomService.timeListener(
+      "fXO5vernUJa2qZg3Qlc6",
+      (time: number) => {
+        console.log(time);
+        (this.player as any).seekTo(time);
+      }
+    );
   }
 
   formatTime(time: number | null) {
@@ -285,7 +293,7 @@ export default class Player extends Vue {
         }
       } else if (sliderName === "progressSlider") {
         if (saveValue) {
-          console.log(saveValue);
+          this.RoomService.updateTime("fXO5vernUJa2qZg3Qlc6", event.target.value);
           (this.player as any).seekTo(event.target.value);
         }
       }
