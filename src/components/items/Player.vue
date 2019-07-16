@@ -172,7 +172,6 @@ export default class Player extends Vue {
     this.RoomService.timeListener(
       "fXO5vernUJa2qZg3Qlc6",
       (time: number) => {
-        console.log(time);
         (this.player as any).seekTo(time);
       }
     );
