@@ -113,4 +113,16 @@ export default class RoomService {
         members: firebase.firestore.FieldValue.arrayUnion(...users)
       });
   }
+
+  async isPrivate(roomId: string) {
+    return new Promise<boolean>((resolve, reject) => {
+      firebase.firestore().collection('rooms').doc(roomId).get().then(doc => {
+        if (!doc.exists) {
+          reject();
+        } else {
+          resolve(doc.data()!.privacy === 1);
+        }
+      });
+    });
+  }
 }

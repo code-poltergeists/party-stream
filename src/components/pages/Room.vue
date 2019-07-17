@@ -1,7 +1,13 @@
 <template>
-  <div>
+  <div v-if="isPrivate === false">
     <h1>Hi, and welcome to room {{ $route.params.id }}</h1>
     <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
+  </div>
+  <div v-else-if="isPrivate === true">
+    <h1>Sorry, private room</h1>
+  </div>
+  <div v-else-if="isPrivate === undefined">
+    <h1>Room not found :(</h1>
   </div>
 </template>
 
@@ -9,7 +15,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import ytPlayer from "../items/YtPlayer.vue";
 import Button from "../items/Button.vue";
-import RoomService from '../../services/room-service';
+import RoomService from "../../services/room-service";
 
 @Component({
   components: {
@@ -19,6 +25,8 @@ import RoomService from '../../services/room-service';
 })
 export default class Room extends Vue {
   private roomService = new RoomService();
+
+  isPrivate: boolean | null | undefined = null;
 
   inviteFriends() {
     const stepsArray = [
@@ -38,12 +46,23 @@ export default class Room extends Vue {
         name: "invite-friends",
         action: () => {
           this.$store.commit("toggleDialogVisibility", false);
-          this.roomService.addPeopleToRoom(this.$route.params.id, this.$store.state.chooseFriends.users);
+          this.roomService.addPeopleToRoom(
+            this.$route.params.id,
+            this.$store.state.chooseFriends.users
+          );
         }
       }
     ];
     stepsArray[0].action();
     this.$store.commit("toggleDialogVisibility", true);
+  }
+
+  async mounted() {
+    try {
+      this.isPrivate = await this.roomService.isPrivate(this.$route.params.id);
+    } catch {
+      this.isPrivate = undefined;
+    }
   }
 }
 </script>
