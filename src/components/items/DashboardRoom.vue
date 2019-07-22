@@ -1,6 +1,6 @@
 <template>
-  <div id="room">
-    <div id="room-name" @click="redirectToRoom()">{{ room.roomName }}</div>
+  <div id="room" @click="redirectToRoom()">
+    <div id="room-name">{{ room.roomName }}</div>
     <div class="spacer"></div>
     <div id="thumbnail" :style="{backgroundImage: `url(${videoThumbnail})`}">
       <div id="thumbnail-overlay">
@@ -106,6 +106,10 @@ export default class DashboardRoom extends Vue {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+#room:hover {
+  cursor: pointer;
 }
 
 #room-name {
