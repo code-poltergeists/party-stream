@@ -40,14 +40,6 @@ import router from "@/router";
   }
 })
 export default class Dashboard extends Vue {
-  mounted() {
-    new RoomService().isPlayingListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (isPlaying: boolean) => {
-        console.log(isPlaying);
-      }
-    );
-  }
 
   private openDialog(type: string) {
     let stepsArray: { name: string | null; action: Function }[] = [];

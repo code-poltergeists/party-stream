@@ -4,6 +4,7 @@ import AuthService from "./auth-service";
 import Room from "@/models/Room";
 import Video from "@/models/Video";
 import 'firebase/firestore';
+import { callbackify } from 'util';
 
 export default class RoomService {
   static instance: RoomService;
@@ -95,6 +96,76 @@ export default class RoomService {
       .doc(roomId)
       .onSnapshot(doc => {
         callback(doc.data()!.isPlaying);
+      });
+  }
+
+  async isPlayingUpdater(roomId: string, value: boolean) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        "isPlaying": value
+      });
+  }
+
+  async isMutedListener(roomId: string, callback: Function) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .onSnapshot(doc => {
+        callback(doc.data()!.isMuted);
+      })
+  }
+
+  async isMutedUpdater(roomId: string, value: boolean) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        "isMuted": value
+      });
+  }
+
+  async updateTime(roomId: string, value: number) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        "time": value
+      })
+  }
+
+  async timeListener(roomId: string, callback: Function) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .onSnapshot(doc => {
+        callback(doc.data()!.time);
+      });
+  }
+
+  async updateVolume(roomId: string, value: number) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        "volume": value
+      })
+  }
+
+  async volumeListener(roomId: string, callback: Function) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .onSnapshot(doc => {
+        callback(doc.data()!.volume);
       });
   }
 }
