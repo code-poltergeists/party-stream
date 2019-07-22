@@ -1,6 +1,6 @@
 <template>
   <div id="room">
-    <div id="room-name">{{ room.roomName }}</div>
+    <div id="room-name" @click="redirectToRoom()">{{ room.roomName }}</div>
     <div class="spacer"></div>
     <div id="thumbnail" :style="{backgroundImage: `url(${videoThumbnail})`}">
       <div id="thumbnail-overlay">
@@ -85,6 +85,10 @@ export default class DashboardRoom extends Vue {
       }
       angle += 7;
     }, 30);
+  }
+
+  redirectToRoom() {
+    this.$router.push({ name: 'room', params: { id: this.room.id } });
   }
 
   get formatTime() {
