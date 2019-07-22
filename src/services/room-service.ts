@@ -29,11 +29,16 @@ export default class RoomService {
         const roomData = roomDoc.data();
         let room = new Room(
           roomData.id,
-          roomData.roomName,
           roomData.creationDate,
-          roomData.privacy,
+          roomData.inviteCode,
+          roomData.isMuted,
+          roomData.isPlaying,
           roomData.members,
-          roomData.videos
+          roomData.privacy,
+          roomData.roomName,
+          roomData.time,
+          roomData.videos,
+          roomData.volume
         );
         room.id = roomDoc.id;
         room.members = roomData.members;
@@ -63,12 +68,15 @@ export default class RoomService {
       .firestore()
       .collection("rooms")
       .add({
-        roomName: roomName,
-        privacy: privacy,
         creationDate: firebase.firestore.FieldValue.serverTimestamp(),
+        inviteCode: (+new Date() * Math.random()).toString(36).substring(0, 6),
+        isMuted: false,
+        isPlaying: false,
         members: [],
-        // videos: [], - e colectie, nu field
-        inviteCode: (+new Date() * Math.random()).toString(36).substring(0, 6)
+        privacy: privacy,
+        roomName: roomName,
+        time: 0,
+        volume: 100
       });
   }
 
@@ -125,4 +133,6 @@ export default class RoomService {
       });
     });
   }
+
+  async 
 }
