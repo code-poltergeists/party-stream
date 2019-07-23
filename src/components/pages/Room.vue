@@ -1,6 +1,7 @@
 <template>
   <div v-if="isPrivate === false">
     <h1>Hi, and welcome to room: {{ this.roomDetails.roomName }}</h1>
+    <Player />
     <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
   </div>
   <div v-else-if="isPrivate === true">
@@ -13,14 +14,14 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import ytPlayer from "../items/YtPlayer.vue";
+import Player from "../items/Player.vue";
 import Button from "../items/Button.vue";
 import RoomModel from "@/models/Room";
 import RoomService from "../../services/room-service";
 
 @Component({
   components: {
-    ytPlayer,
+    Player,
     Button
   }
 })
