@@ -1,6 +1,6 @@
 <template>
   <div v-if="isPrivate === false">
-    <h1>Hi, and welcome to room {{ $route.params.id }}</h1>
+    <h1>Hi, and welcome to room: {{ this.roomDetails.roomName }}</h1>
     <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
   </div>
   <div v-else-if="isPrivate === true">
@@ -15,6 +15,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import ytPlayer from "../items/YtPlayer.vue";
 import Button from "../items/Button.vue";
+import RoomModel from "@/models/Room";
 import RoomService from "../../services/room-service";
 
 @Component({
@@ -27,6 +28,7 @@ export default class Room extends Vue {
   private roomService = new RoomService();
 
   isPrivate: boolean | null | undefined = null;
+  private roomDetails = new RoomModel('', new Date(), 0, false, false, [''], 0, '0', 0, [], 0);
 
   inviteFriends() {
     const stepsArray = [
@@ -63,6 +65,8 @@ export default class Room extends Vue {
     } catch {
       this.isPrivate = undefined;
     }
+    this.roomDetails = await this.roomService.getRoomInfo(this.$route.params.id);
+    console.log(this.roomDetails);
   }
 }
 </script>

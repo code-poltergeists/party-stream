@@ -133,4 +133,45 @@ export default class RoomService {
       });
     });
   }
+
+  async getRoomInfo(roomId: string):Promise<Room> {
+    return new Promise<Room>(async (resolve, reject) => {
+      const roomSnapshot = await firebase
+        .firestore()
+        .collection("rooms")
+        .doc(roomId)
+        .get()
+      const roomData = roomSnapshot.data();
+      let room = new Room(
+        roomData.id,
+        roomData.creationDate,
+        roomData.inviteCode,
+        roomData.isMuted,
+        roomData.isPlaying,
+        roomData.members,
+        roomData.privacy,
+        roomData.roomName,
+        roomData.time,
+        roomData.videos,
+        roomData.volume
+      );
+      room.id = roomSnapshot.id;
+      let videos: Array<Video> = [];
+      const videosSnapshot = await firebase
+        .firestore()
+        .collection("rooms")
+        .doc(roomSnapshot.id)
+        .collection("videos")
+        .get();
+      videosSnapshot.docs.forEach(videoDoc => {
+        const videoData = videoDoc.data();
+        let video = new Video();
+        video.id = videoDoc.id;
+        video.link = videoData.link;
+        videos.push(video);
+      });
+      room.videos = videos;
+      resolve(room);
+    })
+  }
 }
