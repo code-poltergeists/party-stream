@@ -128,8 +128,6 @@ export default class Player extends Vue {
 
   videoService = new VideoService();
 
-  get formatTime() {
-    return TimeHelper.formatTime;
   lastTimeFromFirestore = -1;
 
   onVolumeChange(volume: number) {

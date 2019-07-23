@@ -182,17 +182,6 @@ export default class RoomService {
         callback(doc.data()!.volume);
       });
   }
-}
-
-async isPlayingListener(roomId: string, callback: Function) {
-    firebase
-      .firestore()
-      .collection("rooms")
-      .doc(roomId)
-      .onSnapshot(doc => {
-        callback(doc.data()!.isPlaying);
-      });
-  }
 
   async addPeopleToRoom(roomId: string, users: Array<String>) {
     return firebase
@@ -257,3 +246,4 @@ async isPlayingListener(roomId: string, callback: Function) {
     })
   }
 }
+
