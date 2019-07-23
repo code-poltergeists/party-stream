@@ -1,22 +1,23 @@
 <template>
   <div id="layout">
     <div id="left">
-      <svg height="500" width="600">
-        <defs>
-          <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#7F18B6" />
-            <stop offset="12.5%" stop-color="#533E87" stop-opacity="0.8" />
-            <stop offset="32.5%" stop-color="#315B5B" stop-opacity="0.64" />
-            <stop offset="40%" stop-color="#1A4921" stop-opacity="0.75" />
-            <stop offset="50%" stop-color="#1A2328" stop-opacity="0.8" />
-            <stop offset="60%" stop-color="#1A4921" stop-opacity="0.75" />
-            <stop offset="67.5%" stop-color="#315B5B" stop-opacity="0.64" />
-            <stop offset="87.5%" stop-color="#533E87" stop-opacity="0.8" />
-            <stop offset="100%" stop-color="#7F18B6" />
-          </linearGradient>
-        </defs>
-        <path
-          d="
+      <div id="svg-container">
+        <svg viewBox="0 0 600 500">
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#7F18B6" />
+              <stop offset="12.5%" stop-color="#533E87" stop-opacity="0.8" />
+              <stop offset="32.5%" stop-color="#315B5B" stop-opacity="0.64" />
+              <stop offset="40%" stop-color="#1A4921" stop-opacity="0.75" />
+              <stop offset="50%" stop-color="#1A2328" stop-opacity="0.8" />
+              <stop offset="60%" stop-color="#1A4921" stop-opacity="0.75" />
+              <stop offset="67.5%" stop-color="#315B5B" stop-opacity="0.64" />
+              <stop offset="87.5%" stop-color="#533E87" stop-opacity="0.8" />
+              <stop offset="100%" stop-color="#7F18B6" />
+            </linearGradient>
+          </defs>
+          <path
+            d="
              M 0 250
              Q 20 125 40 250 
              Q 60 400 80 250
@@ -34,9 +35,10 @@
              Q 540 550 560 250
              Q 580 50 600 250
           "
-          fill="url(#gradient)"
-        />
-      </svg>
+            fill="url(#gradient)"
+          />
+        </svg>
+      </div>
     </div>
     <div id="right">
       <p id="landing-text" v-html="$t('landing-text')"></p>
@@ -293,7 +295,13 @@ export default class Auth extends Vue {
         .catch(e => console.log(e));
     } else if (this.currentTab === "complete-signup") {
       this.authService
-        .finishSignUp(this.email, this.username, this.phone, this.photoString!, this.userId)
+        .finishSignUp(
+          this.email,
+          this.username,
+          this.phone,
+          this.photoString!,
+          this.userId
+        )
         .then(_ => {
           this.$store.commit("restrictRouterForwarding", false);
           this.authService.isAuthenticated$.next(true);
@@ -351,6 +359,18 @@ export default class Auth extends Vue {
 $color: #e3e3e3;
 $color-dark: #656565;
 
+@mixin desktop {
+  @media only screen and (min-width: 601px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
+
 #recaptcha-center {
   text-align: center;
   width: 60%;
@@ -370,24 +390,48 @@ $color-dark: #656565;
   align-items: center;
   justify-content: center;
   width: 100%;
+  flex-direction: row;
+  @include mobile {
+    flex-direction: column;
+  }
 }
 
 #left {
-  width: 50%;
-  height: 100vh;
   color: $color;
   display: flex;
   justify-content: center;
   align-items: center;
+  @include desktop {
+    margin: 50px 0;
+    width: 50%;
+    align-items: flex-start;
+    margin-left: 3vw;
+  }
+  @include mobile {
+    width: 100%;
+  }
+}
+
+#svg-container {
+  width: 100%;
 }
 
 #right {
   width: 50%;
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  @include desktop {
+    margin: 50px 0;
+    width: 50%;
+    align-items: flex-end;
+    margin-right: 3vw;
+  }
+  @include mobile {
+    width: 100%;
+    margin-top: 25px;
+  }
 }
 
 .disabled {
@@ -398,29 +442,35 @@ $color-dark: #656565;
 #landing-text {
   font-family: "Montserrat";
   font-weight: 700;
-  font-size: 50px;
   color: $color;
-  text-align: right;
   margin-bottom: 50px;
-  width: 60%;
+  width: 80%;
+  @include desktop {
+    text-align: right;
+    font-size: 3vw;
+  }
+  @include mobile {
+    text-align: center;
+    font-size: 10vw;
+  }
 }
 
 #buttons {
+  width: 80%;
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 20px;
-}
-
-#buttons div {
-  font-family: "Montserrat";
-  font-weight: 700;
-  font-size: 25px;
-  color: #656565;
-  cursor: pointer;
-}
-
-#buttons div:hover {
-  color: $color;
+  & div {
+    font-family: "Montserrat";
+    font-weight: 700;
+    font-size: 25px;
+    color: #656565;
+    cursor: pointer;
+  }
+  & div:hover {
+    color: $color;
+  }
 }
 
 #circle {
@@ -449,8 +499,8 @@ $color-dark: #656565;
 }
 
 .textfield-container {
-  width: 60%;
   margin: 10px 0;
+  width: 80%;
 }
 
 #checkbox {
@@ -472,6 +522,8 @@ button:focus {
 
 #checkbox-container {
   display: flex;
+  width: 80%;
+  justify-content: center;
   align-items: center;
 }
 
@@ -648,13 +700,13 @@ button:focus {
   font-size: 25px;
   font-weight: 600;
   background-color: $color-dark;
-  width: 60%;
   padding: 10px;
   border-radius: 1000px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+  width: 80%;
 }
 
 #auth-button:hover {
@@ -662,17 +714,24 @@ button:focus {
 }
 
 #alternative-auth {
+  width: 80%;
+  text-align: center;
   font-family: "Montserrat";
   font-weight: 600;
   color: $color;
-  font-size: 20px;
-  margin: 20px 0;
+  margin-bottom: 20px;
+  @include mobile {
+    font-size: 5vw;
+  }
+  @include desktop {
+    font-size: 2vw;
+  }
 }
 
 #alternative-auth-buttons {
   display: flex;
-  width: 60%;
   justify-content: space-between;
+  width: 80%;
 }
 
 .alternative-auth-button {
