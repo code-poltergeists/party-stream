@@ -1,28 +1,34 @@
 <template>
-  <div id="dashboard" class="container-fluid">
-    <div class="row no-gutters">
-      <div class="col" id="col-text">
-        <i class="fas fa-sad-tear" id="sad"></i>
-        <div id="text">{{ $t('no-items') }}</div>
+  <div id="dashboard">
+    <div id="no-items" v-if="hasElements === false" class="container-fluid">
+      <div class="row no-gutters">
+        <div class="col" id="col-text">
+          <i class="fas fa-sad-tear" id="sad"></i>
+          <div id="text">{{ $t('no-items') }}</div>
+        </div>
       </div>
-    </div>
-    <div class="row no-gutters">
-      <div class="col-6 right">
-        <Button
-          icon="fas fa-plus-circle"
-          text="create-room"
-          @click.native="openDialog('create-room')"
-        ></Button>
-      </div>
-      <div class="col-6 left">
-        <Button icon="fas fa-sign-in-alt" text="join-room" @click.native="openDialog('join-room')"></Button>
-      </div>
-      <div class="col-12 center">
-        <Button
-          icon="fas fa-user-friends"
-          text="add-friends"
-          @click.native="openDialog('invite-friends')"
-        ></Button>
+      <div class="row no-gutters">
+        <div class="col-6 right">
+          <Button
+            icon="fas fa-plus-circle"
+            text="create-room"
+            @click.native="openDialog('create-room')"
+          ></Button>
+        </div>
+        <div class="col-6 left">
+          <Button
+            icon="fas fa-sign-in-alt"
+            text="join-room"
+            @click.native="openDialog('join-room')"
+          ></Button>
+        </div>
+        <div class="col-12 center">
+          <Button
+            icon="fas fa-user-friends"
+            text="add-friends"
+            @click.native="openDialog('invite-friends')"
+          ></Button>
+        </div>
       </div>
     </div>
   </div>
@@ -40,6 +46,9 @@ import router from "@/router";
   }
 })
 export default class Dashboard extends Vue {
+  roomService = new RoomService();
+
+  hasElements: boolean | null = false;
 
   private openDialog(type: string) {
     let stepsArray: { name: string | null; action: Function }[] = [];
@@ -77,10 +86,13 @@ export default class Dashboard extends Vue {
             action: () => {
               this.$store.commit("toggleDialogVisibility", false);
               new RoomService()
-                .createRoom(this.$store.state.room.name, this.$store.state.room.privacy)
-                .then(doc =>{
-                  router.push({name: 'room', params: {id: doc.id}})
-                })
+                .createRoom(
+                  this.$store.state.room.name,
+                  this.$store.state.room.privacy
+                )
+                .then(doc => {
+                  router.push({ name: "room", params: { id: doc.id } });
+                });
             }
           }
         ];
@@ -101,7 +113,11 @@ export default class Dashboard extends Vue {
           {
             name: "join-room",
             action: () => {
-              this.$store.commit("toggleDialogVisibility", false);
+              this.roomService
+                .joinRoom(this.$store.state.room.code)
+                .then(() => {
+                  this.$store.commit("toggleDialogVisibility", false);
+                });
             }
           }
         ];

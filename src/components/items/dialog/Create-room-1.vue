@@ -1,6 +1,6 @@
 <template>
   <div id="dialog-content">
-    <TextField id="name-textfield" placeholder="name" toEmit="update-name" @update-name="updateName" ref="textField"/>
+    <TextField id="name-textfield" placeholder="name" toEmitOnChange="update-name" @update-name="updateName" ref="textField"/>
     <div id="privacy">
       <i class="fas fa-globe-europe privacy-item"></i>
       <ToggleSwitch id="privacy-switch" onToggle="update-privacy" @update-privacy="updatePrivacy" />

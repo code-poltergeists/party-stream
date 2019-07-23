@@ -8,6 +8,7 @@
       :fitParent="true"
     />
     <div @mouseover="onMouseOver" @mouseleave="onMouseLeave" @mousemove="onMouseMove">
+      <div id="thumbnail" v-if="!isPlaying" :style="{backgroundImage: `url(${videoThumbnail})`}"></div>
       <div id="overlay">
         <div id="overlay-content" v-if="!isPlaying">
           <div id="video-title">{{ videoTitle }}</div>
@@ -67,9 +68,7 @@
             @click="playpause"
             :class="{'fas': true, 'fa-pause': isPlaying, 'fa-play': !isPlaying}"
           ></i>
-          <div
-            id="time"
-          >{{ this.formatTime(this.elapsedTime) }} - {{ this.formatTime(this.totalTime) }}</div>
+          <div id="time">{{ formatTime(elapsedTime) }} - {{ formatTime(totalTime) }}</div>
           <i
             id="mute"
             @click="chooseMute"
@@ -102,6 +101,8 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios from "axios";
 import FullScreenHelper from "../../helpers/full-screen";
+import TimeHelper from "../../helpers/time";
+import VideoService from "../../services/video-service";
 import RoomService from "@/services/room-service";
 
 @Component
@@ -118,11 +119,14 @@ export default class Player extends Vue {
   shouldUpdateSliders = true;
 
   videoTitle = "";
+  videoThumbnail = "";
 
   elapsedTime: number | null = null;
   totalTime: number | null = null;
 
   firstTimePlaying = true;
+
+  videoService = new VideoService();
 
   lastTimeFromFirestore = -1;
 
@@ -137,16 +141,13 @@ export default class Player extends Vue {
   }
 
   mounted() {
-    axios
-      .get("https://www.googleapis.com/youtube/v3/videos", {
-        params: {
-          id: "dQw4w9WgXcQ",
-          part: "snippet",
-          key: process.env.VUE_APP_youtubeKey
-        }
-      })
-      .then(response => {
-        this.videoTitle = response.data.items[0].snippet.title;
+    this.videoService
+      .getVideoTitle("dQw4w9WgXcQ")
+      .then(title => {
+        this.videoTitle = title;
+        this.videoThumbnail = this.videoService.getVideoThumbnail(
+          "dQw4w9WgXcQ"
+        );
       })
       .catch(e => console.log(e));
     (this.player as any).getDuration().then((duration: number) => {
@@ -341,7 +342,7 @@ export default class Player extends Vue {
 }
 
 #youtube {
-  z-index: 9996;
+  z-index: 9995;
 }
 
 #no-clicks-on-iframe-because-somehow-pointer-events-none-is-not-working {
@@ -350,7 +351,19 @@ export default class Player extends Vue {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 9996;
+}
+
+#thumbnail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 9997;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 #player {
@@ -393,7 +406,7 @@ export default class Player extends Vue {
 }
 
 #overlay-content {
-  background-color: #1a2328;
+  background-color: rgba(26, 35, 40, 0.75);
   border: 2px solid #36a86d;
   width: 100%;
   height: 100%;
