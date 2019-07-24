@@ -84,13 +84,15 @@
           :class="{'active': !isPasswordEnabled}"
         >{{ $t('passwordless') }}</div>
       </div>
-      <div
-        id="photo-container"
-        v-if="currentTab === 'signup'"
-        @click="startUpload"
-        ref="photoContainer"
-      >
-        <i class="fas fa-camera" v-if="photoString === null"></i>
+      <div id="photo-container-container">
+        <div
+          id="photo-container"
+          v-if="currentTab === 'signup'"
+          @click="startUpload"
+          ref="photoContainer"
+        >
+          <i class="fas fa-camera" v-if="photoString === null"></i>
+        </div>
       </div>
       <input type="file" style="display: none" ref="photoInput" @change="uploadPhoto" />
       <div
@@ -358,6 +360,12 @@ export default class Auth extends Vue {
 <style scoped lang="scss">
 $color: #e3e3e3;
 $color-dark: #656565;
+
+*,
+::after,
+::before {
+	box-sizing: border-box
+}
 
 @mixin desktop {
   @media only screen and (min-width: 601px) {
@@ -669,6 +677,13 @@ button:focus {
 
 #spinner {
   height: 100%;
+}
+
+#photo-container-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
 }
 
 #photo-container {

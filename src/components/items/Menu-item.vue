@@ -1,36 +1,32 @@
 <template>
-  <div :class="{'item': true, 'active': active, 'container-fluid': true}" @click="toggleMenuItem()">
-      <div class="row no-gutters">
-        <div class="col-item">
-          <i :class="[icon, 'icon']"></i>
-        </div>
-        <div class="col">
-          <span class="text">{{ text }}</span>
-        </div>
-      </div>
+  <div :class="{'item': true, 'active': active}" @click="toggleMenuItem()">
+    <div class="icon-container">
+      <i :class="[icon, 'icon']"></i>
     </div>
+    <span class="text">{{ text }}</span>
+  </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class MenuItem extends Vue {
   @Prop({ default: 0 }) private index!: number;
-  @Prop({ default: '' }) private icon!: string;
-  @Prop({ default: '' }) private text!: string;
+  @Prop({ default: "" }) private icon!: string;
+  @Prop({ default: "" }) private text!: string;
   @Prop({ default: false }) private active!: boolean;
-  @Prop({ default: '' }) private route!: string;
+  @Prop({ default: "" }) private route!: string;
 
   private toggleMenuItem() {
-    this.$store.commit('changeMenuItem', this.index);
+    this.$store.commit("changeMenuItem", this.index);
     this.$router.push({ name: this.route });
   }
 }
 </script>
 
 <style scoped lang="scss">
-.col-item {
+.icon-container {
   width: 50px;
 }
 

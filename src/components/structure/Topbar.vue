@@ -1,8 +1,6 @@
 <template>
   <div id="topbar">
-    <div id="menu">
-      A
-    </div>
+    <i class="fa fa-bars" id="menu" @click="toggleMenu"></i>
     <div id="title">{{ $t(this.$route.name) }}</div>
   </div>
 </template>
@@ -12,8 +10,11 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class Topbar extends Vue {
+  isMenuOpen = false;
+
   toggleMenu() {
-    alert("AAA");
+    this.isMenuOpen = !this.isMenuOpen;
+    this.$emit('onMenuToggle', this.isMenuOpen);
   }
 }
 </script>
@@ -31,6 +32,7 @@ export default class Topbar extends Vue {
   }
 }
 #topbar {
+  padding-left: 20px;
   background-color: #29333c;
   height: 10vh;
   border-bottom-right-radius: 10px;
@@ -44,11 +46,8 @@ export default class Topbar extends Vue {
 }
 
 #menu {
-  margin-left: 20px;
   font-size: 4vh;
-  // width: 4vh;
-  width: 100px;
-  background-color: red;
+  margin-right: 4vh;
   cursor: pointer;
   @include desktop {
     display: none;

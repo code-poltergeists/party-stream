@@ -1,11 +1,11 @@
 <template>
-  <div id="layout">
+  <div id="layout" :class="{'open': isMenuOpen}">
     <div id="col-sidebar">
       <Logo/>
       <Sidebar/>
     </div>
     <div id="col-view">
-      <Topbar/>
+      <Topbar @onMenuToggle="onMenuToggle" />
       <div id="view">
         <router-view></router-view>
       </div>
@@ -26,7 +26,13 @@ import Logo from './Logo.vue';
     Logo,
   },
 })
-export default class Layout extends Vue {}
+export default class Layout extends Vue {
+  isMenuOpen = false;
+
+  onMenuToggle(value: boolean) {
+    this.isMenuOpen = value;
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -48,6 +54,10 @@ export default class Layout extends Vue {}
   height: 100%;
   width: 100vw;
   display: flex;
+}
+
+.open {
+  
 }
 
 #col-sidebar {
