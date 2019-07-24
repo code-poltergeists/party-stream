@@ -30,6 +30,18 @@ export default class Layout extends Vue {}
 </script>
 
 <style scoped lang="scss">
+@mixin desktop {
+  @media only screen and (min-width: 601px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
+
 #layout {
   margin: 0;
   padding: 0;
@@ -41,6 +53,9 @@ export default class Layout extends Vue {}
 #col-sidebar {
   height: 100vh;
   flex: 0 0 300px;
+  @include mobile {
+    display: none;
+  }
 }
 
 #col-view {

@@ -1,17 +1,35 @@
 <template>
   <div id="topbar">
+    <div id="menu">
+      A
+    </div>
     <div id="title">{{ $t(this.$route.name) }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
-export default class Topbar extends Vue {}
+export default class Topbar extends Vue {
+  toggleMenu() {
+    alert("AAA");
+  }
+}
 </script>
 
 <style scoped lang="scss">
+@mixin desktop {
+  @media only screen and (min-width: 601px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
 #topbar {
   background-color: #29333c;
   height: 10vh;
@@ -25,16 +43,25 @@ export default class Topbar extends Vue {}
   font-size: 25px;
 }
 
-#topbar * {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+#menu {
+  margin-left: 20px;
+  font-size: 4vh;
+  // width: 4vh;
+  width: 100px;
+  background-color: red;
+  cursor: pointer;
+  @include desktop {
+    display: none;
+  }
 }
 
 #title {
-  margin-left: 50px;
+  margin-left: 30px;
+  font-size: 4vh;
+  @include mobile {
+    margin-left: -25px;
+    flex: 1;
+    text-align: center;
+  }
 }
 </style>
