@@ -2,10 +2,17 @@
   <div id="rooms">
     <div v-if="this.displayLoading" class="loading-container">
       <h1>Fetching videos...</h1>
-      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      <div class="lds-ring">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
       <!-- Shit load of divs for animation :P -->
     </div>
-    <DashboardRoom v-for="room in rooms" :key="room.id" :room="room" />
+    <div id="room-list">
+      <DashboardRoom v-for="room in rooms" :key="room.id" :room="room" />
+    </div>
   </div>
 </template>
 
@@ -75,5 +82,12 @@ export default class Rooms extends Vue {
     transform: rotate(360deg);
   }
 }
-
+#room-list {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-flow: row wrap;
+  align-content: space-between;
+  justify-content: space-between;
+}
 </style>

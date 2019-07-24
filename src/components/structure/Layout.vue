@@ -49,6 +49,6 @@ export default class Layout extends Vue {}
 
 #view {
   height: 90vh;
-  padding: 30px;
+  padding: 10px;
 }
 </style>

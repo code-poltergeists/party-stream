@@ -1,6 +1,6 @@
 <template>
   <div id="room" @click="redirectToRoom()">
-    <div id="room-name">{{ room.roomName }}</div>
+    <div id="room-name">{{ room.roomName !== '' ? room.roomName : "no title yet :'('" }}</div>
     <div class="spacer"></div>
     <div id="thumbnail" :style="{backgroundImage: `url(${videoThumbnail})`}">
       <div id="thumbnail-overlay">
@@ -35,9 +35,12 @@ export default class DashboardRoom extends Vue {
   videoTitle = "";
 
   get videoThumbnail() {
-    return this.videoService.getVideoThumbnail(
-      this.videoService.getVideoId(this.room.videos[0].link)
-    );
+    return this.room.videos[0] !== undefined &&
+      this.room.videos[0].link !== undefined
+      ? this.videoService.getVideoThumbnail(
+          this.videoService.getVideoId(this.room.videos[0].link)
+        )
+      : "https://globalgamejam.org/sites/default/files/styles/game_sidebar__normal/public/game/featured_image/promo_5.png?itok=9dymM8JD";
   }
 
   videoService = new VideoService();
@@ -48,47 +51,37 @@ export default class DashboardRoom extends Vue {
   progressTimer: any;
 
   mounted() {
-    this.videoService
-      .getVideoTitle(
-        this.room.videos[0].link.replace("https://www.youtube.com/watch?v=", "")
-      )
-      .then(title => {
-        this.videoTitle = title;
-      })
-      .catch(e => console.log(e));
-    this.videoService
-      .getVideoDuration(
-        this.room.videos[0].link.replace("https://www.youtube.com/watch?v=", "")
-      )
-      .then(duration => {
-        this.elapsedTime = 0;
-        this.totalTime = TimeHelper.iso8601toNumber(duration);
-      })
-      .catch(e => console.log(e));
-    this.setupProgress();
-  }
-
-  setupProgress() {
-    if (this.totalTime === null || this.elapsedTime === null) {
-      return;
-    }
-    var circle = this.$refs.progress as any;
-    var text = this.$refs.percent as any;
-    var angle = 0;
-    var percent = ((this.elapsedTime * 100) / this.totalTime) * 4.7;
-
-    this.progressTimer = window.setInterval(() => {
-      circle.setAttribute("stroke-dasharray", angle + ", 20000");
-      circle.setAttribute("stroke", "#f8f8f8");
-      if (angle >= percent) {
-        window.clearInterval(this.progressTimer);
-      }
-      angle += 7;
-    }, 30);
+    this.room.videos[0] !== undefined && this.room.videos[0].link !== undefined
+      ? this.videoService
+          .getVideoTitle(
+            this.room.videos[0].link.replace(
+              "https://www.youtube.com/watch?v=",
+              ""
+            )
+          )
+          .then(title => {
+            this.videoTitle = title;
+          })
+          .catch(e => console.log(e))
+      : (this.videoTitle = "nothing yet :'(");
+    this.room.videos[0] !== undefined && this.room.videos[0].link !== undefined
+      ? this.videoService
+          .getVideoDuration(
+            this.room.videos[0].link.replace(
+              "https://www.youtube.com/watch?v=",
+              ""
+            )
+          )
+          .then(duration => {
+            this.elapsedTime = 0;
+            this.totalTime = TimeHelper.iso8601toNumber(duration);
+          })
+          .catch(e => console.log(e))
+      : ((this.elapsedTime = 0), (this.totalTime = 0));
   }
 
   redirectToRoom() {
-    this.$router.push({ name: 'room', params: { id: this.room.id } });
+    this.$router.push({ name: "room", params: { id: this.room.id } });
   }
 
   get formatTime() {
@@ -106,6 +99,7 @@ export default class DashboardRoom extends Vue {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 10px;
 }
 
 #room:hover {
