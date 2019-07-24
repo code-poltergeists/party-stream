@@ -364,7 +364,7 @@ $color-dark: #656565;
 *,
 ::after,
 ::before {
-	box-sizing: border-box
+	box-sizing: border-box;
 }
 
 @mixin desktop {

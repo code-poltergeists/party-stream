@@ -28,6 +28,7 @@ export default class Logo extends Vue {
   width: 100%;
   background-color: #29333c;
   border-right: 5px solid rgb(90, 97, 100);
+  box-sizing: border-box;
   color: #e3e3e3;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;

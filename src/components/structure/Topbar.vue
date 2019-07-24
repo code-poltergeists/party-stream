@@ -31,7 +31,9 @@ export default class Topbar extends Vue {
     @content;
   }
 }
+
 #topbar {
+  box-sizing: border-box;
   padding-left: 20px;
   background-color: #29333c;
   height: 10vh;
@@ -55,7 +57,7 @@ export default class Topbar extends Vue {
 }
 
 #title {
-  margin-left: 30px;
+  pointer-events: none;
   font-size: 4vh;
   @include mobile {
     margin-left: -25px;

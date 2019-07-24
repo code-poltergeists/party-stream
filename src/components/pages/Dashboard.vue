@@ -1,30 +1,24 @@
 <template>
   <div id="dashboard">
-    <div id="col-text">
-      <i class="fas fa-sad-tear" id="sad"></i>
-      <div id="text">{{ $t('no-items') }}</div>
-      <div id="buttons">
-        <div>
-          <Button
-            icon="fas fa-plus-circle"
-            text="create-room"
-            @click.native="openDialog('create-room')"
-          ></Button>
-        </div>
-        <div>
-          <Button
-            icon="fas fa-sign-in-alt"
-            text="join-room"
-            @click.native="openDialog('join-room')"
-          ></Button>
-        </div>
-        <div>
-          <Button
-            icon="fas fa-user-friends"
-            text="add-friends"
-            @click.native="openDialog('invite-friends')"
-          ></Button>
-        </div>
+    <i class="fas fa-sad-tear" id="sad"></i>
+    <div id="text">{{ $t('no-items') }}</div>
+    <div id="buttons">
+      <div>
+        <Button
+          icon="fas fa-plus-circle"
+          text="create-room"
+          @click.native="openDialog('create-room')"
+        ></Button>
+      </div>
+      <div>
+        <Button icon="fas fa-sign-in-alt" text="join-room" @click.native="openDialog('join-room')"></Button>
+      </div>
+      <div>
+        <Button
+          icon="fas fa-user-friends"
+          text="add-friends"
+          @click.native="openDialog('invite-friends')"
+        ></Button>
       </div>
     </div>
   </div>
@@ -155,16 +149,13 @@ export default class Dashboard extends Vue {
   color: white;
   width: 100%;
   height: 100%;
-}
-
-#col-text {
   text-align: center;
-  padding-top: 50px;
 }
 
 #sad {
   color: white;
   font-size: 150px;
+  margin-top: 50px;
 }
 
 #text {

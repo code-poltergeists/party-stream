@@ -1,8 +1,8 @@
 <template>
   <div id="layout" :class="{'open': isMenuOpen}">
     <div id="col-sidebar">
-      <Logo/>
-      <Sidebar/>
+      <Logo />
+      <Sidebar />
     </div>
     <div id="col-view">
       <Topbar @onMenuToggle="onMenuToggle" />
@@ -14,17 +14,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import Sidebar from './Sidebar.vue';
-import Topbar from './Topbar.vue';
-import Logo from './Logo.vue';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import Sidebar from "./Sidebar.vue";
+import Topbar from "./Topbar.vue";
+import Logo from "./Logo.vue";
 
 @Component({
   components: {
     Sidebar,
     Topbar,
-    Logo,
-  },
+    Logo
+  }
 })
 export default class Layout extends Vue {
   isMenuOpen = false;
@@ -49,15 +49,12 @@ export default class Layout extends Vue {
 }
 
 #layout {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100vw;
   display: flex;
+  transition: all .25s ease-in-out;
 }
 
 .open {
-  
+  transform: scale(0.75) translateX(50vw);
 }
 
 #col-sidebar {
