@@ -1,6 +1,6 @@
 <template>
   <div id="room" @click="redirectToRoom()">
-    <div id="room-name">{{ room.roomName !== '' ? room.roomName : "no title yet :'('" }}</div>
+    <div id="room-name">{{ room.roomName !== '' ? room.roomName : "no title yet :'(" }}</div>
     <div class="spacer"></div>
     <div id="thumbnail" :style="{backgroundImage: `url(${videoThumbnail})`}">
       <div id="thumbnail-overlay">
