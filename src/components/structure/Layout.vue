@@ -1,10 +1,10 @@
 <template>
-  <div id="layout" :class="{'open': isMenuOpen}">
-    <div id="col-sidebar">
+  <div id="layout">
+    <div id="col-sidebar" :class="{'open': isMenuOpen}">
       <Logo />
       <Sidebar />
     </div>
-    <div id="col-view">
+    <div id="col-view" :class="{'shrink': isMenuOpen}">
       <Topbar @onMenuToggle="onMenuToggle" />
       <div id="view">
         <router-view></router-view>
@@ -50,23 +50,29 @@ export default class Layout extends Vue {
 
 #layout {
   display: flex;
-  transition: all .25s ease-in-out;
+}
+
+.shrink {
+  transform: scale(0.75);
 }
 
 .open {
-  transform: scale(0.75) translateX(50vw);
+  margin-left: 0 !important;
+  flex-basis: 250px !important;
 }
 
 #col-sidebar {
   height: 100vh;
   flex: 0 0 300px;
   @include mobile {
-    display: none;
+    margin-left: -300px;
+    transition: all .25s linear;
   }
 }
 
 #col-view {
   flex: 1;
+  transition: all .25s linear;
 }
 
 #view {
