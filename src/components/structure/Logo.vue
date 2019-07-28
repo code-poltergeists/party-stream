@@ -28,6 +28,7 @@ export default class Logo extends Vue {
   width: 100%;
   background-color: #29333c;
   border-right: 5px solid rgb(90, 97, 100);
+  box-sizing: border-box;
   color: #e3e3e3;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
@@ -36,15 +37,6 @@ export default class Logo extends Vue {
   display: flex;
   align-items: center;
   border-bottom: 5px solid rgb(90, 97, 100);
-}
-
-#logo-container * {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
 
 #logo {

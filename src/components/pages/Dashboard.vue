@@ -1,5 +1,24 @@
 <template>
   <div id="dashboard">
+    <i class="fas fa-sad-tear" id="sad"></i>
+    <div id="text">{{ $t('no-items') }}</div>
+    <div id="buttons">
+      <div>
+        <Button
+          icon="fas fa-plus-circle"
+          text="create-room"
+          @click.native="openDialog('create-room')"
+        ></Button>
+      </div>
+      <div>
+        <Button icon="fas fa-sign-in-alt" text="join-room" @click.native="openDialog('join-room')"></Button>
+      </div>
+      <div>
+        <Button
+          icon="fas fa-user-friends"
+          text="add-friends"
+          @click.native="openDialog('invite-friends')"
+        ></Button>
     <div id="no-items" v-if="hasElements === false" class="container-fluid">
       <div class="row no-gutters">
         <div class="col" id="col-text">
@@ -158,16 +177,13 @@ export default class Dashboard extends Vue {
   color: white;
   width: 100%;
   height: 100%;
-}
-
-#col-text {
   text-align: center;
-  margin-top: 50px;
 }
 
 #sad {
   color: white;
   font-size: 150px;
+  margin-top: 50px;
 }
 
 #text {
@@ -177,20 +193,28 @@ export default class Dashboard extends Vue {
   margin-top: 30px;
 }
 
-.center {
+#buttons {
   display: flex;
-  justify-content: center;
-}
+  margin: 0 30px;
+  flex-flow: row wrap;
+  align-content: space-around;
+  justify-content: space-around;
 
-.right {
-  display: flex;
-  justify-content: flex-end;
-  padding-right: 30px;
-}
+  & > div {
+    flex-basis: calc(50% - 20px);
+    display: flex;
 
-.left {
-  display: flex;
-  justify-content: flex-start;
-  padding-left: 30px;
+    &:nth-child(1) {
+      justify-content: flex-end;
+      margin: 0 10px;
+    }
+    &:nth-child(2) {
+      justify-content: flex-start;
+      margin: 0 10px;
+    }
+    &:nth-child(3) {
+      justify-content: center;
+    }
+  }
 }
 </style>

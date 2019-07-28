@@ -1,18 +1,40 @@
 <template>
   <div id="topbar">
+    <i class="fa fa-bars" id="menu" @click="toggleMenu"></i>
     <div id="title">{{ $t(this.$route.name) }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
-export default class Topbar extends Vue {}
+export default class Topbar extends Vue {
+  isMenuOpen = false;
+
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+    this.$emit('onMenuToggle', this.isMenuOpen);
+  }
+}
 </script>
 
 <style scoped lang="scss">
+@mixin desktop {
+  @media only screen and (min-width: 601px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
+
 #topbar {
+  box-sizing: border-box;
+  padding-left: 20px;
   background-color: #29333c;
   height: 10vh;
   border-bottom-right-radius: 10px;
@@ -25,16 +47,22 @@ export default class Topbar extends Vue {}
   font-size: 25px;
 }
 
-#topbar * {
-  -webkit-touch-callout: none; /* iOS Safari */
-  -webkit-user-select: none; /* Safari */
-  -khtml-user-select: none; /* Konqueror HTML */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* Internet Explorer/Edge */
-  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+#menu {
+  font-size: 4vh;
+  margin-right: 4vh;
+  cursor: pointer;
+  @include desktop {
+    display: none;
+  }
 }
 
 #title {
-  margin-left: 50px;
+  pointer-events: none;
+  font-size: 4vh;
+  @include mobile {
+    margin-left: -25px;
+    flex: 1;
+    text-align: center;
+  }
 }
 </style>
