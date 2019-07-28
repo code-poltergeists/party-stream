@@ -19,6 +19,35 @@
           text="add-friends"
           @click.native="openDialog('invite-friends')"
         ></Button>
+    <div id="no-items" v-if="hasElements === false" class="container-fluid">
+      <div class="row no-gutters">
+        <div class="col" id="col-text">
+          <i class="fas fa-sad-tear" id="sad"></i>
+          <div id="text">{{ $t('no-items') }}</div>
+        </div>
+      </div>
+      <div class="row no-gutters">
+        <div class="col-6 right">
+          <Button
+            icon="fas fa-plus-circle"
+            text="create-room"
+            @click.native="openDialog('create-room')"
+          ></Button>
+        </div>
+        <div class="col-6 left">
+          <Button
+            icon="fas fa-sign-in-alt"
+            text="join-room"
+            @click.native="openDialog('join-room')"
+          ></Button>
+        </div>
+        <div class="col-12 center">
+          <Button
+            icon="fas fa-user-friends"
+            text="add-friends"
+            @click.native="openDialog('invite-friends')"
+          ></Button>
+        </div>
       </div>
     </div>
   </div>
@@ -36,14 +65,9 @@ import router from "@/router";
   }
 })
 export default class Dashboard extends Vue {
-  mounted() {
-    new RoomService().isPlayingListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (isPlaying: boolean) => {
-        console.log(isPlaying);
-      }
-    );
-  }
+  roomService = new RoomService();
+
+  hasElements: boolean | null = false;
 
   private openDialog(type: string) {
     let stepsArray: { name: string | null; action: Function }[] = [];
@@ -108,7 +132,11 @@ export default class Dashboard extends Vue {
           {
             name: "join-room",
             action: () => {
-              this.$store.commit("toggleDialogVisibility", false);
+              this.roomService
+                .joinRoom(this.$store.state.room.code)
+                .then(() => {
+                  this.$store.commit("toggleDialogVisibility", false);
+                });
             }
           }
         ];

@@ -8,6 +8,7 @@
       :fitParent="true"
     />
     <div @mouseover="onMouseOver" @mouseleave="onMouseLeave" @mousemove="onMouseMove">
+      <div id="thumbnail" v-if="!isPlaying" :style="{backgroundImage: `url(${videoThumbnail})`}"></div>
       <div id="overlay">
         <div id="overlay-content" v-if="!isPlaying">
           <div id="video-title">{{ videoTitle }}</div>
@@ -41,36 +42,36 @@
             <div>{{ $t('name') }}</div>
           </div>
           <div id="controls">
-            <div @click="play">{{ $t(firstTimePlaying ? 'start-playing' : 'continue-playing') }}</div>
+            <div
+              @click="playpause"
+            >{{ $t(firstTimePlaying ? 'start-playing' : 'continue-playing') }}</div>
           </div>
         </div>
       </div>
       <div id="no-clicks-on-iframe-because-somehow-pointer-events-none-is-not-working"></div>
-      <div id="bar-container">
+      <div id="bar-container" v-show="isPlaying">
         <div id="progress-slider-container">
           <input
             id="progress-slider"
             class="slider"
             ref="progressSlider"
             type="range"
-            value="100"
+            value="0"
             min="0"
             max="100"
-            @input="applyFill($event, 'progressSlider', true)"
+            @input="onProgressChange($event.target.value)"
           />
         </div>
-        <div id="bar" v-if="true">
+        <div id="bar">
           <i
             id="playpause"
             @click="playpause"
             :class="{'fas': true, 'fa-pause': isPlaying, 'fa-play': !isPlaying}"
           ></i>
-          <div
-            id="time"
-          >{{ this.formatTime(this.elapsedTime) }} - {{ this.formatTime(this.totalTime) }}</div>
+          <div id="time">{{ formatTime(elapsedTime) }} - {{ formatTime(totalTime) }}</div>
           <i
             id="mute"
-            @click="mute"
+            @click="chooseMute"
             :class="{'fas': true, 'fa-volume-mute': isMuted, 'fa-volume-up': !isMuted}"
           ></i>
           <div id="volume-slider-container">
@@ -79,10 +80,10 @@
               class="slider"
               ref="volumeSlider"
               type="range"
-              value="100"
+              value="0"
               min="0"
               max="100"
-              @input="applyFill($event, 'volumeSlider', true)"
+              @input="onVolumeChange($event.target.value)"
             />
           </div>
           <i
@@ -99,10 +100,14 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import axios from "axios";
-import FullScreenHelper from '../../helpers/full-screen';
+import FullScreenHelper from "../../helpers/full-screen";
+import TimeHelper from "../../helpers/time";
+import VideoService from "../../services/video-service";
+import RoomService from "@/services/room-service";
 
 @Component
 export default class Player extends Vue {
+  RoomService = new RoomService();
   isPlaying = false;
   isMuted = false;
   isFullscreen = false;
@@ -111,26 +116,38 @@ export default class Player extends Vue {
   timer: any;
   progressTimer: any;
 
+  shouldUpdateSliders = true;
+
   videoTitle = "";
+  videoThumbnail = "";
 
   elapsedTime: number | null = null;
   totalTime: number | null = null;
 
-  currentVolume = 100;
-
   firstTimePlaying = true;
 
+  videoService = new VideoService();
+
+  lastTimeFromFirestore = -1;
+
+  onVolumeChange(volume: number) {
+    this.RoomService.updateVolume("fXO5vernUJa2qZg3Qlc6", volume);
+    this.applyFill(volume, "volumeSlider");
+  }
+
+  onProgressChange(time: number) {
+    this.RoomService.updateTime("fXO5vernUJa2qZg3Qlc6", time);
+    this.applyFill(time, "progressSlider");
+  }
+
   mounted() {
-    axios
-      .get("https://www.googleapis.com/youtube/v3/videos", {
-        params: {
-          id: "dQw4w9WgXcQ",
-          part: "snippet",
-          key: process.env.VUE_APP_youtubeKey
-        }
-      })
-      .then(response => {
-        this.videoTitle = response.data.items[0].snippet.title;
+    this.videoService
+      .getVideoTitle("dQw4w9WgXcQ")
+      .then(title => {
+        this.videoTitle = title;
+        this.videoThumbnail = this.videoService.getVideoThumbnail(
+          "dQw4w9WgXcQ"
+        );
       })
       .catch(e => console.log(e));
     (this.player as any).getDuration().then((duration: number) => {
@@ -140,18 +157,58 @@ export default class Player extends Vue {
       (this.$refs.progressSlider as any).max = duration;
     });
     window.setInterval(() => {
-      if (this.isPlaying) {
+      if (this.isPlaying && this.shouldUpdateSliders) {
         (this.player as any).getCurrentTime().then((time: number) => {
           this.elapsedTime = Math.floor(time);
-          this.applyFill(time, "progressSlider", false);
+          this.applyFill(time, "progressSlider");
+        });
+        (this.player as any).getVolume().then((volume: number) => {
+          this.applyFill(volume, "volumeSlider");
         });
       }
     }, 1000);
-    this.applyFill(100, "volumeSlider", true);
-    this.applyFill(0, "progressSlider", false);
+    window.setInterval(() => {
+      (this.player as any).getPlayerState().then((state: number) => {
+        /* 
+            -1 – unstarted
+            0 – ended
+            1 – playing
+            2 – paused
+            3 – buffering
+            5 – video cued
+         */
+        this.shouldUpdateSliders = state === 1;
+      });
+    }, 100);
     FullScreenHelper.onFullscreenChange(() => {
       this.isFullscreen = !this.isFullscreen;
-    })
+    });
+
+    this.RoomService.isPlayingListener(
+      "fXO5vernUJa2qZg3Qlc6",
+      (isPlaying: boolean) => {
+        isPlaying ? this.play() : this.pause();
+      }
+    );
+
+    this.RoomService.isMutedListener(
+      "fXO5vernUJa2qZg3Qlc6",
+      (isMuted: boolean) => {
+        isMuted ? this.mute() : this.unMute();
+      }
+    );
+    this.RoomService.timeListener("fXO5vernUJa2qZg3Qlc6", (time: number) => {
+      if (time !== this.lastTimeFromFirestore) {
+        (this.player as any).seekTo(time);
+        this.lastTimeFromFirestore = time;
+      }
+    });
+    this.RoomService.volumeListener(
+      "fXO5vernUJa2qZg3Qlc6",
+      (volume: number) => {
+        (this.player as any).setVolume(volume);
+      }
+    );
   }
 
   formatTime(time: number | null) {
@@ -193,18 +250,23 @@ export default class Player extends Vue {
   }
 
   playpause() {
-    this.isPlaying ? this.pause() : this.play();
+    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", !this.isPlaying);
+  }
+
+  chooseMute() {
+    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", !this.isMuted);
   }
 
   mute() {
-    if (this.isMuted) {
-      (this.player as any).unMute();
-      this.applyFill(this.currentVolume, "volumeSlider", true);
-    } else {
-      (this.player as any).mute();
-      this.applyFill(0, "volumeSlider", false);
-    }
-    this.isMuted = !this.isMuted;
+    (this.player as any).mute();
+    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", true);
+    this.isMuted = true;
+  }
+
+  unMute() {
+    (this.player as any).unMute();
+    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", false);
+    this.isMuted = false;
   }
 
   onMouseOver() {
@@ -219,7 +281,7 @@ export default class Player extends Vue {
     this.shouldShow = false;
   }
 
-  onMouseMove(event: any) {
+  onMouseMove(value: any) {
     this.shouldShow = true;
     window.clearTimeout(this.timer);
     this.timer = window.setTimeout(() => {
@@ -233,9 +295,11 @@ export default class Player extends Vue {
     }
     var circle = this.$refs.progress as any;
     var text = this.$refs.percent as any;
+    if (circle === undefined || text === undefined) {
+      return;
+    }
     var angle = 0;
     var percent = ((this.elapsedTime * 100) / this.totalTime) * 4.7;
-
     this.progressTimer = window.setInterval(() => {
       circle.setAttribute("stroke-dasharray", angle + ", 20000");
       circle.setAttribute("stroke", "#f8f8f8");
@@ -246,36 +310,13 @@ export default class Player extends Vue {
     }, 30);
   }
 
-  applyFill(event: any, sliderName: string, saveValue: boolean) {
+  applyFill(value: any, sliderName: string) {
     const slider = this.$refs[sliderName] as any;
-    let percentage = 0;
-    if (event.target) {
-      percentage =
-        (100 * (slider.value - slider.min)) / (slider.max - slider.min);
-      if (sliderName === "volumeSlider") {
-        (this.player as any).setVolume(event.target.value);
-        if (saveValue) {
-          this.currentVolume = event.target.value;
-        }
-      } else if (sliderName === "progressSlider") {
-        if (saveValue) {
-          (this.player as any).seekTo(event.target.value);
-        }
-      }
-    } else {
-      percentage = (100 * (event - slider.min)) / (slider.max - slider.min);
-      slider.value = event;
-      if (sliderName === "volumeSlider") {
-        (this.player as any).setVolume(event);
-        if (saveValue) {
-          this.currentVolume = event;
-        }
-      } else if (sliderName === "progressSlider") {
-        if (saveValue) {
-          (this.player as any).seekTo(event);
-        }
-      }
+    if (slider === undefined) {
+      return;
     }
+    slider.value = value;
+    let percentage = (100 * (value - slider.min)) / (slider.max - slider.min);
     slider.style.background = `linear-gradient(90deg, rgba(26, 188, 156, 0) 0%, #1abc9c ${percentage}%, #d7dcdf ${percentage +
       0.1}%, rgba(255, 255, 255, 0) 100%)`;
   }
@@ -301,7 +342,7 @@ export default class Player extends Vue {
 }
 
 #youtube {
-  z-index: 9996;
+  z-index: 9995;
 }
 
 #no-clicks-on-iframe-because-somehow-pointer-events-none-is-not-working {
@@ -310,7 +351,19 @@ export default class Player extends Vue {
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 9996;
+}
+
+#thumbnail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 9997;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
 #player {
@@ -353,7 +406,7 @@ export default class Player extends Vue {
 }
 
 #overlay-content {
-  background-color: #1a2328;
+  background-color: rgba(26, 35, 40, 0.75);
   border: 2px solid #36a86d;
   width: 100%;
   height: 100%;
