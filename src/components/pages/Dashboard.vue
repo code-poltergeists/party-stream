@@ -1,49 +1,24 @@
 <template>
   <div id="dashboard">
-    <i class="fas fa-sad-tear" id="sad"></i>
-    <div id="text">{{ $t('no-items') }}</div>
-    <div id="buttons">
-      <div>
-        <Button
-          icon="fas fa-plus-circle"
-          text="create-room"
-          @click.native="openDialog('create-room')"
-        ></Button>
-      </div>
-      <div>
-        <Button icon="fas fa-sign-in-alt" text="join-room" @click.native="openDialog('join-room')"></Button>
-      </div>
-      <div>
-        <Button
-          icon="fas fa-user-friends"
-          text="add-friends"
-          @click.native="openDialog('invite-friends')"
-        ></Button>
-      </div>
-    </div>
-    <div id="no-items" v-if="hasElements === false" class="container-fluid">
-      <div class="row no-gutters">
-        <div class="col" id="col-text">
-          <i class="fas fa-sad-tear" id="sad"></i>
-          <div id="text">{{ $t('no-items') }}</div>
-        </div>
-      </div>
-      <div class="row no-gutters">
-        <div class="col-6 right">
+    <div id="col-text">
+      <i class="fas fa-sad-tear" id="sad"></i>
+      <div id="text">{{ $t('no-items') }}</div>
+      <div id="buttons">
+        <div>
           <Button
             icon="fas fa-plus-circle"
             text="create-room"
             @click.native="openDialog('create-room')"
           ></Button>
         </div>
-        <div class="col-6 left">
+        <div>
           <Button
             icon="fas fa-sign-in-alt"
             text="join-room"
             @click.native="openDialog('join-room')"
           ></Button>
         </div>
-        <div class="col-12 center">
+        <div>
           <Button
             icon="fas fa-user-friends"
             text="add-friends"
@@ -60,17 +35,20 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import Button from "../items/Button.vue";
 import RoomService from "@/services/room-service";
 import router from "@/router";
-
 @Component({
   components: {
     Button
   }
 })
 export default class Dashboard extends Vue {
-  roomService = new RoomService();
-
-  hasElements: boolean | null = false;
-
+  mounted() {
+    new RoomService().isPlayingListener(
+      "fXO5vernUJa2qZg3Qlc6",
+      (isPlaying: boolean) => {
+        console.log(isPlaying);
+      }
+    );
+  }
   private openDialog(type: string) {
     let stepsArray: { name: string | null; action: Function }[] = [];
     let buttonIcon: string = "";
@@ -134,11 +112,7 @@ export default class Dashboard extends Vue {
           {
             name: "join-room",
             action: () => {
-              this.roomService
-                .joinRoom(this.$store.state.room.code)
-                .then(() => {
-                  this.$store.commit("toggleDialogVisibility", false);
-                });
+              this.$store.commit("toggleDialogVisibility", false);
             }
           }
         ];
@@ -179,33 +153,30 @@ export default class Dashboard extends Vue {
   color: white;
   width: 100%;
   height: 100%;
-  text-align: center;
 }
-
+#col-text {
+  text-align: center;
+  padding-top: 50px;
+}
 #sad {
   color: white;
   font-size: 150px;
-  margin-top: 50px;
 }
-
 #text {
   font-family: "Montserrat", sans-serif;
   font-size: 40px;
   font-weight: 600;
   margin-top: 30px;
 }
-
 #buttons {
   display: flex;
   margin: 0 30px;
   flex-flow: row wrap;
   align-content: space-around;
   justify-content: space-around;
-
   & > div {
     flex-basis: calc(50% - 20px);
     display: flex;
-
     &:nth-child(1) {
       justify-content: flex-end;
       margin: 0 10px;
