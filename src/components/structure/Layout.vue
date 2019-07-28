@@ -1,8 +1,12 @@
 <template>
   <div id="layout">
     <div id="col-sidebar" :class="{'open': isMenuOpen}">
-      <Logo />
-      <Sidebar />
+      <div id="logo-container">
+        <Logo />
+      </div>
+      <div id="sidebar-container">
+        <Sidebar />
+      </div>
     </div>
     <div id="col-view" :class="{'shrink': isMenuOpen}">
       <Topbar @onMenuToggle="onMenuToggle" />
@@ -50,6 +54,8 @@ export default class Layout extends Vue {
 
 #layout {
   display: flex;
+  height: 100%;
+  width: 100%;
 }
 
 .shrink {
@@ -66,17 +72,27 @@ export default class Layout extends Vue {
   flex: 0 0 300px;
   @include mobile {
     margin-left: -300px;
-    transition: all .25s linear;
+    transition: all 0.25s linear;
   }
 }
 
 #col-view {
   flex: 1;
-  transition: all .25s linear;
+  transition: all 0.25s linear;
 }
 
 #view {
   height: 90vh;
-  padding: 10px;
+  padding: 10px 10px 0 10px;
+  box-sizing: border-box;
+  overflow: auto;
+}
+
+#logo-container {
+  height: 10vh;
+}
+
+#sidebar-container {
+  height: 90vh;
 }
 </style>

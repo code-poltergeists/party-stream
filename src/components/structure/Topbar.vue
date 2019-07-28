@@ -1,7 +1,7 @@
 <template>
   <div id="topbar">
     <i class="fa fa-bars" id="menu" @click="toggleMenu"></i>
-    <div id="title">{{ $t(this.$route.name) }}</div>
+    <div id="title">{{ name }}</div>
   </div>
 </template>
 
@@ -10,7 +10,17 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class Topbar extends Vue {
+  name = '';
   isMenuOpen = false;
+
+  mounted() {
+    if (this.$route.params.chatId) {
+      // TODO: fetch chat name
+      this.name = this.$t('chat') + ' - ' + this.$route.params.chatId;    
+    } else {
+      this.name = this.$t(this.$route.name!).toString();
+    }
+  }
 
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;

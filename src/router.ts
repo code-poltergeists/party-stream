@@ -10,6 +10,7 @@ import Layout from "./components/structure/Layout.vue";
 import AuthService from "./services/auth-service";
 import Player from "./components/items/Player.vue";
 import Room from "./components/pages/Room.vue";
+import Chat from "./components/pages/Chat.vue";
 import store from "./store";
 
 Vue.use(Router);
@@ -78,10 +79,15 @@ export default new Router({
           component: Settings,
         },
         {
-          path: '/room/:id',
+          path: 'room/:id',
           name: 'room',
           component: Room,
         },
+        {
+          path: 'chat/:chatId',
+          name: 'chat',
+          component: Chat
+        }
       ]
     },
     {
