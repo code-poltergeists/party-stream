@@ -19,6 +19,8 @@
           text="add-friends"
           @click.native="openDialog('invite-friends')"
         ></Button>
+      </div>
+    </div>
     <div id="no-items" v-if="hasElements === false" class="container-fluid">
       <div class="row no-gutters">
         <div class="col" id="col-text">
