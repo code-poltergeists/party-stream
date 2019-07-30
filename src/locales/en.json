@@ -41,5 +41,6 @@
   "start-playing": "Start playing",
   "room": "Room",
   "enter-invite-code": "Enter invite code",
-  "chat": "Chat"
+  "chat": "Chat",
+  "type-a-message": "Type a message..."
 }
