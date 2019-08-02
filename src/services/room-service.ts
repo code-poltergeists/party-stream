@@ -205,7 +205,7 @@ export default class RoomService {
     });
   }
 
-  async getRoomInfo(roomId: string):Promise<Room> {
+  async getRoomInfo(roomId: string): Promise<Room> {
     return new Promise<Room>(async (resolve, reject) => {
       const roomSnapshot = await firebase
         .firestore()
@@ -244,6 +244,17 @@ export default class RoomService {
       room.videos = videos;
       resolve(room);
     })
+  }
+
+  async addVideo(roomId: string, video: string) {
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .collection("videos")
+      .add({
+        link: video
+      })
   }
 }
 

@@ -19,7 +19,7 @@ import Player from "../items/Player.vue";
 import Button from "../items/Button.vue";
 import RoomModel from "@/models/Room";
 import RoomService from "../../services/room-service";
- 
+
 @Component({
   components: {
     Player,
@@ -31,7 +31,19 @@ export default class Room extends Vue {
   private videoId = "dQw4w9WgXcQ";
 
   isPrivate: boolean | null | undefined = null;
-  private roomDetails = new RoomModel('', new Date(), 0, false, false, [''], 0, '0', 0, [], 0);
+  private roomDetails = new RoomModel(
+    "",
+    new Date(),
+    0,
+    false,
+    false,
+    [""],
+    0,
+    "0",
+    0,
+    [],
+    0
+  );
 
   inviteFriends() {
     const stepsArray = [
@@ -79,7 +91,10 @@ export default class Room extends Vue {
         name: "add-a-song",
         action: () => {
           this.$store.commit("toggleDialogVisibility", false);
-          console.log("I got here");
+          this.roomService.addVideo(
+            this.$route.params.id,
+            this.$store.state.videoLink
+          );
         }
       }
     ];
@@ -93,9 +108,11 @@ export default class Room extends Vue {
     } catch {
       this.isPrivate = undefined;
     }
-    this.roomDetails = await this.roomService.getRoomInfo(this.$route.params.id);
+    this.roomDetails = await this.roomService.getRoomInfo(
+      this.$route.params.id
+    );
     this.videoId = this.roomDetails.videos[0].link.slice(-11);
-    console.log(this.videoId)
+    console.log(this.videoId);
   }
 }
 </script>
