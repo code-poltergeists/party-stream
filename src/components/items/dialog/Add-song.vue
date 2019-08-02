@@ -1,12 +1,18 @@
 <template>
   <div id="dialog-content">
-    <TextField id="name-textfield" placeholder="Youtube link" toEmitOnChange="update-link" @update-link="updateLink" ref="textField"/>
+    <TextField
+      id="name-textfield"
+      placeholder="Youtube link"
+      toEmitOnChange="update-link"
+      @update-link="updateLink"
+      ref="textField"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import TextField from '../TextField.vue';
+import { Component, Prop, Vue } from "vue-property-decorator";
+import TextField from "../TextField.vue";
 
 @Component({
   components: {
@@ -18,7 +24,7 @@ export default class AddSong extends Vue {
 
   updateLink(value: string) {
     this.link = value;
-    console.log(this.link);
+    this.$store.commit("updateLink", value);
   }
 }
 </script>
@@ -29,5 +35,4 @@ export default class AddSong extends Vue {
   flex-direction: column;
   align-items: center;
 }
-
 </style>
