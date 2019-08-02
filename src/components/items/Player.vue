@@ -1,7 +1,7 @@
 <template>
   <div id="player" ref="player">
     <youtube
-      video-id="dQw4w9WgXcQ"
+      :video-id="videoId"
       id="youtube"
       :playerVars="{controls: 0, disablekb: 1, modestbranding: 1}"
       ref="youtube"
@@ -107,6 +107,9 @@ import RoomService from "@/services/room-service";
 
 @Component
 export default class Player extends Vue {
+  @Prop()
+  videoId: string;
+  
   RoomService = new RoomService();
   isPlaying = false;
   isMuted = false;
@@ -142,11 +145,11 @@ export default class Player extends Vue {
 
   mounted() {
     this.videoService
-      .getVideoTitle("dQw4w9WgXcQ")
+      .getVideoTitle(this.videoId)
       .then(title => {
         this.videoTitle = title;
         this.videoThumbnail = this.videoService.getVideoThumbnail(
-          "dQw4w9WgXcQ"
+          this.videoId
         );
       })
       .catch(e => console.log(e));

@@ -39,6 +39,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import AddSong from "./Add-song.vue";
 import Button from "../Button.vue";
 import CreateRoom1 from "./Create-room-1.vue";
 import CreateRoom2 from "./Create-room-2.vue";
@@ -48,6 +49,7 @@ import JoinRoom from "./Join-room.vue";
 
 @Component({
   components: {
+    AddSong,
     Button,
     CreateRoom1,
     CreateRoom2,
