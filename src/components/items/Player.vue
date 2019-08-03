@@ -109,7 +109,7 @@ import RoomService from "@/services/room-service";
 export default class Player extends Vue {
   @Prop()
   videoId: string;
-  
+
   RoomService = new RoomService();
   isPlaying = false;
   isMuted = false;
@@ -148,9 +148,7 @@ export default class Player extends Vue {
       .getVideoTitle(this.videoId)
       .then(title => {
         this.videoTitle = title;
-        this.videoThumbnail = this.videoService.getVideoThumbnail(
-          this.videoId
-        );
+        this.videoThumbnail = this.videoService.getVideoThumbnail(this.videoId);
       })
       .catch(e => console.log(e));
     (this.player as any).getDuration().then((duration: number) => {
@@ -180,6 +178,9 @@ export default class Player extends Vue {
             3 – buffering
             5 – video cued
          */
+        if (state === 0) {
+          this.$emit("ended");
+        }
         this.shouldUpdateSliders = state === 1;
       });
     }, 100);

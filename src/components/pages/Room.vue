@@ -1,7 +1,7 @@
 <template>
   <div v-if="isPrivate === false">
     <h1>Hi, and welcome to room: {{ this.roomDetails.roomName }}</h1>
-    <!-- <Player :video-id="videoId" /> -->
+    <Player :video-id="videoId" @ended="videoEnded" />
     <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
     <Button icon="fas fa-plus" text="add-song" @click.native="addSong" />
   </div>
@@ -44,6 +44,11 @@ export default class Room extends Vue {
     [],
     0
   );
+
+  videoEnded() {
+    this.roomDetails.videos.shift();
+    this.videoId = this.roomDetails.videos[0].link.slice(-11);
+  }
 
   inviteFriends() {
     const stepsArray = [
