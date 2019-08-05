@@ -1,12 +1,23 @@
 <template>
   <div id="chat">
     <div id="conversation">
-      <MessageBubble v-for="message in messages" :key="message.id" :message="message" :class="isSentFromCurrentAccount(message) ? 'align-right' : ''"/>
+      <MessageBubble
+        v-for="message in messages"
+        :key="message.id"
+        :message="message"
+        :class="_chatService.isSentByCurrentUser(message) ? 'align-right' : ''"
+      />
     </div>
     <div id="type">
       <div id="attach"></div>
-      <textarea id="textarea" @keyup="autosize" ref="textarea" :placeholder="$t('type-a-message')"></textarea>
-      <div id="send"></div>
+      <textarea
+        id="textarea"
+        @keyup="autosize"
+        ref="textarea"
+        :placeholder="$t('type-a-message')"
+        v-model="text"
+      ></textarea>
+      <div id="send" @click="sendMessage"></div>
     </div>
   </div>
 </template>
@@ -15,7 +26,7 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import Message from "../../models/Message";
 import MessageBubble from "../items/MessageBubble.vue";
-import AuthService from '@/services/auth-service';
+import ChatService from "@/services/chat-service";
 
 @Component({
   components: {
@@ -23,65 +34,26 @@ import AuthService from '@/services/auth-service';
   }
 })
 export default class Chat extends Vue {
-   _authService = new AuthService();
-  messages: Array<Message> = [
-    {
-      id: "",
-      text: "njjnfnjnjfdnjfdnjdjnfdnjfddjdjdnjdndjdnjdnjdjnndnjdnjnjknjkdfnjnjnfdjnj",
-      userId: "",
-      date: new Date()
-    },
-    {
-      id: "",
-      text: "njjnfnjnjfdnjfdnjdjnfdnjfddjdjdnjdndjdnjdnjdjnndnjdnjnjknjkdfnjnjnfdjnj",
-      userId: "",
-      date: new Date()
-    },
-    {
-      id: "",
-      text: "njjnfnjnjfdnjfdnjdjnfdnjfddjdjdnjdndjdnjdnjdjnndnjdnjnjknjkdfnjnjnfdjnj",
-      userId: "",
-      date: new Date()
-    },
-    {
-      id: "",
-      text: "njjnfnjnjfdnjfdnjdjnfdnjfddjdjdnjdndjdnjdnjdjnndnjdnjnjknjkdfnjnjnfdjnj",
-      userId: "",
-      date: new Date()
-    },
-    {
-      id: "",
-      text: "njjnfnjnjfdnjfdnjdjnfdnjfddjdjdnjdndjdnjdnjdjnndnjdnjnjknjkdfnjnjnfdjnj",
-      userId: "",
-      date: new Date()
-    },
-    {
-      id: "",
-      text: "njjnfnjnjfdnjfdnjdjnfdnjfddjdjdnjdndjdnjdnjdjnndnjdnjnjknjkdfnjnjnfdjnj",
-      userId: "",
-      date: new Date()
-    },
-    {
-      id: "",
-      text: "njjnfnjnjfdnjfdnjdjnfdnjfddjdjdnjdndjdnjdnjdjnndnjdnjnjknjkdfnjnjnfdjnj",
-      userId: "",
-      date: new Date()
-    },
+  private _chatService = new ChatService();
 
-  ];
+  private messages = [];
 
-  prepareMessage() {}
+  private text = "";
 
-  autosize() {
+  created() {
+    this._chatService.getMessages(this.$route.params.chatId).then(messages => {
+      this.messages = messages;
+    });
+  }
+
+  sendMessage() {
+    this._chatService.sendMessage(this.text, this.$route.params.chatId);
+  }
+
+  private autosize() {
     const element = this.$refs.textarea as any;
     element.style.height = "25px";
     element.style.height = element.scrollHeight + "px";
-  }
-
-  isSentFromCurrentAccount(message: any) {
-    // TODO: change once we get messages from firestore
-    return true;
-    // return message.userId === this._authService.currentUserId;
   }
 }
 </script>
