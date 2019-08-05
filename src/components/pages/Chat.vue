@@ -5,7 +5,7 @@
         v-for="message in messages"
         :key="message.id"
         :message="message"
-        :class="_chatService.isSentByCurrentUser(message) ? 'align-right' : ''"
+        :class="chatService.isSentByCurrentUser(message) ? 'align-right' : ''"
       />
     </div>
     <div id="type">
@@ -34,20 +34,20 @@ import ChatService from "@/services/chat-service";
   }
 })
 export default class Chat extends Vue {
-  private _chatService = new ChatService();
+  chatService = new ChatService();
 
-  private messages = [];
+  messages: Array<Message> = [];
 
-  private text = "";
+  text = "";
 
   created() {
-    this._chatService.getMessages(this.$route.params.chatId).then(messages => {
+    this.chatService.getMessages(this.$route.params.chatId).then(messages => {
       this.messages = messages;
     });
   }
 
   sendMessage() {
-    this._chatService.sendMessage(this.text, this.$route.params.chatId);
+    this.chatService.sendMessage(this.text, this.$route.params.chatId);
   }
 
   private autosize() {
@@ -93,8 +93,8 @@ export default class Chat extends Vue {
   font-weight: 600;
   font-size: 25px;
   overflow: hidden;
-  min-height: 25px;
-  height: 25px;
+  min-height: 30px;
+  height: 30px;
   flex: 1;
   background-color: transparent;
   border: none;

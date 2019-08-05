@@ -1,7 +1,10 @@
 <template>
   <div class="message">
-    <div class="message-text">
+    <div class="message-text" v-if="message.text">
       {{message.text}}
+    </div>
+    <div class="message-image" v-if="message.attachment">
+      <img :src="message.attachment" />
     </div>
   </div>
 </template>
@@ -15,7 +18,7 @@ export default class MessageBubble extends Vue {
   @Prop() message: Message;
 
   mounted() {
-    
+    console.log(this.message);
   }
 
 }
@@ -37,5 +40,12 @@ export default class MessageBubble extends Vue {
   font-family: 'Montserrat', sans-serif;
   font-size: 25px;
   word-break: break-all;
+}
+
+.message-image {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>
