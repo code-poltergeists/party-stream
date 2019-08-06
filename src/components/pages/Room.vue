@@ -120,7 +120,14 @@ export default class Room extends Vue {
       this.$route.params.id
     );
     this.roomId = this.$route.params.id;
-    this.videoId = this.roomDetails.videos[0].link.slice(-11);
+    if (
+      this.roomDetails.videos === undefined ||
+      this.roomDetails.videos.length == 0
+    ) {
+      this.videoId = "false";
+    } else {
+      this.videoId = this.roomDetails.videos[0].link.slice(-11);
+    }
     this.isReady = true;
   }
 }

@@ -9,7 +9,17 @@
     />
     <div @mouseover="onMouseOver" @mouseleave="onMouseLeave" @mousemove="onMouseMove">
       <div id="thumbnail" v-if="!isPlaying" :style="{backgroundImage: `url(${videoThumbnail})`}"></div>
-      <div id="overlay">
+      <div v-if="videoId === 'false'">
+        <div id="overlay">
+          <div id="overlay-content" v-if="!isPlaying">
+            <div id="video-title">No videos added to queue yet</div>
+            <div id="added-by">
+              <div>Add a video now!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else id="overlay">
         <div id="overlay-content" v-if="!isPlaying">
           <div id="video-title">{{ videoTitle }}</div>
           <div id="progress-and-text-container">
@@ -405,7 +415,7 @@ export default class Player extends Vue {
 }
 
 #overlay-content {
-  background-color: rgba(26, 35, 40, 0.75);
+  background-color: rgba(26, 35, 40, 1);
   border: 2px solid #36a86d;
   width: 100%;
   height: 100%;
