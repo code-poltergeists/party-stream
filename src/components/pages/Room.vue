@@ -1,7 +1,9 @@
 <template>
   <div v-if="isPrivate === false">
     <h1>Hi, and welcome to room: {{ this.roomDetails.roomName }}</h1>
-    <Player :video-id="videoId" @ended="videoEnded" />
+    <div v-if="this.isReady">
+      <Player :video-id="videoId" :room-id="roomId" @ended="videoEnded" />
+    </div>
     <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
     <Button icon="fas fa-plus" text="add-song" @click.native="addSong" />
   </div>
@@ -28,8 +30,9 @@ import RoomService from "../../services/room-service";
 })
 export default class Room extends Vue {
   private roomService = new RoomService();
-  private videoId = "dQw4w9WgXcQ";
-
+  private videoId = "";
+  private roomId = "";
+  private isReady = false;
   isPrivate: boolean | null | undefined = null;
   private roomDetails = new RoomModel(
     "",
@@ -116,8 +119,9 @@ export default class Room extends Vue {
     this.roomDetails = await this.roomService.getRoomInfo(
       this.$route.params.id
     );
+    this.roomId = this.$route.params.id;
     this.videoId = this.roomDetails.videos[0].link.slice(-11);
-    console.log(this.videoId);
+    this.isReady = true;
   }
 }
 </script>
@@ -125,5 +129,44 @@ export default class Room extends Vue {
 <style scoped lang="scss">
 h1 {
   color: white;
+}
+
+.loading-container {
+  text-align: center;
+  color: white;
+}
+.lds-ring {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 51px;
+  height: 51px;
+  margin: 6px;
+  border: 6px solid #fff;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

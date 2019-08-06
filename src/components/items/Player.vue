@@ -110,6 +110,10 @@ export default class Player extends Vue {
   @Prop()
   videoId: string;
 
+  @Prop()
+  roomId: string;
+
+  isLoaded = false;
   RoomService = new RoomService();
   isPlaying = false;
   isMuted = false;
@@ -134,12 +138,12 @@ export default class Player extends Vue {
   lastTimeFromFirestore = -1;
 
   onVolumeChange(volume: number) {
-    this.RoomService.updateVolume("fXO5vernUJa2qZg3Qlc6", volume);
+    this.RoomService.updateVolume(this.roomId, volume);
     this.applyFill(volume, "volumeSlider");
   }
 
   onProgressChange(time: number) {
-    this.RoomService.updateTime("fXO5vernUJa2qZg3Qlc6", time);
+    this.RoomService.updateTime(this.roomId, time);
     this.applyFill(time, "progressSlider");
   }
 
@@ -188,31 +192,22 @@ export default class Player extends Vue {
       this.isFullscreen = !this.isFullscreen;
     });
 
-    this.RoomService.isPlayingListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (isPlaying: boolean) => {
-        isPlaying ? this.play() : this.pause();
-      }
-    );
+    this.RoomService.isPlayingListener(this.roomId, (isPlaying: boolean) => {
+      isPlaying ? this.play() : this.pause();
+    });
 
-    this.RoomService.isMutedListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (isMuted: boolean) => {
-        isMuted ? this.mute() : this.unMute();
-      }
-    );
-    this.RoomService.timeListener("fXO5vernUJa2qZg3Qlc6", (time: number) => {
+    this.RoomService.isMutedListener(this.roomId, (isMuted: boolean) => {
+      isMuted ? this.mute() : this.unMute();
+    });
+    this.RoomService.timeListener(this.roomId, (time: number) => {
       if (time !== this.lastTimeFromFirestore) {
         (this.player as any).seekTo(time);
         this.lastTimeFromFirestore = time;
       }
     });
-    this.RoomService.volumeListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (volume: number) => {
-        (this.player as any).setVolume(volume);
-      }
-    );
+    this.RoomService.volumeListener(this.roomId, (volume: number) => {
+      (this.player as any).setVolume(volume);
+    });
   }
 
   formatTime(time: number | null) {
@@ -254,22 +249,22 @@ export default class Player extends Vue {
   }
 
   playpause() {
-    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", !this.isPlaying);
+    this.RoomService.isPlayingUpdater(this.roomId, !this.isPlaying);
   }
 
   chooseMute() {
-    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", !this.isMuted);
+    this.RoomService.isMutedUpdater(this.roomId, !this.isMuted);
   }
 
   mute() {
     (this.player as any).mute();
-    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", true);
+    this.RoomService.isMutedUpdater(this.roomId, true);
     this.isMuted = true;
   }
 
   unMute() {
     (this.player as any).unMute();
-    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", false);
+    this.RoomService.isMutedUpdater(this.roomId, false);
     this.isMuted = false;
   }
 
