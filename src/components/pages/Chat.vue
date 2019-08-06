@@ -2,22 +2,29 @@
   <div id="chat">
     <div id="conversation">
       <MessageBubble
-        v-for="message in messages"
+        v-for="(message, index) in messages"
         :key="message.id"
         :message="message"
-        :class="chatService.isSentByCurrentUser(message) ? 'align-right' : ''"
+        :class="chatService.isSentByCurrentUser(message) ? 'align-right' : 'align-left'"
+        :last="chatService.isLastMessage(messages, index)"
       />
     </div>
     <div id="type">
-      <div id="attach"></div>
+      <div id="attach">
+        <i class="fas fa-paperclip"></i>
+      </div>
       <textarea
         id="textarea"
-        @keyup="autosize"
+        @input="autosize"
         ref="textarea"
         :placeholder="$t('type-a-message')"
         v-model="text"
+        @keydown.enter.exact.prevent
+        @keyup.enter.exact="sendMessage"
       ></textarea>
-      <div id="send" @click="sendMessage"></div>
+      <div id="send" @click="sendMessage">
+        <i class="far fa-paper-plane"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -40,14 +47,22 @@ export default class Chat extends Vue {
 
   text = "";
 
-  created() {
-    this.chatService.getMessages(this.$route.params.chatId).then(messages => {
-      this.messages = messages;
+  mounted() {
+    this.chatService.listenForMessages(this.$route.params.chatId, changes => {
+      changes.forEach(change => {
+        if (change.type === "added") {
+          const map = change.doc.data();
+          map.id = change.doc.id;
+          this.messages.unshift(Message.fromMap(map));
+        }
+      });
     });
   }
 
   sendMessage() {
-    this.chatService.sendMessage(this.text, this.$route.params.chatId);
+    this.chatService.sendMessage(this.$route.params.chatId, this.text);
+    this.text = "";
+    (this.$refs.textarea as any).style.height = "25px";
   }
 
   private autosize() {
@@ -59,6 +74,18 @@ export default class Chat extends Vue {
 </script>
 
 <style scoped lang="scss">
+@mixin desktop {
+  @media only screen and (min-width: 601px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
+
 #chat {
   display: flex;
   width: 100%;
@@ -71,6 +98,7 @@ export default class Chat extends Vue {
   overflow: auto;
   display: flex;
   flex-direction: column-reverse;
+  margin-bottom: 10px;
 }
 
 #type {
@@ -81,17 +109,32 @@ export default class Chat extends Vue {
 }
 
 #attach {
-  background-color: pink;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 25px;
   width: 25px;
   margin: 0 25px;
+  cursor: pointer;
+
+  & > i {
+    color: white;
+    font-size: 30px;
+  }
 }
 
 #textarea {
   resize: none;
   font-family: "Montserrat", sans-serif;
   font-weight: 600;
-  font-size: 25px;
+  @include desktop {
+    font-size: 2vw;
+  }
+  @include mobile {
+    font-size: 5vw;
+    // padding for iPhones without a home button:
+    padding-bottom: env(safe-area-inset-bottom);
+  }
   overflow: hidden;
   min-height: 30px;
   height: 30px;
@@ -99,16 +142,32 @@ export default class Chat extends Vue {
   background-color: transparent;
   border: none;
   color: white;
+
+  &:focus {
+    outline: 0;
+  }
 }
 
 #send {
-  background-color: pink;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 25px;
   width: 25px;
   margin: 0 25px;
+  cursor: pointer;
+
+  & > i {
+    color: #36a86d;
+    font-size: 30px;
+  }
 }
 
 .align-right {
-  margin-left: auto;
+  align-self: flex-end;
+}
+
+.align-left {
+  align-self: flex-start;
 }
 </style>

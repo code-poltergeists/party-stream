@@ -29,27 +29,26 @@ export default class ChatService {
       });
   }
 
-  async getMessages(chatId: string): Promise<Array<Message>> {
-    return new Promise<Array<Message>>((resolve, reject) => {
-      firebase
-        .firestore()
-        .collection("chats")
-        .doc(chatId)
-        .collection("messages")
-        .get()
-        .then(snapshot => {
-          resolve(
-            snapshot.docs.map(doc => {
-              const map = doc.data();
-              map.id = doc.id;
-              return Message.fromMap(map);
-            })
-          );
-        });
-    });
+  async listenForMessages(chatId: string, callback: Function) {
+    return firebase
+      .firestore()
+      .collection("chats")
+      .doc(chatId)
+      .collection("messages")
+      .orderBy("date")
+      .onSnapshot(snapshot => {
+        callback(snapshot.docChanges());
+      });
   }
 
   isSentByCurrentUser(message: Message) {
-    return message.id === this.authService.currentUserId;
+    return message.userId === this.authService.currentUserId;
+  }
+
+  isLastMessage(messages: Array<Message>, index: number) {
+    return messages[index - 1]
+      ? this.isSentByCurrentUser(messages[index - 1]) !==
+          this.isSentByCurrentUser(messages[index])
+      : true;
   }
 }

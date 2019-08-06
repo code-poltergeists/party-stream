@@ -13,5 +13,11 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, write: if isAuthenticated();
     }
+    match /chats/{chatId} {
+      allow read, write: if isAuthenticated();
+      match /messages/{messageId} {
+        allow read, write: if isAuthenticated();
+      }
+    }
   }
 }

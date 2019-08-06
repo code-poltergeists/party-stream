@@ -77,6 +77,8 @@ export default class Layout extends Vue {
 }
 
 #col-view {
+  width: 100%;
+  height: 100%;
   flex: 1;
   transition: all 0.25s linear;
 }
