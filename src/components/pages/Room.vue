@@ -2,7 +2,7 @@
   <div v-if="isPrivate === false">
     <h1>Hi, and welcome to room: {{ this.roomDetails.roomName }}</h1>
     <div v-if="this.isReady">
-      <Player :video-id="videoId" :room-id="roomId" @ended="videoEnded" />
+      <Player :video-id="videoId" :room-id="roomId" :key="videoId" @ended="videoEnded" />
     </div>
     <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
     <Button icon="fas fa-plus" text="add-song" @click.native="addSong" />

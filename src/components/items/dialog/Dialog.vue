@@ -86,6 +86,7 @@ export default class Dialog extends Vue {
   left: 0;
   background-color: black;
   opacity: 0.75;
+  z-index: 10000;
 }
 
 #dialog-container {
@@ -97,6 +98,7 @@ export default class Dialog extends Vue {
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10001;
 }
 
 #dialog * {

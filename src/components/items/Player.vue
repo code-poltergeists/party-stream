@@ -11,7 +11,7 @@
       <div id="thumbnail" v-if="!isPlaying" :style="{backgroundImage: `url(${videoThumbnail})`}"></div>
       <div v-if="videoId === 'false'">
         <div id="overlay">
-          <div id="overlay-content" v-if="!isPlaying">
+          <div id="overlay-content-2-meme" v-if="!isPlaying">
             <div id="video-title">No videos added to queue yet</div>
             <div id="added-by">
               <div>Add a video now!</div>
@@ -415,6 +415,17 @@ export default class Player extends Vue {
 }
 
 #overlay-content {
+  background-color: rgba(26, 35, 40, 0.75);
+  border: 2px solid #36a86d;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#overlay-content-2-meme {
   background-color: rgba(26, 35, 40, 1);
   border: 2px solid #36a86d;
   width: 100%;
