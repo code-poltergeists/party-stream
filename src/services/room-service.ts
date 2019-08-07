@@ -246,14 +246,16 @@ export default class RoomService {
     })
   }
 
-  async addVideo(roomId: string, video: string) {
+  async addVideo(roomId: string, video: string, whoAdded: string, date: Date) {
     return firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .collection("videos")
       .add({
-        link: video
+        link: video,
+        whoAdded: whoAdded,
+        date: date
       })
   }
 }

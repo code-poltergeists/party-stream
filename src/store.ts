@@ -21,7 +21,9 @@ export default new Vuex.Store({
     chooseFriends: {
       users: []
     },
-    videoLink: ""
+    video: {
+      link: '',
+    }
   },
   mutations: {
     changeMenuItem(state, n) {
@@ -50,9 +52,9 @@ export default new Vuex.Store({
     updateChosenFriends(state, array) {
       state.chooseFriends.users = array;
     },
-    updateLink(state, value) {
-      state.videoLink = value;
-    }
+    updateLink(state, link) {
+      state.video.link = link;
+    },
   },
   actions: {
 

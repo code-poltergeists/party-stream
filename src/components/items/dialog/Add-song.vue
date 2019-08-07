@@ -23,7 +23,7 @@ export default class AddSong extends Vue {
   public link: string;
 
   updateLink(value: string) {
-    this.link = value;
+    this.link = value; 
     this.$store.commit("updateLink", value);
   }
 }

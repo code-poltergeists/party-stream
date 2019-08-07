@@ -21,6 +21,7 @@ import Player from "../items/Player.vue";
 import Button from "../items/Button.vue";
 import RoomModel from "@/models/Room";
 import RoomService from "../../services/room-service";
+import AuthService from "../../services/auth-service";
 
 @Component({
   components: {
@@ -30,6 +31,8 @@ import RoomService from "../../services/room-service";
 })
 export default class Room extends Vue {
   private roomService = new RoomService();
+  private authService = new AuthService();
+  private username = "";
   private videoId = "";
   private roomId = "";
   private isReady = false;
@@ -101,7 +104,9 @@ export default class Room extends Vue {
           this.$store.commit("toggleDialogVisibility", false);
           this.roomService.addVideo(
             this.$route.params.id,
-            this.$store.state.videoLink
+            this.$store.state.video.link,
+            this.username,
+            new Date()
           );
         }
       }
@@ -129,6 +134,9 @@ export default class Room extends Vue {
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
     this.isReady = true;
+    await this.authService.currentUser().then(res => {
+      this.username = res.username;
+    });
   }
 }
 </script>
