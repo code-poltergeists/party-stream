@@ -2,7 +2,13 @@
   <div v-if="isPrivate === false">
     <h1>Hi, and welcome to room: {{ this.roomDetails.roomName }}</h1>
     <div v-if="this.isReady">
-      <Player :video-id="videoId" :room-id="roomId" :key="videoId" @ended="videoEnded" />
+      <Player
+        :video-id="videoId"
+        :room-id="roomId"
+        :who-added="username"
+        :key="videoId"
+        @ended="videoEnded"
+      />
     </div>
     <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
     <Button icon="fas fa-plus" text="add-song" @click.native="addSong" />
@@ -53,6 +59,7 @@ export default class Room extends Vue {
 
   videoEnded() {
     this.roomDetails.videos.shift();
+    console.log(this.roomDetails);
     this.videoId = this.roomDetails.videos[0].link.slice(-11);
   }
 
@@ -133,7 +140,6 @@ export default class Room extends Vue {
     } else {
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
-    console.log(this.roomDetails.videos);
     this.isReady = true;
     await this.authService.currentUser().then(res => {
       this.username = res.username;

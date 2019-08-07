@@ -49,7 +49,7 @@
           <div id="added-by">
             <div>{{ $t('added-by') }}</div>
             <i class="fas fa-user-circle"></i>
-            <div>{{ $t('name') }}</div>
+            <div>{{ whoAdded }}</div>
           </div>
           <div id="controls">
             <div
@@ -122,6 +122,9 @@ export default class Player extends Vue {
 
   @Prop()
   roomId: string;
+
+  @Prop()
+  whoAdded: string;
 
   isLoaded = false;
   RoomService = new RoomService();
