@@ -13,7 +13,13 @@
       <div id="attach" @click="startUpload">
         <i class="fas fa-paperclip"></i>
       </div>
-      <input type="file" style="display: none" ref="photoInput" @change="uploadPhoto" />
+      <input
+        type="file"
+        style="display: none"
+        ref="photoInput"
+        @change="uploadPhoto"
+        accept="image/*"
+      />
       <textarea
         id="textarea"
         @input="autosize"
