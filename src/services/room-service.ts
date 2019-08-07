@@ -233,7 +233,9 @@ export default class RoomService {
         .collection("rooms")
         .doc(roomSnapshot.id)
         .collection("videos")
-        .get();
+        .orderBy("date")
+        .get()
+      console.log(videosSnapshot.docs);
       videosSnapshot.docs.forEach(videoDoc => {
         const videoData = videoDoc.data();
         let video = new Video();

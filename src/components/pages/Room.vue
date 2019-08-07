@@ -133,6 +133,7 @@ export default class Room extends Vue {
     } else {
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
+    console.log(this.roomDetails.videos);
     this.isReady = true;
     await this.authService.currentUser().then(res => {
       this.username = res.username;
