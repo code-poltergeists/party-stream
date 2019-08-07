@@ -260,14 +260,21 @@ export default class RoomService {
       })
   }
 
-  async videoEnded(roomId: string) {
-    return firebase
+  async videoEnded(roomId: string, videoId: string) {
+    firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .update({
         time: 0
       })
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .collection("videos")
+      .doc(videoId)
+      .delete();
   }
 }
 
