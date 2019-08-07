@@ -68,6 +68,10 @@ export default class MessageBubble extends Vue {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  & > img {
+    width: 100%;
+  }
 }
 
 .green {

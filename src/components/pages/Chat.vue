@@ -10,9 +10,10 @@
       />
     </div>
     <div id="type">
-      <div id="attach">
+      <div id="attach" @click="startUpload">
         <i class="fas fa-paperclip"></i>
       </div>
+      <input type="file" style="display: none" ref="photoInput" @change="uploadPhoto" />
       <textarea
         id="textarea"
         @input="autosize"
@@ -46,6 +47,24 @@ export default class Chat extends Vue {
   messages: Array<Message> = [];
 
   text = "";
+
+  startUpload() {
+    (this.$refs.photoInput as any).click();
+  }
+
+  uploadPhoto() {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const photoString = reader.result as string;
+      this.chatService.uploadPhoto(this.$route.params.chatId, photoString);
+    };
+    const file = (this.$refs.photoInput as any).files[0];
+    if (file) {
+      reader.readAsDataURL(file);
+    } else {
+      console.log("oh no no photo");
+    }
+  }
 
   mounted() {
     this.chatService.listenForMessages(this.$route.params.chatId, changes => {

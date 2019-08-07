@@ -1,7 +1,7 @@
 import * as firebase from "firebase/app";
 import "firebase/firestore";
 import AuthService from "./auth-service";
-import "firebase/firestore";
+import "firebase/storage";
 import Message from "@/models/Message";
 
 export default class ChatService {
@@ -50,5 +50,35 @@ export default class ChatService {
       ? this.isSentByCurrentUser(messages[index - 1]) !==
           this.isSentByCurrentUser(messages[index])
       : true;
+  }
+
+  uploadPhoto(chatId: string, photoString: string) {
+    firebase
+      .storage()
+      .ref()
+      .child("chatPictures/" + chatId + "/" + this.uuidv4() + ".png")
+      .putString(photoString, "data_url")
+      .then(task => {
+        task.ref.getDownloadURL().then(downloadURL => {
+          firebase
+            .firestore()
+            .collection("chats")
+            .doc(chatId)
+            .collection("messages")
+            .add({
+              attachment: downloadURL,
+              date: new Date(),
+              userId: this.authService.currentUserId
+            });
+        });
+      });
+  }
+
+  uuidv4() {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 }
