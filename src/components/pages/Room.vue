@@ -59,8 +59,8 @@ export default class Room extends Vue {
 
   videoEnded() {
     this.roomDetails.videos.shift();
-    console.log(this.roomDetails);
     this.videoId = this.roomDetails.videos[0].link.slice(-11);
+    this.roomService.videoEnded(this.roomId);
   }
 
   inviteFriends() {

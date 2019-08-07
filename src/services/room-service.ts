@@ -259,5 +259,15 @@ export default class RoomService {
         date: date
       })
   }
+
+  async videoEnded(roomId: string) {
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        time: 0
+      })
+  }
 }
 
