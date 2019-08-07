@@ -57,10 +57,20 @@ export default class Room extends Vue {
     0
   );
 
-  videoEnded() {
+  async videoEnded() {
     this.roomDetails.videos.shift();
-    this.videoId = this.roomDetails.videos[0].link.slice(-11);
+    if (
+      this.roomDetails.videos === undefined ||
+      this.roomDetails.videos.length == 0
+    ) {
+      this.videoId = "false";
+    } else {
+      this.videoId = this.roomDetails.videos[0].link.slice(-11);
+    }
     this.roomService.videoEnded(this.roomId, this.roomDetails.videos[0].id);
+    this.roomDetails = await this.roomService.getRoomInfo(
+      this.$route.params.id
+    );
   }
 
   inviteFriends() {
