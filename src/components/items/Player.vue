@@ -12,7 +12,7 @@
       <div v-if="videoId === 'false'">
         <div id="overlay" v-if="videoId === 'false'">
           <div id="overlay-content-2-meme">
-            <div id="video-title">No videos added to queue yet</div>
+            <div id="video-title">No videos in queue</div>
             <div id="added-by">
               <div>Add a video now!</div>
             </div>

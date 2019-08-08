@@ -154,6 +154,9 @@ export default class Room extends Vue {
     await this.authService.currentUser().then(res => {
       this.username = res.username;
     });
+    this.roomService.videosListener(this.roomId, (data: any) => {
+      this.roomDetails.videos = data;
+    });
   }
 }
 </script>
