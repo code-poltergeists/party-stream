@@ -154,10 +154,15 @@ export default class Room extends Vue {
     await this.authService.currentUser().then(res => {
       this.username = res.username;
     });
-    this.roomService.videosListener(this.roomId, (data: any) => {
-      this.roomDetails.videos = data;
-      this.videoId = this.roomDetails.videos[0].link.slice(-11);
-      console.log(this.roomDetails.videos);
+    this.roomService.videosListener(this.roomId, (changes: any) => {
+      changes.forEach(change => {
+        if (change.type === "added") {
+          const map = change.doc.data();
+          map.id = change.doc.id;
+          this.roomDetails.videos.push(map);
+          this.videoId = this.roomDetails.videos[0].link.slice(-11);
+        }
+      });
     });
   }
 }

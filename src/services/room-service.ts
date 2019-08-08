@@ -184,30 +184,15 @@ export default class RoomService {
   }
 
   async videosListener(roomId: string, callback: Function) {
-    let videos: Array<Video> = [];
     firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .collection("videos")
-      .onSnapshot(async doc => {
-        const videosSnapshot = await firebase
-          .firestore()
-          .collection("rooms")
-          .doc(roomId)
-          .collection("videos")
-          .orderBy("date")
-          .get()
-        videosSnapshot.docs.forEach(videoDoc => {
-          const videoData = videoDoc.data();
-          let video = new Video();
-          video.id = videoDoc.id;
-          video.link = videoData.link;
-          video.whoAdded = videoData.whoAdded;
-          videos.push(video);
-        });
-        callback(videos);
-      })
+      .orderBy("date")
+      .onSnapshot(snapshot => {
+        callback(snapshot.docChanges());
+      });
   }
 
   async addPeopleToRoom(roomId: string, users: Array<String>) {
