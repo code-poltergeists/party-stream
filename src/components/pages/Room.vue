@@ -156,6 +156,8 @@ export default class Room extends Vue {
     });
     this.roomService.videosListener(this.roomId, (data: any) => {
       this.roomDetails.videos = data;
+      this.videoId = this.roomDetails.videos[0].link.slice(-11);
+      console.log(this.roomDetails.videos);
     });
   }
 }
