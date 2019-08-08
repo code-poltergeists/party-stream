@@ -10,8 +10,8 @@
     <div @mouseover="onMouseOver" @mouseleave="onMouseLeave" @mousemove="onMouseMove">
       <div id="thumbnail" v-if="!isPlaying" :style="{backgroundImage: `url(${videoThumbnail})`}"></div>
       <div v-if="videoId === 'false'">
-        <div id="overlay">
-          <div id="overlay-content-2-meme" v-if="!isPlaying">
+        <div id="overlay" v-if="videoId === 'false'">
+          <div id="overlay-content-2-meme">
             <div id="video-title">No videos added to queue yet</div>
             <div id="added-by">
               <div>Add a video now!</div>
