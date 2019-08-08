@@ -183,6 +183,18 @@ export default class RoomService {
       });
   }
 
+  async videosListener(roomId: string, callback: Function) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .collection("videos")
+      .orderBy("date")
+      .onSnapshot(snapshot => {
+        callback(snapshot.docChanges());
+      });
+  }
+
   async addPeopleToRoom(roomId: string, users: Array<String>) {
     return firebase
       .firestore()
@@ -205,7 +217,7 @@ export default class RoomService {
     });
   }
 
-  async getRoomInfo(roomId: string):Promise<Room> {
+  async getRoomInfo(roomId: string): Promise<Room> {
     return new Promise<Room>(async (resolve, reject) => {
       const roomSnapshot = await firebase
         .firestore()
@@ -233,17 +245,49 @@ export default class RoomService {
         .collection("rooms")
         .doc(roomSnapshot.id)
         .collection("videos")
-        .get();
+        .orderBy("date")
+        .get()
       videosSnapshot.docs.forEach(videoDoc => {
         const videoData = videoDoc.data();
         let video = new Video();
         video.id = videoDoc.id;
         video.link = videoData.link;
+        video.whoAdded = videoData.whoAdded;
         videos.push(video);
       });
       room.videos = videos;
       resolve(room);
     })
+  }
+
+  async addVideo(roomId: string, video: string, whoAdded: string, date: Date) {
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .collection("videos")
+      .add({
+        link: video,
+        whoAdded: whoAdded,
+        date: date
+      })
+  }
+
+  async videoEnded(roomId: string, videoId: string) {
+    firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        time: 0
+      })
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .collection("videos")
+      .doc(videoId)
+      .delete();
   }
 }
 

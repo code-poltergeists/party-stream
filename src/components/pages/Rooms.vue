@@ -1,7 +1,7 @@
 <template>
   <div id="rooms">
     <div v-if="this.displayLoading" class="loading-container">
-      <h1>Fetching videos...</h1>
+      <h1>Fetching rooms...</h1>
       <div class="lds-ring">
         <div></div>
         <div></div>

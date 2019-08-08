@@ -1,7 +1,7 @@
 <template>
   <div id="player" ref="player">
     <youtube
-      video-id="dQw4w9WgXcQ"
+      :video-id="videoId"
       id="youtube"
       :playerVars="{controls: 0, disablekb: 1, modestbranding: 1}"
       ref="youtube"
@@ -9,7 +9,17 @@
     />
     <div @mouseover="onMouseOver" @mouseleave="onMouseLeave" @mousemove="onMouseMove">
       <div id="thumbnail" v-if="!isPlaying" :style="{backgroundImage: `url(${videoThumbnail})`}"></div>
-      <div id="overlay">
+      <div v-if="videoId === 'false'">
+        <div id="overlay" v-if="videoId === 'false'">
+          <div id="overlay-content-2-meme">
+            <div id="video-title">No videos in queue</div>
+            <div id="added-by">
+              <div>Add a video now!</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else id="overlay">
         <div id="overlay-content" v-if="!isPlaying">
           <div id="video-title">{{ videoTitle }}</div>
           <div id="progress-and-text-container">
@@ -39,7 +49,7 @@
           <div id="added-by">
             <div>{{ $t('added-by') }}</div>
             <i class="fas fa-user-circle"></i>
-            <div>{{ $t('name') }}</div>
+            <div>{{ whoAdded }}</div>
           </div>
           <div id="controls">
             <div
@@ -107,6 +117,16 @@ import RoomService from "@/services/room-service";
 
 @Component
 export default class Player extends Vue {
+  @Prop()
+  videoId: string;
+
+  @Prop()
+  roomId: string;
+
+  @Prop()
+  whoAdded: string;
+
+  isLoaded = false;
   RoomService = new RoomService();
   isPlaying = false;
   isMuted = false;
@@ -131,23 +151,21 @@ export default class Player extends Vue {
   lastTimeFromFirestore = -1;
 
   onVolumeChange(volume: number) {
-    this.RoomService.updateVolume("fXO5vernUJa2qZg3Qlc6", volume);
+    this.RoomService.updateVolume(this.roomId, volume);
     this.applyFill(volume, "volumeSlider");
   }
 
   onProgressChange(time: number) {
-    this.RoomService.updateTime("fXO5vernUJa2qZg3Qlc6", time);
+    this.RoomService.updateTime(this.roomId, time);
     this.applyFill(time, "progressSlider");
   }
 
   mounted() {
     this.videoService
-      .getVideoTitle("dQw4w9WgXcQ")
+      .getVideoTitle(this.videoId)
       .then(title => {
         this.videoTitle = title;
-        this.videoThumbnail = this.videoService.getVideoThumbnail(
-          "dQw4w9WgXcQ"
-        );
+        this.videoThumbnail = this.videoService.getVideoThumbnail(this.videoId);
       })
       .catch(e => console.log(e));
     (this.player as any).getDuration().then((duration: number) => {
@@ -177,6 +195,9 @@ export default class Player extends Vue {
             3 – buffering
             5 – video cued
          */
+        if (state === 0) {
+          this.$emit("ended");
+        }
         this.shouldUpdateSliders = state === 1;
       });
     }, 100);
@@ -184,31 +205,22 @@ export default class Player extends Vue {
       this.isFullscreen = !this.isFullscreen;
     });
 
-    this.RoomService.isPlayingListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (isPlaying: boolean) => {
-        isPlaying ? this.play() : this.pause();
-      }
-    );
+    this.RoomService.isPlayingListener(this.roomId, (isPlaying: boolean) => {
+      isPlaying ? this.play() : this.pause();
+    });
 
-    this.RoomService.isMutedListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (isMuted: boolean) => {
-        isMuted ? this.mute() : this.unMute();
-      }
-    );
-    this.RoomService.timeListener("fXO5vernUJa2qZg3Qlc6", (time: number) => {
+    this.RoomService.isMutedListener(this.roomId, (isMuted: boolean) => {
+      isMuted ? this.mute() : this.unMute();
+    });
+    this.RoomService.timeListener(this.roomId, (time: number) => {
       if (time !== this.lastTimeFromFirestore) {
         (this.player as any).seekTo(time);
         this.lastTimeFromFirestore = time;
       }
     });
-    this.RoomService.volumeListener(
-      "fXO5vernUJa2qZg3Qlc6",
-      (volume: number) => {
-        (this.player as any).setVolume(volume);
-      }
-    );
+    this.RoomService.volumeListener(this.roomId, (volume: number) => {
+      (this.player as any).setVolume(volume);
+    });
   }
 
   formatTime(time: number | null) {
@@ -250,22 +262,22 @@ export default class Player extends Vue {
   }
 
   playpause() {
-    this.RoomService.isPlayingUpdater("fXO5vernUJa2qZg3Qlc6", !this.isPlaying);
+    this.RoomService.isPlayingUpdater(this.roomId, !this.isPlaying);
   }
 
   chooseMute() {
-    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", !this.isMuted);
+    this.RoomService.isMutedUpdater(this.roomId, !this.isMuted);
   }
 
   mute() {
     (this.player as any).mute();
-    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", true);
+    this.RoomService.isMutedUpdater(this.roomId, true);
     this.isMuted = true;
   }
 
   unMute() {
     (this.player as any).unMute();
-    this.RoomService.isMutedUpdater("fXO5vernUJa2qZg3Qlc6", false);
+    this.RoomService.isMutedUpdater(this.roomId, false);
     this.isMuted = false;
   }
 
@@ -407,6 +419,17 @@ export default class Player extends Vue {
 
 #overlay-content {
   background-color: rgba(26, 35, 40, 0.75);
+  border: 2px solid #36a86d;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#overlay-content-2-meme {
+  background-color: rgba(26, 35, 40, 1);
   border: 2px solid #36a86d;
   width: 100%;
   height: 100%;
