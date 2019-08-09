@@ -103,9 +103,10 @@ export default class AuthService {
       .then(doc => {
         const data = doc.data()!;
         let user = new User();
-        user.name = data.name;
+        user.email = data.email;
         user.photoUrl = data.photoUrl;
         user.username = data.username;
+        user.id = firebase.auth().currentUser!.uid;
         return user;
       });
   }

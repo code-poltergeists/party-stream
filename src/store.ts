@@ -1,19 +1,20 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from "vue";
+import Vuex from "vuex";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     currentMenuItem: 0,
+    isMenuOpen: false,
     dialog: {
       isVisible: false,
-      info: {},
+      info: {}
     },
     room: {
-      name: '',
+      name: "",
       privacy: 0,
-      code: ''
+      code: ""
     },
     auth: {
       restrict: false
@@ -22,8 +23,10 @@ export default new Vuex.Store({
       users: []
     },
     video: {
-      link: '',
-    }
+      link: ""
+    },
+    userInfo: {},
+    reauthenticate: {}
   },
   mutations: {
     changeMenuItem(state, n) {
@@ -33,6 +36,9 @@ export default new Vuex.Store({
       state.dialog.isVisible = flag;
     },
     setupDialog(state, map) {
+      if (map.isStepChangeAllowed === undefined) {
+        state.dialog.info["isStepChangeAllowed"] = true;
+      }
       Object.keys(map).forEach(key => {
         (state.dialog.info as { [_: string]: any })[key] = map[key];
       });
@@ -55,8 +61,27 @@ export default new Vuex.Store({
     updateLink(state, link) {
       state.video.link = link;
     },
+    updateUserInfo(state, map) {
+      if (map === {}) {
+        state.reauthenticate = {};
+      } else {
+        Object.keys(map).forEach(key => {
+          (state.userInfo as { [_: string]: any })[key] = map[key];
+        });
+      }
+    },
+    reauthenticate(state, map) {
+      if (map === {}) {
+        state.reauthenticate = {};
+      } else {
+        Object.keys(map).forEach(key => {
+          (state.reauthenticate as { [_: string]: any })[key] = map[key];
+        });
+      }
+    },
+    toggleMenu(state, flag) {
+      this.state.isMenuOpen = flag;
+    }
   },
-  actions: {
-
-  },
+  actions: {}
 });
