@@ -94,7 +94,13 @@
           <i class="fas fa-camera" v-if="photoString === null"></i>
         </div>
       </div>
-      <input type="file" style="display: none" ref="photoInput" @change="uploadPhoto" />
+      <input
+        type="file"
+        style="display: none"
+        ref="photoInput"
+        @change="uploadPhoto"
+        accept="image/*"
+      />
       <div
         class="textfield-container"
         v-if="currentTab === 'signup' || currentTab === 'complete-signup'"
@@ -364,7 +370,7 @@ $color-dark: #656565;
 *,
 ::after,
 ::before {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 @mixin desktop {
