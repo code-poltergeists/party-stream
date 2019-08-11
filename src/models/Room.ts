@@ -9,6 +9,7 @@ export default class Room {
   members: Array<String>;
   privacy: number;
   roomName: string;
+  startTime: Date;
   time: number;
   videos: Array<Video>;
   volume: number;
@@ -21,6 +22,7 @@ export default class Room {
     members: Array<String>,
     privacy: number,
     roomName: string,
+    startTime: Date,
     time: number,
     videos: Array<Video>,
     volume: number
@@ -33,6 +35,7 @@ export default class Room {
     this.members = members;
     this.roomName = roomName;
     this.privacy = privacy;
+    this.startTime = startTime;
     this.time = time;
     this.videos = videos;
     this.volume = volume;

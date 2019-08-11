@@ -37,6 +37,7 @@ export default class RoomService {
           roomData.members,
           roomData.privacy,
           roomData.roomName,
+          roomData.startTime,
           roomData.time,
           roomData.videos,
           roomData.volume
@@ -235,6 +236,7 @@ export default class RoomService {
         roomData.members,
         roomData.privacy,
         roomData.roomName,
+        roomData.startTime,
         roomData.time,
         roomData.videos,
         roomData.volume
@@ -298,16 +300,6 @@ export default class RoomService {
       .doc(roomId)
       .update({
         startTime: new Date()
-      })
-  }
-
-  async updateMissedTime(roomId: string, time: number) {
-    return firebase
-      .firestore()
-      .collection("rooms")
-      .doc(roomId)
-      .update({
-        missedTime: time
       })
   }
 }

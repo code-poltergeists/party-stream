@@ -267,8 +267,11 @@ export default class Player extends Vue {
   }
 
   playpause() {
-    console.log(this.isPlaying);
-    this.RoomService.isPlayingUpdater(this.roomId, !this.isPlaying, this.elapsedTime);
+    this.RoomService.isPlayingUpdater(
+      this.roomId,
+      !this.isPlaying,
+      this.elapsedTime
+    );
   }
 
   chooseMute() {

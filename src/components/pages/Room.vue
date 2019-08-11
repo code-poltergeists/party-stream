@@ -41,6 +41,7 @@ export default class Room extends Vue {
   private username = "";
   private videoId = "";
   private roomId = "";
+  private time = 0;
   private isReady = false;
   isPrivate: boolean | null | undefined = null;
   private roomDetails = new RoomModel(
@@ -52,6 +53,7 @@ export default class Room extends Vue {
     [""],
     0,
     "0",
+    new Date(),
     0,
     [],
     0
@@ -151,6 +153,11 @@ export default class Room extends Vue {
       this.roomService.startTimestamp(this.roomId);
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
+    let currentTime = new Date();
+    this.time =
+      currentTime.getTime()/1000 -
+      this.roomDetails.startTime.seconds +
+      this.roomDetails.time;
     this.isReady = true;
     await this.authService.currentUser().then(res => {
       this.username = res.username;
