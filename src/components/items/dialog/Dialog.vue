@@ -25,16 +25,19 @@
             <div class="arrow" v-if="index != $store.state.dialog.info.steps.length - 2"></div>
           </div>
         </div>
-        <Button
-          class="dialog-button"
-          :icon="$store.state.dialog.info.button.icon"
-          :text="$store.state.dialog.info.button.text"
-          @click.native="onClick"
-        />
-        <component
-          :is="$store.state.dialog.info.component"
-          v-bind="$store.state.dialog.info.additionalProps"
-        ></component>
+        <div id="dialog-content-container">
+          <component
+            :is="$store.state.dialog.info.component"
+            v-bind="$store.state.dialog.info.additionalProps"
+          ></component>
+        </div>
+        <div class="dialog-button">
+          <Button
+            :icon="$store.state.dialog.info.button.icon"
+            :text="$store.state.dialog.info.button.text"
+            @click.native="onClick"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -96,6 +99,18 @@ export default class Dialog extends Vue {
 </script>
 
 <style scoped lang="scss">
+@mixin desktop {
+  @media only screen and (min-width: 601px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
+
 #overlay {
   width: 100vw;
   height: 100vh;
@@ -120,11 +135,12 @@ export default class Dialog extends Vue {
 }
 
 #dialog-element {
-  width: 50vw;
-  height: 50vh;
+  width: 75vw;
+  height: 75vh;
   background-color: #1a2328;
   border-radius: 20px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 #dialog-title-container {
@@ -135,20 +151,22 @@ export default class Dialog extends Vue {
   border-top-right-radius: 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 #dialog-title {
   color: #e3e3e3;
   font-family: "Montserrat", sans-serif;
-  font-size: 25px;
+  font-size: 3.5vh;
   font-weight: 600;
-  margin-left: 30px;
+  text-align: center;
 }
 
 #dialog-steps-container {
   width: 100%;
-  height: 7.5vh;
+  @include desktop {
+    height: 10vh;
+  }
   background-color: #344046;
   display: flex;
   align-items: center;
@@ -156,12 +174,20 @@ export default class Dialog extends Vue {
   font-family: "Montserrat", sans-serif;
   font-size: 16px;
   font-weight: 600;
+  @include mobile {
+    flex-direction: column;
+  }
 }
 
 .dialog-step-container {
   display: flex;
   align-items: center;
-  height: 100%;
+  @include desktop {
+    height: 10vh;
+  }
+  @include mobile {
+    height: 7.5vh;
+  }
   width: 100%;
   border-color: transparent transparent transparent #344046;
   cursor: pointer;
@@ -172,7 +198,9 @@ export default class Dialog extends Vue {
   align-items: center;
   width: 100%;
   height: 100%;
-  padding-left: 20px;
+  @include desktop {
+    padding-left: 20px;
+  }
   z-index: 200;
 }
 
@@ -181,19 +209,23 @@ export default class Dialog extends Vue {
 }
 
 .arrow-overlap {
-  margin-left: -3.75vh;
-  width: calc(100% + 3.75vh);
-  padding-left: calc(20px + 3.75vh);
+  @include desktop {
+    margin-left: -3.75vh;
+    width: calc(100% + 3.75vh);
+    padding-left: calc(20px + 3.75vh);
+  }
 }
 
 .arrow {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 3.75vh 0 3.75vh 3.75vh;
-  border-color: inherit;
-  margin-left: auto;
-  z-index: 210;
+  @include desktop {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 5vh 0 5vh 5vh;
+    border-color: inherit;
+    margin-left: auto;
+    z-index: 210;
+  }
 }
 
 .active {
@@ -201,11 +233,13 @@ export default class Dialog extends Vue {
 }
 
 .arrow-active {
-  border-color: transparent transparent transparent #247bd5;
+  @include desktop {
+    border-color: transparent transparent transparent #247bd5;
+  }
 }
 
 .step-number {
-  width: 6vh;
+  flex: 0 0 6vh;
   height: 6vh;
   border-radius: 50%;
   border: 2px solid #e3e3e3;
@@ -217,12 +251,22 @@ export default class Dialog extends Vue {
 }
 
 .step-title {
-  font-size: 20px;
+  font-size: calc(1.5vh + 1vw);
 }
 
 .dialog-button {
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  @include desktop {
+    width: 30vw;
+    align-self: flex-end;
+  }
+  @include mobile {
+    width: 100%;
+  }
+}
+
+#dialog-content-container {
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
 }
 </style>

@@ -8,6 +8,7 @@
           <Button
             icon="fas fa-plus-circle"
             text="create-room"
+            class="dashboard-button"
             @click.native="openDialog('create-room')"
           ></Button>
         </div>
@@ -15,6 +16,7 @@
           <Button
             icon="fas fa-sign-in-alt"
             text="join-room"
+            class="dashboard-button"
             @click.native="openDialog('join-room')"
           ></Button>
         </div>
@@ -22,6 +24,7 @@
           <Button
             icon="fas fa-user-friends"
             text="add-friends"
+            class="dashboard-button"
             @click.native="openDialog('invite-friends')"
           ></Button>
         </div>
@@ -181,5 +184,10 @@ export default class Dashboard extends Vue {
       justify-content: center;
     }
   }
+}
+
+.dashboard-button {
+  width: 200px;
+  margin-top: 15px;
 }
 </style>

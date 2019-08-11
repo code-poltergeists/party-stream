@@ -1,12 +1,12 @@
 <template>
   <label class="switch">
-    <input type="checkbox" @change="toggle">
+    <input type="checkbox" @change="toggle" />
     <span class="slider round"></span>
   </label>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class ToggleSwitch extends Vue {
@@ -14,12 +14,23 @@ export default class ToggleSwitch extends Vue {
 
   private toggle() {
     this.mode = this.mode === 0 ? 1 : 0;
-    this.$emit('onToggle', this.mode);
+    this.$emit("onToggle", this.mode);
   }
 }
 </script>
 
 <style scoped lang="scss">
+@mixin desktop {
+  @media only screen and (min-width: 601px) {
+    @content;
+  }
+}
+
+@mixin mobile {
+  @media only screen and (max-width: 600px) {
+    @content;
+  }
+}
 label {
   margin: 0;
   padding: 0;
@@ -28,8 +39,8 @@ label {
 .switch {
   position: relative;
   display: inline-block;
-  width: 100px;
-  height: 50px;
+  width: 100%;
+  height: 100%;
 }
 
 /* Hide default HTML checkbox */
@@ -47,27 +58,34 @@ label {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #E3E3E3;
-  -webkit-transition: .4s;
-  transition: .4s;
+  background-color: #e3e3e3;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 50px;
-  width: 50px;
+  height: 5vh;
+  width: 5vh;
   left: 0;
   bottom: 0;
-  background-color: #247BD5;
-  -webkit-transition: .4s;
-  transition: .4s;
+  background-color: #247bd5;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(50px);
-  -ms-transform: translateX(50px);
-  transform: translateX(50px);
+  @include desktop {
+    -webkit-transform: translateX(calc(10vw - 5vh));
+    -ms-transform: translateX(calc(10vw - 5vh));
+    transform: translateX(calc(10vw - 5vh));
+  }
+  @include mobile {
+    -webkit-transform: translateX(calc(25vw - 5vh));
+    -ms-transform: translateX(calc(25vw - 5vh));
+    transform: translateX(calc(25vw - 5vh));
+  }
 }
 
 /* Rounded sliders */
