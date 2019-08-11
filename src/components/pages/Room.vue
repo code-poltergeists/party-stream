@@ -148,6 +148,7 @@ export default class Room extends Vue {
     ) {
       this.videoId = "false";
     } else {
+      this.roomService.startTimestamp(this.roomId);
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
     this.isReady = true;

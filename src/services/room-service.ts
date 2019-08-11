@@ -289,5 +289,25 @@ export default class RoomService {
       .doc(videoId)
       .delete();
   }
+
+  async startTimestamp(roomId: string) {
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        startTime: new Date()
+      })
+  }
+
+  async updateMissedTime(roomId: string, time: number) {
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        missedTime: time
+      })
+  }
 }
 

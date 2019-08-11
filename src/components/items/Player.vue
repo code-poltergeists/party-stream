@@ -148,6 +148,10 @@ export default class Player extends Vue {
 
   videoService = new VideoService();
 
+  pauseTimestamp = new Date();
+  playTimestamp = new Date();
+  timeMissed = 0;
+
   lastTimeFromFirestore = -1;
 
   onVolumeChange(volume: number) {
@@ -161,6 +165,7 @@ export default class Player extends Vue {
   }
 
   mounted() {
+    this.RoomService.startTimestamp(this.roomId);
     this.videoService
       .getVideoTitle(this.videoId)
       .then(title => {
@@ -246,6 +251,7 @@ export default class Player extends Vue {
   }
 
   pause() {
+    this.pauseTimestamp = new Date();
     this.isPlaying = false;
     window.setTimeout(() => {
       this.player.pauseVideo();
@@ -254,6 +260,7 @@ export default class Player extends Vue {
   }
 
   play() {
+    this.RoomService.updateMissedTime(this.roomId, this.timeMissed);
     this.player.playVideo();
     window.setTimeout(() => {
       this.isPlaying = true;
@@ -262,6 +269,10 @@ export default class Player extends Vue {
   }
 
   playpause() {
+        this.playTimestamp = new Date();
+    this.timeMissed = Math.abs(
+      this.playTimestamp.getTime() / 1000 - this.pauseTimestamp.getTime() / 1000
+    );
     this.RoomService.isPlayingUpdater(this.roomId, !this.isPlaying);
   }
 
