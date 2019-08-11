@@ -4,7 +4,6 @@ import AuthService from "./auth-service";
 import Room from "@/models/Room";
 import Video from "@/models/Video";
 import 'firebase/firestore';
-import { callbackify } from 'util';
 
 export default class RoomService {
   static instance: RoomService;
@@ -114,14 +113,15 @@ export default class RoomService {
       });
   }
 
-  async isPlayingUpdater(roomId: string, value: boolean, time: number) {
+  async isPlayingUpdater(roomId: string, value: boolean, time: number, timestamp: Date) {
     firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .update({
         "isPlaying": value,
-        "time": time
+        "time": time,
+        "startTime": timestamp
       });
   }
 

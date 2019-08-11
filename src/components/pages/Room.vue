@@ -7,6 +7,7 @@
         :room-id="roomId"
         :who-added="username"
         :key="videoId"
+        :calculatedTime="time"
         @ended="videoEnded"
       />
     </div>
@@ -150,14 +151,16 @@ export default class Room extends Vue {
     ) {
       this.videoId = "false";
     } else {
-      this.roomService.startTimestamp(this.roomId);
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
     let currentTime = new Date();
-    this.time =
-      currentTime.getTime()/1000 -
-      this.roomDetails.startTime.seconds +
-      this.roomDetails.time;
+    console.log(currentTime.getTime() / 1000);
+    console.log(this.roomDetails.startTime.seconds);
+    this.time = Math.abs(
+      currentTime.getTime() / 1000 -
+        this.roomDetails.startTime.seconds +
+        this.roomDetails.time
+    );
     this.isReady = true;
     await this.authService.currentUser().then(res => {
       this.username = res.username;

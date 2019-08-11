@@ -126,6 +126,9 @@ export default class Player extends Vue {
   @Prop()
   whoAdded: string;
 
+  @Prop()
+  calculatedTime: number;
+
   isLoaded = false;
   RoomService = new RoomService();
   isPlaying = false;
@@ -165,7 +168,9 @@ export default class Player extends Vue {
   }
 
   mounted() {
-    this.RoomService.startTimestamp(this.roomId);
+    if (this.calculatedTime) {
+      this.onProgressChange(this.calculatedTime);
+    }
     this.videoService
       .getVideoTitle(this.videoId)
       .then(title => {
@@ -270,7 +275,8 @@ export default class Player extends Vue {
     this.RoomService.isPlayingUpdater(
       this.roomId,
       !this.isPlaying,
-      this.elapsedTime
+      this.elapsedTime,
+      new Date()
     );
   }
 
