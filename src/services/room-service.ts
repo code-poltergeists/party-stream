@@ -113,13 +113,14 @@ export default class RoomService {
       });
   }
 
-  async isPlayingUpdater(roomId: string, value: boolean) {
+  async isPlayingUpdater(roomId: string, value: boolean, time: number) {
     firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .update({
-        "isPlaying": value
+        "isPlaying": value,
+        "time": time
       });
   }
 
