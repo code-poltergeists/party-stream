@@ -4,7 +4,6 @@ import AuthService from "./auth-service";
 import Room from "@/models/Room";
 import Video from "@/models/Video";
 import 'firebase/firestore';
-import { callbackify } from 'util';
 
 export default class RoomService {
   static instance: RoomService;
@@ -37,6 +36,7 @@ export default class RoomService {
           roomData.members,
           roomData.privacy,
           roomData.roomName,
+          roomData.startTime,
           roomData.time,
           roomData.videos,
           roomData.volume
@@ -113,13 +113,15 @@ export default class RoomService {
       });
   }
 
-  async isPlayingUpdater(roomId: string, value: boolean) {
+  async isPlayingUpdater(roomId: string, value: boolean, time: number, timestamp: Date) {
     firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .update({
-        "isPlaying": value
+        "isPlaying": value,
+        "time": time,
+        "startTime": timestamp
       });
   }
 
@@ -143,13 +145,14 @@ export default class RoomService {
       });
   }
 
-  async updateTime(roomId: string, value: number) {
+  async updateTime(roomId: string, value: number, date: Date) {
     firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .update({
-        "time": value
+        "time": value,
+        "startTime": date
       })
   }
 
@@ -234,6 +237,7 @@ export default class RoomService {
         roomData.members,
         roomData.privacy,
         roomData.roomName,
+        roomData.startTime,
         roomData.time,
         roomData.videos,
         roomData.volume
@@ -288,6 +292,16 @@ export default class RoomService {
       .collection("videos")
       .doc(videoId)
       .delete();
+  }
+
+  async startTimestamp(roomId: string) {
+    return firebase
+      .firestore()
+      .collection("rooms")
+      .doc(roomId)
+      .update({
+        startTime: new Date()
+      })
   }
 }
 

@@ -69,7 +69,7 @@
             value="0"
             min="0"
             max="100"
-            @input="onProgressChange($event.target.value)"
+            @input="onProgressChange(parseInt($event.target.value))"
           />
         </div>
         <div id="bar">
@@ -126,6 +126,9 @@ export default class Player extends Vue {
   @Prop()
   whoAdded: string;
 
+  @Prop()
+  calculatedTime: number;
+
   isLoaded = false;
   RoomService = new RoomService();
   isPlaying = false;
@@ -148,6 +151,10 @@ export default class Player extends Vue {
 
   videoService = new VideoService();
 
+  pauseTimestamp = new Date();
+  playTimestamp = new Date();
+  timeMissed = 0;
+
   lastTimeFromFirestore = -1;
 
   onVolumeChange(volume: number) {
@@ -156,7 +163,8 @@ export default class Player extends Vue {
   }
 
   onProgressChange(time: number) {
-    this.RoomService.updateTime(this.roomId, time);
+    console.log(time);
+    this.RoomService.updateTime(this.roomId, time, new Date());
     this.applyFill(time, "progressSlider");
   }
 
@@ -169,7 +177,10 @@ export default class Player extends Vue {
       })
       .catch(e => console.log(e));
     (this.player as any).getDuration().then((duration: number) => {
-      this.elapsedTime = 0;
+      this.elapsedTime = this.calculatedTime;
+      console.log(this.elapsedTime);
+      console.log(this.calculatedTime);
+      (this.player as any).seekTo(this.calculatedTime);
       this.totalTime = duration;
       this.setupProgress();
       (this.$refs.progressSlider as any).max = duration;
@@ -204,7 +215,6 @@ export default class Player extends Vue {
     FullScreenHelper.onFullscreenChange(() => {
       this.isFullscreen = !this.isFullscreen;
     });
-
     this.RoomService.isPlayingListener(this.roomId, (isPlaying: boolean) => {
       isPlaying ? this.play() : this.pause();
     });
@@ -262,7 +272,12 @@ export default class Player extends Vue {
   }
 
   playpause() {
-    this.RoomService.isPlayingUpdater(this.roomId, !this.isPlaying);
+    this.RoomService.isPlayingUpdater(
+      this.roomId,
+      !this.isPlaying,
+      this.elapsedTime,
+      new Date()
+    );
   }
 
   chooseMute() {
