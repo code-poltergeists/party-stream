@@ -154,13 +154,10 @@ export default class Room extends Vue {
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
     let currentTime = new Date();
-    console.log(currentTime.getTime() / 1000);
-    console.log(this.roomDetails.startTime.seconds);
-    this.time = Math.abs(
-      currentTime.getTime() / 1000 -
-        this.roomDetails.startTime.seconds +
-        this.roomDetails.time
-    );
+    let seconds = currentTime.getTime() / 1000;
+    this.time =
+      seconds - this.roomDetails.startTime.seconds + this.roomDetails.time;
+    this.time = Math.trunc(this.time);
     this.isReady = true;
     await this.authService.currentUser().then(res => {
       this.username = res.username;

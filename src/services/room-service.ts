@@ -145,13 +145,14 @@ export default class RoomService {
       });
   }
 
-  async updateTime(roomId: string, value: number) {
+  async updateTime(roomId: string, value: number, date: Date) {
     firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .update({
-        "time": value
+        "time": value,
+        "startTime": date
       })
   }
 

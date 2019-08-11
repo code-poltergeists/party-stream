@@ -69,7 +69,7 @@
             value="0"
             min="0"
             max="100"
-            @input="onProgressChange($event.target.value)"
+            @input="onProgressChange(parseInt($event.target.value))"
           />
         </div>
         <div id="bar">
@@ -163,14 +163,12 @@ export default class Player extends Vue {
   }
 
   onProgressChange(time: number) {
-    this.RoomService.updateTime(this.roomId, time);
+    console.log(time);
+    this.RoomService.updateTime(this.roomId, time, new Date());
     this.applyFill(time, "progressSlider");
   }
 
   mounted() {
-    if (this.calculatedTime) {
-      this.onProgressChange(this.calculatedTime);
-    }
     this.videoService
       .getVideoTitle(this.videoId)
       .then(title => {
@@ -179,7 +177,10 @@ export default class Player extends Vue {
       })
       .catch(e => console.log(e));
     (this.player as any).getDuration().then((duration: number) => {
-      this.elapsedTime = 0;
+      this.elapsedTime = this.calculatedTime;
+      console.log(this.elapsedTime);
+      console.log(this.calculatedTime);
+      (this.player as any).seekTo(this.calculatedTime);
       this.totalTime = duration;
       this.setupProgress();
       (this.$refs.progressSlider as any).max = duration;
@@ -214,7 +215,6 @@ export default class Player extends Vue {
     FullScreenHelper.onFullscreenChange(() => {
       this.isFullscreen = !this.isFullscreen;
     });
-
     this.RoomService.isPlayingListener(this.roomId, (isPlaying: boolean) => {
       isPlaying ? this.play() : this.pause();
     });
