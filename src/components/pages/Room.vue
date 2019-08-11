@@ -156,7 +156,7 @@ export default class Room extends Vue {
     let currentTime = new Date();
     let seconds = currentTime.getTime() / 1000;
     this.time =
-      seconds - this.roomDetails.startTime.seconds + this.roomDetails.time;
+      seconds - (this.roomDetails.startTime as any).seconds + this.roomDetails.time;
     this.time = Math.trunc(this.time);
     this.isReady = true;
     await this.authService.currentUser().then(res => {
