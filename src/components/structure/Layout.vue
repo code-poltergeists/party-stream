@@ -1,6 +1,6 @@
 <template>
   <div id="layout">
-    <div id="col-sidebar" :class="{'open': isMenuOpen}">
+    <div id="col-sidebar" :class="{'open': $store.state.isMenuOpen}">
       <div id="logo-container">
         <Logo />
       </div>
@@ -8,7 +8,7 @@
         <Sidebar />
       </div>
     </div>
-    <div id="col-view" :class="{'shrink': isMenuOpen}">
+    <div id="col-view" :class="{'shrink': $store.state.isMenuOpen}">
       <Topbar @onMenuToggle="onMenuToggle" />
       <div id="view">
         <router-view></router-view>
@@ -31,10 +31,9 @@ import Logo from "./Logo.vue";
   }
 })
 export default class Layout extends Vue {
-  isMenuOpen = false;
 
   onMenuToggle(value: boolean) {
-    this.isMenuOpen = value;
+    this.$store.commit('toggleMenu', value);
   }
 }
 </script>

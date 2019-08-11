@@ -19,8 +19,8 @@ export default class MenuItem extends Vue {
   @Prop({ default: "" }) private route!: string;
 
   private toggleMenuItem() {
-    this.$store.commit("changeMenuItem", this.index);
     this.$router.push({ name: this.route });
+    this.$store.commit("toggleMenu", false);
   }
 }
 </script>

@@ -31,7 +31,10 @@
           :text="$store.state.dialog.info.button.text"
           @click.native="onClick"
         />
-        <component :is="$store.state.dialog.info.component"></component>
+        <component
+          :is="$store.state.dialog.info.component"
+          v-bind="$store.state.dialog.info.additionalProps"
+        ></component>
       </div>
     </div>
   </div>
@@ -46,6 +49,8 @@ import CreateRoom2 from "./Create-room-2.vue";
 import InviteFriends from "./Invite-friends.vue";
 import ChooseFriends from "../Choose-friends.vue";
 import JoinRoom from "./Join-room.vue";
+import EditField from "./Edit-field.vue";
+import Reauthenticate from "./Reauthenticate.vue";
 
 @Component({
   components: {
@@ -55,7 +60,9 @@ import JoinRoom from "./Join-room.vue";
     CreateRoom2,
     ChooseFriends,
     InviteFriends,
-    JoinRoom
+    JoinRoom,
+    EditField,
+    Reauthenticate
   }
 })
 export default class Dialog extends Vue {
@@ -65,13 +72,24 @@ export default class Dialog extends Vue {
     this.$store.commit("toggleDialogVisibility", false);
   }
 
-  private onClick() {
-    this.$store.state.dialog.info.steps[this.currentIndex + 1].action();
+  private async onClick() {
+    try {
+      await this.$store.state.dialog.info.steps[this.currentIndex + 1].action();
+    } catch (e) {
+      return;
+    }
     this.currentIndex += 1;
   }
 
-  private dialogStepClicked(index: number) {
-    this.$store.state.dialog.info.steps[index].action();
+  private async dialogStepClicked(index: number) {
+    if (!this.$store.state.dialog.info.isStepChangeAllowed) {
+      return;
+    }
+    try {
+      await this.$store.state.dialog.info.steps[index].action();
+    } catch (e) {
+      return;
+    }
     this.currentIndex = index;
   }
 }

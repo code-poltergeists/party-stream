@@ -10,21 +10,18 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class Topbar extends Vue {
-  name = '';
-  isMenuOpen = false;
-
-  mounted() {
+  get name() {
     if (this.$route.params.chatId) {
       // TODO: fetch chat name
-      this.name = this.$t('chat') + ' - ' + this.$route.params.chatId;    
+      return this.$t("chat") + " - " + this.$route.params.chatId;
     } else {
-      this.name = this.$t(this.$route.name!).toString();
+      return this.$t(this.$route.name!).toString();
     }
   }
-
+  isMenuOpen = false;
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
-    this.$emit('onMenuToggle', this.isMenuOpen);
+    this.$emit("onMenuToggle", this.isMenuOpen);
   }
 }
 </script>

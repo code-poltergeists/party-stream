@@ -16,6 +16,7 @@
   "at-username": "@username",
   "add": "Add",
   "join": "Join",
+  "done": "Done",
   "join-public-room": "Join public room",
   "join-private-room": "Join private room",
   "enter-room-name": "Enter room name",
@@ -42,5 +43,16 @@
   "room": "Room",
   "enter-invite-code": "Enter invite code",
   "chat": "Chat",
-  "type-a-message": "Type a message..."
+  "type-a-message": "Type a message...",
+  "edit-fields": "Tip: press on any field to edit it!",
+  "edit-username": "Edit username",
+  "edit-email": "Edit email",
+  "reauthenticate": "Reauthenticate",
+  "why-reauthenticate": "Due to security reasons, you will need to reauthenticate",
+  "next": "Next",
+  "hidden": "hidden",
+  "edit-password": "Edit password",
+  "phone": "Phone number",
+  "edit-phone": "Edit phone",
+  "not-yet-set": "not yet set"
 }

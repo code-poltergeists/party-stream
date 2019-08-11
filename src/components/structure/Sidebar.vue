@@ -8,7 +8,7 @@
         :text="$t(item.text)"
         :route="item.text"
         :index="item.index"
-        :active="$store.state.currentMenuItem == item.index"
+        :active="$route.name === item.text"
       />
     </div>
   </div>
