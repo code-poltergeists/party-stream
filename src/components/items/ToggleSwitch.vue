@@ -1,12 +1,12 @@
 <template>
   <label class="switch">
-    <input type="checkbox" @change="toggle">
+    <input type="checkbox" @change="toggle" />
     <span class="slider round"></span>
   </label>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class ToggleSwitch extends Vue {
@@ -14,7 +14,7 @@ export default class ToggleSwitch extends Vue {
 
   private toggle() {
     this.mode = this.mode === 0 ? 1 : 0;
-    this.$emit('onToggle', this.mode);
+    this.$emit("onToggle", this.mode);
   }
 }
 </script>
@@ -47,9 +47,9 @@ label {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #E3E3E3;
-  -webkit-transition: .4s;
-  transition: .4s;
+  background-color: #e3e3e3;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -59,9 +59,9 @@ label {
   width: 50px;
   left: 0;
   bottom: 0;
-  background-color: #247BD5;
-  -webkit-transition: .4s;
-  transition: .4s;
+  background-color: #45b885;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider:before {

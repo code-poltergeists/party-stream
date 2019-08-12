@@ -197,11 +197,11 @@ export default class Dialog extends Vue {
 }
 
 .active {
-  background-color: #247bd5;
+  background-color: #36a86d;
 }
 
 .arrow-active {
-  border-color: transparent transparent transparent #247bd5;
+  border-color: transparent transparent transparent #36a86d;
 }
 
 .step-number {

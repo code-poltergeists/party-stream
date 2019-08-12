@@ -31,7 +31,7 @@ export default class MenuItem extends Vue {
 }
 
 .item {
-  color: #247bd5;
+  color: #45b885;
   height: 65px;
   display: flex;
   align-items: center;
@@ -43,11 +43,11 @@ export default class MenuItem extends Vue {
 .active {
   background: linear-gradient(
     to right,
-    rgba(36, 122, 213, 0.5) 0%,
-    rgba(55, 143, 231, 0.1) 35%,
-    rgba(71, 159, 247, 0) 100%
+    rgba(36, 213, 122, 0.5) 0%,
+    rgba(55, 231, 143, 0.1) 35%,
+    rgba(71, 247, 159, 0) 100%
   );
-  border-left: 5px solid #247bd5;
+  border-left: 5px solid #45b885;
 }
 
 .icon {
