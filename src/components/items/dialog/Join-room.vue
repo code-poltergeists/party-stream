@@ -1,10 +1,5 @@
 <template>
   <div id="dialog-content">
-    <div id="privacy">
-      <i class="fas fa-globe-europe privacy-item"></i>
-      <ToggleSwitch id="privacy-switch" @onToggle="changePrivacy" />
-      <i class="fas fa-lock privacy-item"></i>
-    </div>
     <TextField
       :placeholder="placeholder"
       id="name-textfield"
@@ -30,28 +25,6 @@ export default class JoinRoom extends Vue {
 
   updateCode(value: string) {
     this.$store.commit("roomCodeUpdate", value);
-  }
-
-  private changePrivacy(value: number) {
-    // let title: string = '';
-    // switch (value) {
-    //   case 0:
-    //     // title = 'join-public-room';
-    //     this.placeholder = 'enter-room-name';
-    //     break;
-    //   case 1:
-    //     // title = 'join-private-room';
-    //     this.placeholder = 'enter-room-id';
-    //     break;
-    //   default:
-    //     break;
-    // }
-    // const steps = this.$store.state.dialog.info.steps;
-    // steps[0].namexș = title;
-    // this.$store.commit('setupDialog', {
-    //   title: title,
-    //   steps: steps
-    // });
   }
 }
 </script>
