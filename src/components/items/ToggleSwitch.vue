@@ -70,7 +70,7 @@ label {
   width: 5vh;
   left: 0;
   bottom: 0;
-  background-color: #247bd5;
+  background-color: #45b885;
   -webkit-transition: 0.4s;
   transition: 0.4s;
 }

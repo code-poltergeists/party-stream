@@ -229,7 +229,7 @@ export default class Dialog extends Vue {
 }
 
 .active {
-  background-color: #247bd5;
+  background-color: #36a86d;
 }
 
 .arrow-active {

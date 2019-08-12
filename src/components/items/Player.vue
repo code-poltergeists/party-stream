@@ -163,7 +163,6 @@ export default class Player extends Vue {
   }
 
   onProgressChange(time: number) {
-    console.log(time);
     this.RoomService.updateTime(this.roomId, time, new Date());
     this.applyFill(time, "progressSlider");
   }
@@ -178,8 +177,6 @@ export default class Player extends Vue {
       .catch(e => console.log(e));
     (this.player as any).getDuration().then((duration: number) => {
       this.elapsedTime = this.calculatedTime;
-      console.log(this.elapsedTime);
-      console.log(this.calculatedTime);
       (this.player as any).seekTo(this.calculatedTime);
       this.totalTime = duration;
       this.setupProgress();

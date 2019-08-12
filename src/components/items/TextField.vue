@@ -45,7 +45,7 @@ export default class TextField extends Vue {
 .input {
   outline: 0;
   border-width: 0 0 2px;
-  border-color: #247bd5;
+  border-color: #45b885;
   background-color: transparent;
   font-family: "Montserrat", sans-serif;
   color: #909090;

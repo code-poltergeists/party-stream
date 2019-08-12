@@ -5,7 +5,7 @@
       <Player
         :video-id="videoId"
         :room-id="roomId"
-        :who-added="username"
+        :who-added="whoAdded"
         :key="videoId"
         :calculatedTime="time"
         @ended="videoEnded"
@@ -44,6 +44,7 @@ export default class Room extends Vue {
   private roomId = "";
   private time = 0;
   private isReady = false;
+  private whoAdded: String = "";
   isPrivate: boolean | null | undefined = null;
   private roomDetails = new RoomModel(
     "",
@@ -70,6 +71,7 @@ export default class Room extends Vue {
       this.videoId = "false";
     } else {
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
+      this.whoAdded = this.roomDetails.videos[0].whoAdded;
     }
     this.roomDetails = await this.roomService.getRoomInfo(
       this.$route.params.id
@@ -156,7 +158,9 @@ export default class Room extends Vue {
     let currentTime = new Date();
     let seconds = currentTime.getTime() / 1000;
     this.time =
-      seconds - (this.roomDetails.startTime as any).seconds + this.roomDetails.time;
+      seconds -
+      (this.roomDetails.startTime as any).seconds +
+      this.roomDetails.time;
     this.time = Math.trunc(this.time);
     this.isReady = true;
     await this.authService.currentUser().then(res => {
@@ -169,6 +173,7 @@ export default class Room extends Vue {
           map.id = change.doc.id;
           this.roomDetails.videos.push(map);
           this.videoId = this.roomDetails.videos[0].link.slice(-11);
+          this.whoAdded = this.roomDetails.videos[0].whoAdded;
         }
       });
     });

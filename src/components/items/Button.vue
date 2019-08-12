@@ -6,12 +6,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
 export default class Button extends Vue {
-  @Prop({ default: '' }) private icon!: string;
-  @Prop({ default: '' }) private text!: string;
+  @Prop({ default: "" }) private icon!: string;
+  @Prop({ default: "" }) private text!: string;
 }
 </script>
 
@@ -21,8 +21,8 @@ export default class Button extends Vue {
   border-radius: 15px;
   text-align: center;
   width: 100%;
-  background-color: #267dd7;
-  color: #E3E3E3;
+  background-color: #36a86d;
+  color: #e3e3e3;
   cursor: pointer;
   box-sizing: border-box;
 }
