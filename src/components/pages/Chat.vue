@@ -62,7 +62,7 @@ export default class Chat extends Vue {
     const reader = new FileReader();
     reader.onloadend = () => {
       const photoString = reader.result as string;
-      this.chatService.uploadPhoto(this.$route.params.chatId, photoString);
+      this.chatService.uploadPhoto(this.$route.params.id, photoString);
     };
     const file = (this.$refs.photoInput as any).files[0];
     if (file) {
@@ -73,7 +73,7 @@ export default class Chat extends Vue {
   }
 
   mounted() {
-    this.chatService.listenForMessages(this.$route.params.chatId, changes => {
+    this.chatService.listenForMessages(this.$route.params.id, changes => {
       changes.forEach(change => {
         if (change.type === "added") {
           const map = change.doc.data();
@@ -85,7 +85,7 @@ export default class Chat extends Vue {
   }
 
   sendMessage() {
-    this.chatService.sendMessage(this.$route.params.chatId, this.text);
+    this.chatService.sendMessage(this.$route.params.id, this.text);
     this.text = "";
     (this.$refs.textarea as any).style.height = "25px";
   }

@@ -13,6 +13,7 @@
     </div>
     <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
     <Button icon="fas fa-plus" text="add-song" @click.native="addSong" />
+    <Chat />
   </div>
   <div v-else-if="isPrivate === true">
     <h1>Sorry, private room</h1>
@@ -29,11 +30,13 @@ import Button from "../items/Button.vue";
 import RoomModel from "@/models/Room";
 import RoomService from "../../services/room-service";
 import AuthService from "../../services/auth-service";
+import Chat from "./Chat.vue";
 
 @Component({
   components: {
     Player,
-    Button
+    Button,
+    Chat
   }
 })
 export default class Room extends Vue {
