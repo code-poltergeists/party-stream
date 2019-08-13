@@ -11,6 +11,7 @@ export default new Vuex.Store({
       isVisible: false,
       info: {}
     },
+    roomName: "",
     room: {
       name: "",
       privacy: 0,
@@ -81,6 +82,9 @@ export default new Vuex.Store({
     },
     toggleMenu(state, flag) {
       this.state.isMenuOpen = flag;
+    },
+    updateRoomName(state, name) {
+      state.roomName = name;
     }
   },
   actions: {}

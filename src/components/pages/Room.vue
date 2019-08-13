@@ -1,6 +1,5 @@
 <template>
   <div v-if="isPrivate === false">
-    <h1>Hi, and welcome to room: {{ this.roomDetails.roomName }}</h1>
     <div v-if="this.isReady">
       <Player
         :video-id="videoId"
@@ -165,6 +164,7 @@ export default class Room extends Vue {
     } else {
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
+    this.$store.commit("updateRoomName", this.roomDetails.roomName);
     let currentTime = new Date();
     let seconds = currentTime.getTime() / 1000;
     this.time =
