@@ -16,7 +16,7 @@ export default class ChatService {
     return ChatService.instance;
   }
 
-  async sendMessage(chatId: string, text: string) {
+  async sendMessage(chatId: string, text: string, username: string, photoUrl: string) {
     return firebase
       .firestore()
       .collection("chats")
@@ -24,6 +24,8 @@ export default class ChatService {
       .collection("messages")
       .add({
         text: text,
+        username: username,
+        photoUrl: photoUrl,
         date: new Date(),
         userId: this.authService.currentUserId
       });
@@ -48,7 +50,7 @@ export default class ChatService {
   isLastMessage(messages: Array<Message>, index: number) {
     return messages[index - 1]
       ? this.isSentByCurrentUser(messages[index - 1]) !==
-          this.isSentByCurrentUser(messages[index])
+      this.isSentByCurrentUser(messages[index])
       : true;
   }
 
@@ -75,7 +77,7 @@ export default class ChatService {
   }
 
   uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
       var r = (Math.random() * 16) | 0,
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);

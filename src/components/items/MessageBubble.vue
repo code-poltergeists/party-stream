@@ -1,9 +1,10 @@
 <template>
-  <div :class="['message', getPosition(), last ? getPosition() + '-last' : '']">
+  <div :class="['message', getPosition()]">
     <div class="message-text" v-if="message.text">{{message.text}}</div>
     <div class="message-image" v-if="message.attachment">
       <img :src="message.attachment" />
     </div>
+    <div class="user-image" v-if="last">{{ message.userId }}</div>
   </div>
 </template>
 
