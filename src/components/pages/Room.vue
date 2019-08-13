@@ -11,8 +11,15 @@
         @ended="videoEnded"
       />
     </div>
-    <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
-    <Button icon="fas fa-plus" text="add-song" @click.native="addSong" />
+    <div class="buttons">
+      <Button
+        icon="fas fa-plus"
+        text="invite-friends"
+        @click.native="inviteFriends"
+        class="customButton"
+      />
+      <Button icon="fas fa-plus" text="add-song" @click.native="addSong" class="customButton" />
+    </div>
     <Chat />
   </div>
   <div v-else-if="isPrivate === true">
@@ -187,6 +194,15 @@ export default class Room extends Vue {
 <style scoped lang="scss">
 h1 {
   color: white;
+}
+
+.customButton:first-of-type {
+  display: inline-block;
+}
+
+.customButton:last-of-type {
+  display: inline-block;
+  margin-left: 15px;
 }
 
 .loading-container {
