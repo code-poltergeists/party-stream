@@ -4,7 +4,9 @@
     <div class="message-image" v-if="message.attachment">
       <img :src="message.attachment" />
     </div>
-    <div class="user-image" v-if="last">{{ message.userId }}</div>
+    <div class="user-image" v-if="last">
+      <img :src="message.photoUrl" />
+    </div>
   </div>
 </template>
 
