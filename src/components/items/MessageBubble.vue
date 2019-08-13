@@ -1,5 +1,5 @@
 <template>
-  <div :class="['message', getPosition()]">
+  <div :class="['message', getPosition(), last ? getPosition() + '-last' : '']">
     <div class="message-text" v-if="message.text">{{message.text}}</div>
     <div class="message-image" v-if="message.attachment">
       <img :src="message.attachment" />
