@@ -147,4 +147,10 @@ export default class MessageBubble extends Vue {
     border-bottom-right-radius: 10px;
   }
 }
+
+.user-image img {
+  border-radius: 50%;
+  height: 50px;
+  width: auto;
+}
 </style>
