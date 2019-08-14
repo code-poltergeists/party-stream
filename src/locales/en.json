@@ -5,6 +5,7 @@
   "friends": "Friends",
   "settings": "Settings",
   "no-items": "Nothing to see here... yet",
+  "welcome": "Welcome to your dashboard!",
   "create-room": "Create room",
   "join-room": "Join room",
   "add-friends": "Add friends",
@@ -57,5 +58,6 @@
   "not-yet-set": "not yet set",
   "add-song": "Add song",
   "add-a-song": "Add a song",
-  "Youtube link": "Youtube link"
+  "Youtube link": "Youtube link",
+  "logout": "Log out"
 }

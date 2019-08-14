@@ -37,19 +37,14 @@ export default class Sidebar extends Vue {
     },
     {
       index: 2,
-      icon: "fas fa-envelope",
-      text: "inbox"
+      icon: "fas fa-cog",
+      text: "settings"
     },
     {
       index: 3,
-      icon: "fas fa-user-friends",
-      text: "friends"
+      icon: "fas fa-sign-out-alt",
+      text: "logout"
     },
-    {
-      index: 5,
-      icon: "fas fa-cog",
-      text: "settings"
-    }
   ];
 }
 </script>
@@ -69,7 +64,7 @@ export default class Sidebar extends Vue {
   background-color: #29333c;
 }
 
-#menu-items div:last-child {
+#menu-items div:nth-last-child(2) {
   margin-top: auto;
 }
 </style>
