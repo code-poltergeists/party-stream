@@ -65,7 +65,7 @@ export default class Chat extends Vue {
     const reader = new FileReader();
     reader.onloadend = () => {
       const photoString = reader.result as string;
-      this.chatService.uploadPhoto(this.$route.params.id, photoString);
+      this.chatService.uploadPhoto(this.$route.params.id, photoString, this.currentUser.username, this.currentUser.photoUrl);
     };
     const file = (this.$refs.photoInput as any).files[0];
     if (file) {

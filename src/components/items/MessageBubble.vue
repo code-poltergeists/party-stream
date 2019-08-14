@@ -1,11 +1,14 @@
 <template>
   <div :class="['message', getPosition(), last ? getPosition() + '-last' : '']">
+    <div class="user-info">
+      <div class="user-image">
+        <img :src="message.photoUrl" />
+      </div>
+      <div class="user-username">{{message.username}}</div>
+    </div>
     <div class="message-text" v-if="message.text">{{message.text}}</div>
     <div class="message-image" v-if="message.attachment">
       <img :src="message.attachment" />
-    </div>
-    <div class="user-image" v-if="last">
-      <img :src="message.photoUrl" />
     </div>
   </div>
 </template>
@@ -148,9 +151,21 @@ export default class MessageBubble extends Vue {
   }
 }
 
+.user-info {
+  display: flex;
+  justify-content: center;
+}
+
 .user-image img {
   border-radius: 50%;
-  height: 50px;
+  height: 20px;
   width: auto;
+  margin-right: 5px;
+}
+
+.user-username {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 15px;
 }
 </style>

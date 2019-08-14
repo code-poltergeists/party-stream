@@ -19,7 +19,9 @@
       />
       <Button icon="fas fa-plus" text="add-song" @click.native="addSong" class="customButton" />
     </div>
-    <Chat />
+    <div id="chat-container">
+      <Chat />
+    </div>
   </div>
   <div v-else-if="isPrivate === true">
     <h1>Sorry, private room</h1>
@@ -242,5 +244,11 @@ h1 {
   100% {
     transform: rotate(360deg);
   }
+}
+
+#chat-container {
+  width: 100%;
+  height: 500px;
+  overflow: scroll;
 }
 </style>
