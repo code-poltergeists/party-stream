@@ -39,7 +39,9 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import Message from "../../models/Message";
+import User from "../../models/User";
 import MessageBubble from "../items/MessageBubble.vue";
+import AuthService from "../../services/auth-service";
 import ChatService from "@/services/chat-service";
 
 @Component({
@@ -48,10 +50,11 @@ import ChatService from "@/services/chat-service";
   }
 })
 export default class Chat extends Vue {
+  authService = new AuthService();
   chatService = new ChatService();
 
   messages: Array<Message> = [];
-
+  currentUser: User | null = null;
   text = "";
 
   startUpload() {
@@ -62,7 +65,7 @@ export default class Chat extends Vue {
     const reader = new FileReader();
     reader.onloadend = () => {
       const photoString = reader.result as string;
-      this.chatService.uploadPhoto(this.$route.params.chatId, photoString);
+      this.chatService.uploadPhoto(this.$route.params.id, photoString, this.currentUser.username, this.currentUser.photoUrl);
     };
     const file = (this.$refs.photoInput as any).files[0];
     if (file) {
@@ -73,7 +76,10 @@ export default class Chat extends Vue {
   }
 
   mounted() {
-    this.chatService.listenForMessages(this.$route.params.chatId, changes => {
+    this.authService.currentUser().then(currentUser => {
+      this.currentUser = currentUser;
+    });
+    this.chatService.listenForMessages(this.$route.params.id, changes => {
       changes.forEach(change => {
         if (change.type === "added") {
           const map = change.doc.data();
@@ -85,7 +91,7 @@ export default class Chat extends Vue {
   }
 
   sendMessage() {
-    this.chatService.sendMessage(this.$route.params.chatId, this.text);
+    this.chatService.sendMessage(this.$route.params.id, this.text, this.currentUser.username, this.currentUser.photoUrl);
     this.text = "";
     (this.$refs.textarea as any).style.height = "25px";
   }

@@ -16,7 +16,12 @@ export default class ChatService {
     return ChatService.instance;
   }
 
-  async sendMessage(chatId: string, text: string) {
+  async sendMessage(
+    chatId: string,
+    text: string,
+    username: string,
+    photoUrl: string
+  ) {
     return firebase
       .firestore()
       .collection("chats")
@@ -24,6 +29,8 @@ export default class ChatService {
       .collection("messages")
       .add({
         text: text,
+        username: username,
+        photoUrl: photoUrl,
         date: new Date(),
         userId: this.authService.currentUserId
       });
@@ -52,7 +59,12 @@ export default class ChatService {
       : true;
   }
 
-  uploadPhoto(chatId: string, photoString: string) {
+  uploadPhoto(
+    chatId: string,
+    photoString: string,
+    username: string,
+    photoUrl: string
+  ) {
     firebase
       .storage()
       .ref()
@@ -67,6 +79,8 @@ export default class ChatService {
             .collection("messages")
             .add({
               attachment: downloadURL,
+              username: username,
+              photoUrl: photoUrl,
               date: new Date(),
               userId: this.authService.currentUserId
             });

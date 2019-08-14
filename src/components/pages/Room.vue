@@ -1,6 +1,5 @@
 <template>
   <div v-if="isPrivate === false">
-    <h1>Hi, and welcome to room: {{ this.roomDetails.roomName }}</h1>
     <div v-if="this.isReady">
       <Player
         :video-id="videoId"
@@ -11,8 +10,18 @@
         @ended="videoEnded"
       />
     </div>
-    <Button icon="fas fa-plus" text="invite-friends" @click.native="inviteFriends" />
-    <Button icon="fas fa-plus" text="add-song" @click.native="addSong" />
+    <div class="buttons">
+      <Button
+        icon="fas fa-plus"
+        text="invite-friends"
+        @click.native="inviteFriends"
+        class="customButton"
+      />
+      <Button icon="fas fa-plus" text="add-song" @click.native="addSong" class="customButton" />
+    </div>
+    <div id="chat-container">
+      <Chat />
+    </div>
   </div>
   <div v-else-if="isPrivate === true">
     <h1>Sorry, private room</h1>
@@ -29,11 +38,13 @@ import Button from "../items/Button.vue";
 import RoomModel from "@/models/Room";
 import RoomService from "../../services/room-service";
 import AuthService from "../../services/auth-service";
+import Chat from "./Chat.vue";
 
 @Component({
   components: {
     Player,
-    Button
+    Button,
+    Chat
   }
 })
 export default class Room extends Vue {
@@ -155,6 +166,7 @@ export default class Room extends Vue {
     } else {
       this.videoId = this.roomDetails.videos[0].link.slice(-11);
     }
+    this.$store.commit("updateRoomName", this.roomDetails.roomName);
     let currentTime = new Date();
     let seconds = currentTime.getTime() / 1000;
     this.time =
@@ -184,6 +196,15 @@ export default class Room extends Vue {
 <style scoped lang="scss">
 h1 {
   color: white;
+}
+
+.customButton:first-of-type {
+  display: inline-block;
+}
+
+.customButton:last-of-type {
+  display: inline-block;
+  margin-left: 15px;
 }
 
 .loading-container {
@@ -223,5 +244,11 @@ h1 {
   100% {
     transform: rotate(360deg);
   }
+}
+
+#chat-container {
+  width: 100%;
+  height: 500px;
+  overflow: scroll;
 }
 </style>

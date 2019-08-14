@@ -11,6 +11,9 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 @Component
 export default class Topbar extends Vue {
   get name() {
+    if (this.$route.params.id) {
+      return this.$store.state.roomName;
+    }
     if (this.$route.params.chatId) {
       // TODO: fetch chat name
       return this.$t("chat") + " - " + this.$route.params.chatId;
