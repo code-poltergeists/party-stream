@@ -52,6 +52,7 @@ export default class Room extends Vue {
   private time = 0;
   private isReady = false;
   private whoAdded: String = "";
+  private videoDuration = 0;
   isPrivate: boolean | null | undefined = null;
   private roomDetails = new RoomModel(
     "",
@@ -75,6 +76,7 @@ export default class Room extends Vue {
       this.roomDetails.videos === undefined ||
       this.roomDetails.videos.length == 0
     ) {
+      console.log("hey we're all deleted");
       this.videoId = "false";
     } else {
       this.videoId = this.roomDetails.videos[0].link.slice(-11);

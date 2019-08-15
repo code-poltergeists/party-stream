@@ -177,7 +177,11 @@ export default class Player extends Vue {
       .catch(e => console.log(e));
     (this.player as any).getDuration().then((duration: number) => {
       this.elapsedTime = this.calculatedTime;
-      (this.player as any).seekTo(this.calculatedTime);
+      if (this.elapsedTime >= duration) {
+        this.$emit("ended");
+        this.elapsedTime = 0;
+      }
+      (this.player as any).seekTo(this.elapsedTime);
       this.totalTime = duration;
       this.setupProgress();
       (this.$refs.progressSlider as any).max = duration;
