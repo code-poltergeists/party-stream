@@ -178,8 +178,8 @@ export default class Player extends Vue {
     (this.player as any).getDuration().then((duration: number) => {
       this.elapsedTime = this.calculatedTime;
       if (this.elapsedTime >= duration) {
-        this.$emit("ended");
         this.elapsedTime = 0;
+        this.playpause();
       }
       (this.player as any).seekTo(this.elapsedTime);
       this.totalTime = duration;
