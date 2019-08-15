@@ -198,13 +198,18 @@ h1 {
   color: white;
 }
 
+.customButton {
+  width: 45%;
+  margin-top: 10px;
+}
+
 .customButton:first-of-type {
   display: inline-block;
 }
 
 .customButton:last-of-type {
   display: inline-block;
-  margin-left: 15px;
+  margin-left: 10%;
 }
 
 .loading-container {
