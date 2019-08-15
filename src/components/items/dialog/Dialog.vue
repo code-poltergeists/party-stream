@@ -210,9 +210,9 @@ export default class Dialog extends Vue {
 
 .arrow-overlap {
   @include desktop {
-    margin-left: -3.75vh;
-    width: calc(100% + 3.75vh);
-    padding-left: calc(20px + 3.75vh);
+    margin-left: -5vh;
+    width: calc(100% + 5vh);
+    padding-left: calc(20px + 5vh);
   }
 }
 
@@ -234,7 +234,7 @@ export default class Dialog extends Vue {
 
 .arrow-active {
   @include desktop {
-    border-color: transparent transparent transparent #247bd5;
+    border-color: transparent transparent transparent #36a86d;
   }
 }
 
