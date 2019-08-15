@@ -96,17 +96,6 @@ export default class Dashboard extends Vue {
           {
             name: "name-and-privacy",
             action: () => {
-              this.$store.commit("setupDialog", {
-                title: "invite-friends",
-                button: { icon: "fas fa-plus-circle", text: "create-room" },
-                component: "CreateRoom2",
-                steps: stepsArray
-              });
-            }
-          },
-          {
-            name: "invite-friends",
-            action: () => {
               this.$store.commit("toggleDialogVisibility", false);
               new RoomService()
                 .createRoom(
@@ -136,6 +125,7 @@ export default class Dashboard extends Vue {
           {
             name: "join-room",
             action: () => {
+              router.push({ name: "room", params: { id: this.$store.state.room.code } });
               this.$store.commit("toggleDialogVisibility", false);
             }
           }

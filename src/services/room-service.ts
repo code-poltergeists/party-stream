@@ -3,7 +3,7 @@ import "firebase/firestore";
 import AuthService from "./auth-service";
 import Room from "@/models/Room";
 import Video from "@/models/Video";
-import 'firebase/firestore';
+import "firebase/firestore";
 
 export default class RoomService {
   static instance: RoomService;
@@ -93,12 +93,29 @@ export default class RoomService {
           if (snapshot.docs.length === 0) {
             reject();
           } else {
-            console.log(snapshot.docs[0].data())
+            console.log(snapshot.docs[0].data());
             this.addPeopleToRoom(snapshot.docs[0].id, [
               this.authService.currentUserId
             ]).then(() => {
               resolve();
             });
+          }
+        });
+    });
+  }
+
+  async getRoomForCode(inviteCode: string) {
+    return new Promise<string>((resolve, reject) => {
+      firebase
+        .firestore()
+        .collection("rooms")
+        .where("inviteCode", "==", inviteCode)
+        .get()
+        .then(snapshot => {
+          if (snapshot.docs.length === 0) {
+            reject();
+          } else {
+            resolve(snapshot.docs[0].id);
           }
         });
     });
@@ -114,15 +131,20 @@ export default class RoomService {
       });
   }
 
-  async isPlayingUpdater(roomId: string, value: boolean, time: number, timestamp: Date) {
+  async isPlayingUpdater(
+    roomId: string,
+    value: boolean,
+    time: number,
+    timestamp: Date
+  ) {
     firebase
       .firestore()
       .collection("rooms")
       .doc(roomId)
       .update({
-        "isPlaying": value,
-        "time": time,
-        "startTime": timestamp
+        isPlaying: value,
+        time: time,
+        startTime: timestamp
       });
   }
 
@@ -133,7 +155,7 @@ export default class RoomService {
       .doc(roomId)
       .onSnapshot(doc => {
         callback(doc.data()!.isMuted);
-      })
+      });
   }
 
   async isMutedUpdater(roomId: string, value: boolean) {
@@ -142,7 +164,7 @@ export default class RoomService {
       .collection("rooms")
       .doc(roomId)
       .update({
-        "isMuted": value
+        isMuted: value
       });
   }
 
@@ -152,9 +174,9 @@ export default class RoomService {
       .collection("rooms")
       .doc(roomId)
       .update({
-        "time": value,
-        "startTime": date
-      })
+        time: value,
+        startTime: date
+      });
   }
 
   async timeListener(roomId: string, callback: Function) {
@@ -173,8 +195,8 @@ export default class RoomService {
       .collection("rooms")
       .doc(roomId)
       .update({
-        "volume": value
-      })
+        volume: value
+      });
   }
 
   async volumeListener(roomId: string, callback: Function) {
@@ -211,13 +233,18 @@ export default class RoomService {
 
   async isPrivate(roomId: string) {
     return new Promise<boolean>((resolve, reject) => {
-      firebase.firestore().collection('rooms').doc(roomId).get().then(doc => {
-        if (!doc.exists) {
-          reject();
-        } else {
-          resolve(doc.data()!.privacy === 1);
-        }
-      });
+      firebase
+        .firestore()
+        .collection("rooms")
+        .doc(roomId)
+        .get()
+        .then(doc => {
+          if (!doc.exists) {
+            reject();
+          } else {
+            resolve(doc.data()!.privacy === 1);
+          }
+        });
     });
   }
 
@@ -227,7 +254,7 @@ export default class RoomService {
         .firestore()
         .collection("rooms")
         .doc(roomId)
-        .get()
+        .get();
       const roomData = roomSnapshot.data();
       let room = new Room(
         roomData.id,
@@ -251,7 +278,7 @@ export default class RoomService {
         .doc(roomSnapshot.id)
         .collection("videos")
         .orderBy("date")
-        .get()
+        .get();
       videosSnapshot.docs.forEach(videoDoc => {
         const videoData = videoDoc.data();
         let video = new Video();
@@ -262,7 +289,7 @@ export default class RoomService {
       });
       room.videos = videos;
       resolve(room);
-    })
+    });
   }
 
   async addVideo(roomId: string, video: string, whoAdded: string, date: Date) {
@@ -275,7 +302,7 @@ export default class RoomService {
         link: video,
         whoAdded: whoAdded,
         date: date
-      })
+      });
   }
 
   async videoEnded(roomId: string, videoId: string) {
@@ -285,7 +312,7 @@ export default class RoomService {
       .doc(roomId)
       .update({
         time: 0
-      })
+      });
     return firebase
       .firestore()
       .collection("rooms")
@@ -302,7 +329,6 @@ export default class RoomService {
       .doc(roomId)
       .update({
         startTime: new Date()
-      })
+      });
   }
 }
-

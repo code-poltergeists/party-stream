@@ -59,5 +59,8 @@
   "add-song": "Add song",
   "add-a-song": "Add a song",
   "Youtube link": "Youtube link",
-  "logout": "Log out"
+  "logout": "Log out",
+  "invite-using": "Invite a friend using this code: ",
+  "no-access": "Sorry, you don't have access to this room",
+  "room-does-not-exist": "Sorry, this room does not exist"
 }

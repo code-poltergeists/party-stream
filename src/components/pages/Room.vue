@@ -10,13 +10,8 @@
         @ended="videoEnded"
       />
     </div>
+    <div id="invite">{{$t('invite-using')}}{{roomDetails.inviteCode}}</div>
     <div class="buttons">
-      <Button
-        icon="fas fa-plus"
-        text="invite-friends"
-        @click.native="inviteFriends"
-        class="customButton"
-      />
       <Button icon="fas fa-plus" text="add-song" @click.native="addSong" class="customButton" />
     </div>
     <div id="chat-container">
@@ -24,10 +19,10 @@
     </div>
   </div>
   <div v-else-if="isPrivate === true">
-    <h1>Sorry, private room</h1>
+    <div class="error-message">{{$t('no-access')}}</div>
   </div>
   <div v-else-if="isPrivate === undefined">
-    <h1>Room not found :(</h1>
+    <div class="error-message">{{$t('room-does-not-exist')}}</div>
   </div>
 </template>
 
@@ -39,6 +34,7 @@ import RoomModel from "@/models/Room";
 import RoomService from "../../services/room-service";
 import AuthService from "../../services/auth-service";
 import Chat from "./Chat.vue";
+import router from "@/router";
 
 @Component({
   components: {
@@ -149,6 +145,16 @@ export default class Room extends Vue {
   }
 
   async mounted() {
+    if (this.$route.params.id.length === 6) {
+      try {
+        const idFromInviteCode = await this.roomService.getRoomForCode(
+          this.$route.params.id
+        );
+        router.push({ name: "room", params: { id: idFromInviteCode } });
+      } catch {
+        this.isPrivate = undefined;
+      }
+    }
     try {
       this.isPrivate = await this.roomService.isPrivate(this.$route.params.id);
     } catch {
@@ -199,18 +205,18 @@ h1 {
   color: white;
 }
 
+#invite {
+  font-family: "Montserrat", sans-serif;
+  font-size: 25px;
+  font-weight: 600;
+  margin: 20px 0;
+  color: white;
+  width: 100%;
+  text-align: center;
+}
+
 .customButton {
-  width: 45%;
-  margin-top: 10px;
-}
-
-.customButton:first-of-type {
-  display: inline-block;
-}
-
-.customButton:last-of-type {
-  display: inline-block;
-  margin-left: 10%;
+  width: 100%;
 }
 
 .loading-container {
@@ -256,5 +262,12 @@ h1 {
   width: 100%;
   height: 500px;
   overflow: scroll;
+}
+
+.error-message {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  color: white;
 }
 </style>
