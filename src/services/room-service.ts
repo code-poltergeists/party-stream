@@ -71,6 +71,7 @@ export default class RoomService {
       .add({
         creationDate: firebase.firestore.FieldValue.serverTimestamp(),
         inviteCode: (+new Date() * Math.random()).toString(36).substring(0, 6),
+        startTime: new Date(),
         isMuted: false,
         isPlaying: false,
         members: [],
