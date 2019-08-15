@@ -9,6 +9,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import AuthService from "../../services/auth-service";
 
 @Component
 export default class MenuItem extends Vue {
@@ -18,9 +19,15 @@ export default class MenuItem extends Vue {
   @Prop({ default: false }) private active!: boolean;
   @Prop({ default: "" }) private route!: string;
 
+  authService = new AuthService();
+
   private toggleMenuItem() {
-    this.$router.push({ name: this.route });
-    this.$store.commit("toggleMenu", false);
+    if (this.route === "logout") {
+      this.authService.logOut();
+    } else {
+      this.$router.push({ name: this.route });
+      this.$store.commit("toggleMenu", false);
+    }
   }
 }
 </script>

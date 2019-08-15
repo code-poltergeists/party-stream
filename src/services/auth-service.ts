@@ -156,4 +156,10 @@ export default class AuthService {
     store.commit("restrictRouterForwarding", true);
     return firebase.auth().signInWithPopup(provider);
   }
+
+  signout() {
+    firebase.auth().signOut().then(_ => {
+      window.location.reload();
+    })
+  }
 }
