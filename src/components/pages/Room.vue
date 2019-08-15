@@ -158,15 +158,6 @@ export default class Room extends Vue {
       this.$route.params.id
     );
     this.roomId = this.$route.params.id;
-    if (
-      this.roomDetails.videos === undefined ||
-      this.roomDetails.videos.length == 0
-    ) {
-      this.videoId = "false";
-    } else {
-      this.videoId = this.roomDetails.videos[0].link.slice(-11);
-    }
-    this.$store.commit("updateRoomName", this.roomDetails.roomName);
     let currentTime = new Date();
     let seconds = currentTime.getTime() / 1000;
     this.time =
@@ -174,6 +165,16 @@ export default class Room extends Vue {
       (this.roomDetails.startTime as any).seconds +
       this.roomDetails.time;
     this.time = Math.trunc(this.time);
+    if (
+      this.roomDetails.videos === undefined ||
+      this.roomDetails.videos.length == 0
+    ) {
+      this.videoId = "false";
+      this.time = 0;
+    } else {
+      this.videoId = this.roomDetails.videos[0].link.slice(-11);
+    }
+    this.$store.commit("updateRoomName", this.roomDetails.roomName);
     this.isReady = true;
     await this.authService.currentUser().then(res => {
       this.username = res.username;
